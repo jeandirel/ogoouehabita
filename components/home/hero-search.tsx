@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { GABON_GEOGRAPHY } from "@/data/gabon-geography";
+import { ACHETER_TYPE_OPTIONS, LOUER_TYPE_OPTIONS } from "@/data/property-types";
 
 const TABS = [
   { key: "acheter", label: "Acheter", href: "/acheter" },
@@ -13,18 +14,28 @@ const TABS = [
   { key: "neuf", label: "Neuf", href: "/neuf" },
 ] as const;
 
+// One real province-level option per province (with a sample of its real
+// villes), matching every destination page's own `province` filter — the
+// value is the real province name, the label is the Stitch-style
+// "Province (villes...)" descriptive text.
 const LOCATIONS = GABON_GEOGRAPHY.map((province) => {
   const sample = province.villes.slice(0, 3).map((v) => v.name).join(", ");
   const suffix = province.villes.length > 3 ? "..." : "";
-  return `${province.name} (${sample}${suffix})`;
+  return { value: province.name, label: `${province.name} (${sample}${suffix})` };
 });
 
-const PROPERTY_TYPES = [
-  "Villa & Maison",
-  "Appartement de standing",
-  "Terrain constructible",
-  "Immeuble commercial",
-];
+// Each tab hands off to a destination page with its own real "type" taxonomy
+// (data/property-types.ts) — reusing those exact vocabularies instead of a
+// single generic list keeps the Type field from silently mismatching once it
+// lands (e.g. submitting "Villa & Maison" to /louer, which only recognizes
+// "Villa"). Terrains/Neuf don't have a type filter, so they fall back to the
+// Acheter vocabulary, which is simply unread there (not a regression).
+const TYPE_OPTIONS_BY_TAB: Record<(typeof TABS)[number]["key"], string[]> = {
+  acheter: ACHETER_TYPE_OPTIONS,
+  louer: LOUER_TYPE_OPTIONS,
+  terrains: ACHETER_TYPE_OPTIONS,
+  neuf: ACHETER_TYPE_OPTIONS,
+};
 
 const BUDGETS = [
   "Tous budgets",
@@ -36,15 +47,20 @@ const BUDGETS = [
 export function HeroSearch() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]["key"]>("acheter");
-  const [location, setLocation] = useState(LOCATIONS[0]);
-  const [propertyType, setPropertyType] = useState(PROPERTY_TYPES[0]);
+  const [province, setProvince] = useState(LOCATIONS[0].value);
+  const [propertyType, setPropertyType] = useState(TYPE_OPTIONS_BY_TAB.acheter[0]);
   const [budget, setBudget] = useState(BUDGETS[0]);
   const [aiQuery, setAiQuery] = useState("");
+
+  const handleTabChange = (tab: (typeof TABS)[number]["key"]) => {
+    setActiveTab(tab);
+    setPropertyType(TYPE_OPTIONS_BY_TAB[tab][0]);
+  };
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
     const tab = TABS.find((t) => t.key === activeTab)!;
-    const params = new URLSearchParams({ location, type: propertyType, budget });
+    const params = new URLSearchParams({ province, type: propertyType, budget });
     router.push(`${tab.href}?${params.toString()}`);
   };
 
@@ -65,7 +81,7 @@ export function HeroSearch() {
           <button
             key={tab.key}
             type="button"
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => handleTabChange(tab.key)}
             className={cn(
               "search-tab px-4 py-2 rounded-xl text-label-md font-bold transition-all",
               activeTab === tab.key
@@ -85,11 +101,13 @@ export function HeroSearch() {
           <select
             id="hero-location"
             className="bg-transparent text-body-md font-medium text-on-surface outline-none cursor-pointer"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            value={province}
+            onChange={(e) => setProvince(e.target.value)}
           >
             {LOCATIONS.map((option) => (
-              <option key={option}>{option}</option>
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
             ))}
           </select>
         </div>
@@ -103,7 +121,7 @@ export function HeroSearch() {
             value={propertyType}
             onChange={(e) => setPropertyType(e.target.value)}
           >
-            {PROPERTY_TYPES.map((option) => (
+            {TYPE_OPTIONS_BY_TAB[activeTab].map((option) => (
               <option key={option}>{option}</option>
             ))}
           </select>

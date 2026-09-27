@@ -8,6 +8,8 @@ import { AiAlertForm } from "@/components/louer/ai-alert-form";
 import { properties } from "@/data/properties";
 import { neighborhoods } from "@/data/neighborhoods";
 import { recentListings } from "@/data/recent-listings";
+import { LOUER_TYPE_OPTIONS } from "@/data/property-types";
+import { parseBudgetLabel } from "@/lib/format";
 import { stitchImage } from "@/data/image-manifest";
 
 const LOUER_SLUGS = [
@@ -24,7 +26,7 @@ const QUICK_FILTERS = [
   { label: "Meublé", icon: "weekend" },
 ];
 
-const PROPERTY_TYPES = ["Tous types", "Appartement", "Maison", "Studio", "Villa", "Meublé"];
+const PROPERTY_TYPES = LOUER_TYPE_OPTIONS;
 
 const BUDGETS = [
   "Indifférent",
@@ -42,6 +44,8 @@ export default async function LouerPage({
   const params = await searchParams;
   const type = typeof params.type === "string" ? params.type : undefined;
   const quartier = typeof params.quartier === "string" ? params.quartier : undefined;
+  const province = typeof params.province === "string" ? params.province : undefined;
+  const budget = parseBudgetLabel(typeof params.budget === "string" ? params.budget : undefined);
 
   const LOCATIONS = [
     { value: "", label: "Libreville (Tous les quartiers)" },
@@ -63,6 +67,8 @@ export default async function LouerPage({
         return false;
       }
     }
+    if (province && property.province !== province) return false;
+    if (budget && property.priceValue > budget) return false;
     return true;
   });
 
@@ -140,6 +146,7 @@ export default async function LouerPage({
                   </span>
                   <select
                     name="budget"
+                    defaultValue={typeof params.budget === "string" ? params.budget : BUDGETS[0]}
                     className="bg-transparent text-on-surface font-medium focus:outline-none cursor-pointer"
                   >
                     {BUDGETS.map((option) => (

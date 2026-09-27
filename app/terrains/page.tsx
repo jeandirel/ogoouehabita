@@ -3,23 +3,10 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { LandCard } from "@/components/land/land-card";
 import { TrustLevelCard } from "@/components/land/trust-level-card";
+import { TerrainsSearchForm } from "@/components/terrains/search-form";
 import { lands, TRUST_LEVELS } from "@/data/land";
-import { GABON_PROVINCE_NAMES } from "@/data/gabon-geography";
+import { parseBudgetLabel } from "@/lib/format";
 import { stitchImage } from "@/data/image-manifest";
-
-const PROVINCES = GABON_PROVINCE_NAMES;
-const ZONES = [
-  "Ntoum (Km 27)",
-  "Owendo (Port)",
-  "Lambaréné (Adalbert)",
-  "Libreville (Glass/Mindoubé)",
-];
-
-function parseBudget(value?: string) {
-  if (!value) return undefined;
-  const digits = value.replace(/[^\d]/g, "");
-  return digits ? Number(digits) : undefined;
-}
 
 export default async function TerrainsPage({
   searchParams,
@@ -28,16 +15,15 @@ export default async function TerrainsPage({
 }) {
   const params = await searchParams;
   const province = typeof params.province === "string" ? params.province : undefined;
-  const zone = typeof params.zone === "string" ? params.zone : undefined;
-  const minArea = typeof params.minArea === "string" ? Number(params.minArea) : undefined;
-  const maxBudget = parseBudget(typeof params.maxBudget === "string" ? params.maxBudget : undefined);
+  const ville = typeof params.ville === "string" ? params.ville : undefined;
+  const minAreaRaw = typeof params.minArea === "string" ? params.minArea : undefined;
+  const maxBudgetRaw = typeof params.maxBudget === "string" ? params.maxBudget : undefined;
+  const minArea = minAreaRaw ? Number(minAreaRaw) : undefined;
+  const maxBudget = parseBudgetLabel(maxBudgetRaw);
 
   const filtered = lands.filter((land) => {
     if (province && land.province !== province) return false;
-    if (zone) {
-      const zoneCity = zone.split(" (")[0];
-      if (!land.location.includes(zoneCity)) return false;
-    }
+    if (ville && !land.location.includes(ville)) return false;
     if (minArea && !Number.isNaN(minArea)) {
       const area = Number(land.areaLabel.replace(/[^\d]/g, ""));
       if (area < minArea) return false;
@@ -76,78 +62,12 @@ export default async function TerrainsPage({
                 géomètres agréés.
               </p>
             </div>
-            <form
-              action="/terrains"
-              className="lg:col-span-5 bg-surface p-6 rounded-xl shadow-xl text-on-surface"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="text-headline-sm text-primary font-bold">Recherche Foncière</div>
-                <Icon name="explore" className="text-secondary" />
-              </div>
-              <div className="flex flex-col gap-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-label-sm font-medium text-on-surface-variant mb-1 block">
-                      Province
-                    </label>
-                    <select
-                      name="province"
-                      defaultValue={province ?? PROVINCES[0]}
-                      className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
-                    >
-                      {PROVINCES.map((option) => (
-                        <option key={option}>{option}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-label-sm font-medium text-on-surface-variant mb-1 block">
-                      Ville / Zone
-                    </label>
-                    <select
-                      name="zone"
-                      defaultValue={zone ?? ZONES[0]}
-                      className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
-                    >
-                      {ZONES.map((option) => (
-                        <option key={option}>{option}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-label-sm font-medium text-on-surface-variant mb-1 block">
-                      Surface Min (m²)
-                    </label>
-                    <input
-                      name="minArea"
-                      className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
-                      placeholder="ex: 500"
-                      type="number"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-label-sm font-medium text-on-surface-variant mb-1 block">
-                      Budget Max (FCFA)
-                    </label>
-                    <input
-                      name="maxBudget"
-                      className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
-                      placeholder="ex: 15.000.000"
-                      type="text"
-                    />
-                  </div>
-                </div>
-                <button
-                  className="mt-2 w-full bg-primary text-on-primary py-3 rounded-xl font-label-md flex items-center justify-center gap-2 hover:bg-forest-deep transition-colors shadow-sm"
-                  type="submit"
-                >
-                  <Icon name="search" className="text-[18px]" />
-                  Explorer les terrains certifiés
-                </button>
-              </div>
-            </form>
+            <TerrainsSearchForm
+              initialProvince={province}
+              initialVille={ville}
+              initialMinArea={minAreaRaw}
+              initialMaxBudget={maxBudgetRaw}
+            />
           </div>
         </section>
 

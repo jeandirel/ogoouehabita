@@ -13,3 +13,12 @@ export function formatCompactFcfa(amount: number): string {
   }
   return formatFcfa(amount);
 }
+
+// Extracts a max-budget threshold (in FCFA) from free-text budget option
+// labels like "150 000 000", "Jusqu'à 300 000 FCFA / mois" or "Tous budgets"
+// (no digits -> no threshold, i.e. unfiltered).
+export function parseBudgetLabel(value?: string): number | undefined {
+  if (!value) return undefined;
+  const digits = value.replace(/[^\d]/g, "");
+  return digits ? Number(digits) : undefined;
+}

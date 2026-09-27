@@ -6,6 +6,8 @@ import { LoanSimulator } from "@/components/acheter/loan-simulator";
 import { properties } from "@/data/properties";
 import { PROVINCE_QUICK_LINKS } from "@/data/provinces";
 import { GABON_GEOGRAPHY, formatVilleLabel } from "@/data/gabon-geography";
+import { ACHETER_TYPE_OPTIONS, ACHETER_CATEGORY_MAP } from "@/data/property-types";
+import { parseBudgetLabel } from "@/lib/format";
 import { stitchImage } from "@/data/image-manifest";
 
 const ACHETER_SLUGS = [
@@ -14,12 +16,7 @@ const ACHETER_SLUGS = [
   "terrain-constructible-titre-port-gentil",
 ];
 
-const PROPERTY_TYPES = [
-  "Villa & Résidence",
-  "Appartement de standing",
-  "Terrain constructible",
-  "Immeuble commercial",
-];
+const PROPERTY_TYPES = ACHETER_TYPE_OPTIONS;
 
 const CITY_TILES = [
   {
@@ -73,14 +70,20 @@ export default async function AcheterPage({
   const params = await searchParams;
   const ville = typeof params.ville === "string" ? params.ville : undefined;
   const province = typeof params.province === "string" ? params.province : undefined;
+  const type = typeof params.type === "string" ? params.type : undefined;
+  const budget = parseBudgetLabel(typeof params.budget === "string" ? params.budget : undefined);
+  const q = typeof params.q === "string" ? params.q.toLowerCase().trim() : undefined;
 
   const listings = properties.filter((property) => ACHETER_SLUGS.includes(property.slug));
   const filtered = listings.filter((property) => {
     if (ville && !property.location.includes(ville)) return false;
     if (province && property.province !== province) return false;
+    if (type && property.category !== ACHETER_CATEGORY_MAP[type]) return false;
+    if (budget && property.priceValue > budget) return false;
+    if (q && !`${property.title} ${property.location}`.toLowerCase().includes(q)) return false;
     return true;
   });
-  const isFiltered = Boolean(ville || province);
+  const isFiltered = Boolean(ville || province || type || budget || q);
 
   return (
     <SiteShell>
@@ -143,6 +146,7 @@ export default async function AcheterPage({
                   <Icon name="home" className="text-secondary" />
                   <select
                     name="type"
+                    defaultValue={type ?? PROPERTY_TYPES[0]}
                     className="bg-transparent text-body-sm font-medium focus:outline-none w-full"
                   >
                     {PROPERTY_TYPES.map((option) => (
@@ -161,7 +165,7 @@ export default async function AcheterPage({
                     name="budget"
                     className="bg-transparent text-body-sm font-medium focus:outline-none w-full"
                     type="text"
-                    defaultValue="150 000 000"
+                    defaultValue={typeof params.budget === "string" ? params.budget : "150 000 000"}
                   />
                 </div>
               </div>
@@ -173,6 +177,7 @@ export default async function AcheterPage({
                   <Icon name="neurology" className="text-laterite" />
                   <input
                     name="q"
+                    defaultValue={typeof params.q === "string" ? params.q : ""}
                     className="bg-transparent text-body-sm font-medium focus:outline-none w-full placeholder:text-outline"
                     placeholder="Ex: Villa sécurisée avec piscine à Akanda..."
                     type="text"
