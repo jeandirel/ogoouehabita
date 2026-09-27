@@ -9,6 +9,7 @@ import { properties } from "@/data/properties";
 import { neighborhoods } from "@/data/neighborhoods";
 import { recentListings } from "@/data/recent-listings";
 import { LOUER_TYPE_OPTIONS } from "@/data/property-types";
+import { GABON_GEOGRAPHY } from "@/data/gabon-geography";
 import { parseBudgetLabel } from "@/lib/format";
 import { stitchImage } from "@/data/image-manifest";
 
@@ -27,6 +28,17 @@ const QUICK_FILTERS = [
 ];
 
 const PROPERTY_TYPES = LOUER_TYPE_OPTIONS;
+
+// Real Gabon-wide ville coverage, grouped by province — same
+// `GABON_GEOGRAPHY`-backed pattern as /acheter and /terrains, so "Localisation
+// ou Quartier" isn't limited to Libreville + 2 hardcoded cities anymore.
+// Libreville itself is excluded here since it keeps its own curated quartier
+// list above (neighborhoods.ts); every other real ville (including other
+// Estuaire villes like Akanda/Owendo/Ntoum) is grouped under its province.
+const OTHER_PROVINCE_GROUPS = GABON_GEOGRAPHY.map((province) => ({
+  province: province.name,
+  villes: province.villes.filter((ville) => ville.name !== "Libreville"),
+})).filter((group) => group.villes.length > 0);
 
 const BUDGETS = [
   "Indifférent",
@@ -47,11 +59,9 @@ export default async function LouerPage({
   const province = typeof params.province === "string" ? params.province : undefined;
   const budget = parseBudgetLabel(typeof params.budget === "string" ? params.budget : undefined);
 
-  const LOCATIONS = [
+  const LIBREVILLE_OPTIONS = [
     { value: "", label: "Libreville (Tous les quartiers)" },
     ...neighborhoods.map((n) => ({ value: n.slug, label: `${n.name} (Libreville)` })),
-    { value: "Port-Gentil", label: "Port-Gentil" },
-    { value: "Franceville", label: "Franceville" },
   ];
 
   const listings = properties.filter((property) => LOUER_SLUGS.includes(property.slug));
@@ -113,10 +123,21 @@ export default async function LouerPage({
                     defaultValue={quartier ?? ""}
                     className="bg-transparent text-on-surface font-medium focus:outline-none cursor-pointer"
                   >
-                    {LOCATIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
+                    <optgroup label="Libreville">
+                      {LIBREVILLE_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </optgroup>
+                    {OTHER_PROVINCE_GROUPS.map((group) => (
+                      <optgroup key={group.province} label={group.province}>
+                        {group.villes.map((ville) => (
+                          <option key={ville.name} value={ville.name}>
+                            {ville.name}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </div>
