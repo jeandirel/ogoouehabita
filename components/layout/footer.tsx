@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 
+// Exact 4-item list from the Stitch source's footer (fixed 4-row column
+// aligned against "Liens Rapides"/"Administratif & Légal") — intentionally
+// not expanded to all 9 real provinces, see STITCH_IMPLEMENTATION.md.
 const PROVINCES = ["Estuaire", "Haut-Ogooué", "Ogooué-Maritime", "Woleu-Ntem"];
 
 const QUICK_LINKS = [

@@ -5,19 +5,13 @@ import { BuyListingCard } from "@/components/property/buy-listing-card";
 import { LoanSimulator } from "@/components/acheter/loan-simulator";
 import { properties } from "@/data/properties";
 import { PROVINCE_QUICK_LINKS } from "@/data/provinces";
+import { GABON_GEOGRAPHY, formatVilleLabel } from "@/data/gabon-geography";
 import { stitchImage } from "@/data/image-manifest";
 
 const ACHETER_SLUGS = [
   "villa-architecte-akanda",
   "appartement-standing-vue-mer-batterie-iv",
   "terrain-constructible-titre-port-gentil",
-];
-
-const LOCATIONS = [
-  "Libreville (Estuaire)",
-  "Akanda",
-  "Port-Gentil (Ogooué-Maritime)",
-  "Franceville (Haut-Ogooué)",
 ];
 
 const PROPERTY_TYPES = [
@@ -126,11 +120,17 @@ export default async function AcheterPage({
                   <Icon name="location_on" className="text-secondary" />
                   <select
                     name="ville"
-                    defaultValue={ville ?? LOCATIONS[0]}
+                    defaultValue={ville ?? "Libreville"}
                     className="bg-transparent text-body-sm font-medium focus:outline-none w-full"
                   >
-                    {LOCATIONS.map((option) => (
-                      <option key={option}>{option}</option>
+                    {GABON_GEOGRAPHY.map((province) => (
+                      <optgroup key={province.name} label={province.name}>
+                        {province.villes.map((v) => (
+                          <option key={v.name} value={v.name}>
+                            {formatVilleLabel(v)}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </div>
@@ -293,7 +293,7 @@ export default async function AcheterPage({
             {PROVINCE_QUICK_LINKS.map((province) => (
               <Link
                 key={province.slug}
-                href={`/recherche?province=${province.slug}`}
+                href={`/recherche?province=${encodeURIComponent(province.name)}`}
                 className="p-4 bg-surface-container rounded-xl text-center hover:bg-primary hover:text-on-primary transition-all group flex flex-col items-center justify-center gap-2"
               >
                 <Icon name={province.icon} className="text-secondary group-hover:text-on-primary" />

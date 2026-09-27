@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { GABON_GEOGRAPHY, getVillesByProvince, getQuartiersForVille } from "@/data/gabon-geography";
 
 const TRANSACTION_TYPES = [
   { key: "vente", label: "Vente" },
@@ -11,12 +12,17 @@ const TRANSACTION_TYPES = [
 
 const CATEGORIES = ["Villa", "Maison", "Appartement", "Studio", "Terrain", "Immeuble commercial"];
 
+const AUTRE_QUARTIER = "__autre__";
+
 export function PublishForm() {
   const [transactionType, setTransactionType] =
     useState<(typeof TRANSACTION_TYPES)[number]["key"]>("vente");
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [title, setTitle] = useState("");
-  const [location, setLocation] = useState("");
+  const [province, setProvince] = useState(GABON_GEOGRAPHY[0].name);
+  const [ville, setVille] = useState(GABON_GEOGRAPHY[0].villes[0].name);
+  const [quartierSelect, setQuartierSelect] = useState("");
+  const [quartierLibre, setQuartierLibre] = useState("");
   const [price, setPrice] = useState("");
   const [surface, setSurface] = useState("");
   const [bedrooms, setBedrooms] = useState("");
@@ -25,11 +31,33 @@ export function PublishForm() {
   const [contactPhone, setContactPhone] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
+  const villesForProvince = useMemo(() => getVillesByProvince(province), [province]);
+  const quartiersForVille = useMemo(() => getQuartiersForVille(ville), [ville]);
+  const hasQuartierData = quartiersForVille.length > 0;
+
+  const handleProvinceChange = (value: string) => {
+    setProvince(value);
+    const nextVille = getVillesByProvince(value)[0]?.name ?? "";
+    setVille(nextVille);
+    setQuartierSelect("");
+    setQuartierLibre("");
+  };
+
+  const handleVilleChange = (value: string) => {
+    setVille(value);
+    setQuartierSelect("");
+    setQuartierLibre("");
+  };
+
+  const quartierFinal = hasQuartierData
+    ? (quartierSelect === AUTRE_QUARTIER ? quartierLibre.trim() : quartierSelect)
+    : quartierLibre.trim();
+  const location = quartierFinal ? `${quartierFinal}, ${ville} (${province})` : `${ville} (${province})`;
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (
       !title.trim() ||
-      !location.trim() ||
       !price.trim() ||
       !surface.trim() ||
       !description.trim() ||
@@ -108,17 +136,76 @@ export function PublishForm() {
         </label>
       </div>
 
-      <label className="flex flex-col gap-1.5">
-        <span className="text-label-md font-bold text-on-surface">Localisation / Quartier</span>
-        <input
-          type="text"
-          required
-          value={location}
-          onChange={(event) => setLocation(event.target.value)}
-          placeholder="Ex : Angondjé, Libreville (Estuaire)"
-          className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
-        />
-      </label>
+      <div className="flex flex-col gap-1.5">
+        <span className="text-label-md font-bold text-on-surface">Localisation</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+          <select
+            value={province}
+            onChange={(event) => handleProvinceChange(event.target.value)}
+            className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
+          >
+            {GABON_GEOGRAPHY.map((p) => (
+              <option key={p.name} value={p.name}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+          <select
+            value={ville}
+            onChange={(event) => handleVilleChange(event.target.value)}
+            className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
+          >
+            {villesForProvince.map((v) => (
+              <option key={v.name} value={v.name}>
+                {v.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        {hasQuartierData ? (
+          <div className="flex flex-col gap-1.5">
+            <select
+              value={quartierSelect}
+              onChange={(event) => setQuartierSelect(event.target.value)}
+              className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
+            >
+              <option value="">Quartier (optionnel)</option>
+              {quartiersForVille.map((q) => (
+                <option key={q} value={q}>
+                  {q}
+                </option>
+              ))}
+              <option value={AUTRE_QUARTIER}>Autre (préciser)...</option>
+            </select>
+            {quartierSelect === AUTRE_QUARTIER && (
+              <input
+                type="text"
+                value={quartierLibre}
+                onChange={(event) => setQuartierLibre(event.target.value)}
+                placeholder="Précisez le nom du quartier"
+                className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
+              />
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-1.5">
+            <input
+              type="text"
+              value={quartierLibre}
+              onChange={(event) => setQuartierLibre(event.target.value)}
+              placeholder="Quartier (optionnel)"
+              className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
+            />
+            <span className="text-label-sm text-on-surface-variant">
+              Aucune liste de quartiers vérifiée n&apos;est disponible pour {ville} dans nos
+              sources officielles — précisez-le librement si besoin.
+            </span>
+          </div>
+        )}
+        <p className="text-label-sm text-on-surface-variant">
+          Localisation enregistrée : <span className="font-bold text-on-surface">{location}</span>
+        </p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md">
         <label className="flex flex-col gap-1.5">

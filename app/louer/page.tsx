@@ -24,15 +24,6 @@ const QUICK_FILTERS = [
   { label: "Meublé", icon: "weekend" },
 ];
 
-const LOCATIONS = [
-  "Libreville (Tous les quartiers)",
-  "Louis / Bas de Gué-Gué",
-  "Batterie IV",
-  "Glass / Lalala",
-  "Port-Gentil",
-  "Franceville",
-];
-
 const PROPERTY_TYPES = ["Tous types", "Appartement", "Maison", "Studio", "Villa", "Meublé"];
 
 const BUDGETS = [
@@ -52,6 +43,13 @@ export default async function LouerPage({
   const type = typeof params.type === "string" ? params.type : undefined;
   const quartier = typeof params.quartier === "string" ? params.quartier : undefined;
 
+  const LOCATIONS = [
+    { value: "", label: "Libreville (Tous les quartiers)" },
+    ...neighborhoods.map((n) => ({ value: n.slug, label: `${n.name} (Libreville)` })),
+    { value: "Port-Gentil", label: "Port-Gentil" },
+    { value: "Franceville", label: "Franceville" },
+  ];
+
   const listings = properties.filter((property) => LOUER_SLUGS.includes(property.slug));
   const filtered = listings.filter((property) => {
     if (type && type !== "Tous types") {
@@ -59,7 +57,11 @@ export default async function LouerPage({
     }
     if (quartier) {
       const neighborhood = neighborhoods.find((n) => n.slug === quartier);
-      if (neighborhood && !property.location.includes(neighborhood.name)) return false;
+      if (neighborhood) {
+        if (!property.location.includes(neighborhood.name)) return false;
+      } else if (!property.location.includes(quartier)) {
+        return false;
+      }
     }
     return true;
   });
@@ -101,11 +103,14 @@ export default async function LouerPage({
                     Localisation ou Quartier
                   </span>
                   <select
-                    name="localisation"
+                    name="quartier"
+                    defaultValue={quartier ?? ""}
                     className="bg-transparent text-on-surface font-medium focus:outline-none cursor-pointer"
                   >
                     {LOCATIONS.map((option) => (
-                      <option key={option}>{option}</option>
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
                     ))}
                   </select>
                 </div>

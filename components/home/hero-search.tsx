@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { GABON_GEOGRAPHY } from "@/data/gabon-geography";
 
 const TABS = [
   { key: "acheter", label: "Acheter", href: "/acheter" },
@@ -12,12 +13,11 @@ const TABS = [
   { key: "neuf", label: "Neuf", href: "/neuf" },
 ] as const;
 
-const LOCATIONS = [
-  "Estuaire (Libreville, Akanda...)",
-  "Ogooué-Maritime (Port-Gentil)",
-  "Haut-Ogooué (Franceville)",
-  "Woleu-Ntem (Oyem)",
-];
+const LOCATIONS = GABON_GEOGRAPHY.map((province) => {
+  const sample = province.villes.slice(0, 3).map((v) => v.name).join(", ");
+  const suffix = province.villes.length > 3 ? "..." : "";
+  return `${province.name} (${sample}${suffix})`;
+});
 
 const PROPERTY_TYPES = [
   "Villa & Maison",

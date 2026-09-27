@@ -4,9 +4,10 @@ import { Icon } from "@/components/ui/icon";
 import { LandCard } from "@/components/land/land-card";
 import { TrustLevelCard } from "@/components/land/trust-level-card";
 import { lands, TRUST_LEVELS } from "@/data/land";
+import { GABON_PROVINCE_NAMES } from "@/data/gabon-geography";
 import { stitchImage } from "@/data/image-manifest";
 
-const PROVINCES = ["Estuaire", "Haut-Ogooué", "Ogooué-Maritime", "Moyen-Ogooué"];
+const PROVINCES = GABON_PROVINCE_NAMES;
 const ZONES = [
   "Ntoum (Km 27)",
   "Owendo (Port)",

@@ -53,6 +53,7 @@ export default async function RecherchePage({
 
   const transactionType: TransactionType = get("type") === "location" ? "location" : "vente";
   const q = get("q")?.toLowerCase().trim();
+  const province = get("province");
   const sort = get("sort") ?? "pertinence";
 
   const activeChips = {
@@ -70,6 +71,7 @@ export default async function RecherchePage({
 
   let results = pool.filter((property) => {
     if (property.transactionType !== transactionType) return false;
+    if (province && property.province !== province) return false;
     if (q && !`${property.title} ${property.location}`.toLowerCase().includes(q)) return false;
     if (activeChips.villa && !["Villa", "Maison"].includes(property.category ?? "")) return false;
     if (activeChips.budget && (property.priceValue < 50_000_000 || property.priceValue > 250_000_000))

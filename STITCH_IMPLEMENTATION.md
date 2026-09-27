@@ -36,6 +36,20 @@ Per the brief's core constraint, components are only shared across screens where
 
 Centralized under `data/`: `properties.ts`, `land.ts`, `neighborhoods.ts` (implied), `provinces.ts` (implied), `agencies.ts`, `passport-timeline.ts`, `image-manifest.ts`. All page components read from these rather than hardcoding copy inline, so filters/sorts/search on `/recherche`, `/acheter`, `/louer`, `/terrains` operate on real (if mock) data rather than static markup.
 
+### Gabon administrative geography (real, sourced data)
+
+`data/gabon_provinces_villes_quartiers.source.json` is a real, sourced reference dataset (9 provinces → 52 villes/communes → 821 quartier entries), compiled 2026-09-24 primarily from the Journal Officiel (loi n°020/2025) plus municipal and public/press sources for complementary entries — **not mock data**, and never edited by hand (kept as a verbatim JSON import so the 821 quartier strings can't drift from the sourced original). Per its own methodology, no quartier is ever invented: an empty `quartiers` array means "no verifiable source found," not "this ville has none." `data/gabon-geography.ts` wraps it with types and helpers (`GABON_GEOGRAPHY`, `GABON_PROVINCE_NAMES`, `GABON_VILLES`, `getVillesByProvince`, `getQuartiersForVille`, `formatVilleLabel`).
+
+This replaced several small, partial hardcoded location lists:
+
+- `components/home/hero-search.tsx` — "Localisation ou Province" now lists all 9 real provinces (was 4).
+- `app/acheter/page.tsx` — "Localisation" now lists all 52 real villes grouped by province via `<optgroup>` (was 4 villes); the "Explorer les 9 provinces" quick-nav links were also fixed to pass the real province name instead of a slug (see Deviations #11).
+- `app/terrains/page.tsx` — "Province" now lists all 9 real provinces (was 4).
+- `components/publier/publish-form.tsx` — "Localisation" was a single free-text input; it is now a real Province → Ville cascading select, followed by a real Quartier select (populated from the sourced list) with an "Autre (préciser)" escape hatch, or — when a ville has no verified quartier list — a free-text field paired with an honest note explaining the data gap rather than silently offering nothing or fabricating options.
+- `app/louer/page.tsx` — "Localisation ou Quartier" is unchanged in content (it already used real quartier names from `data/neighborhoods.ts`) but its wiring was fixed: the `<select>` used `name="localisation"`, which the page never read (it reads `quartier`), making the field decorative; see Deviations #11.
+
+The Stitch source's footer (`components/layout/footer.tsx`) deliberately still lists only its literal 4 provinces (Estuaire, Haut-Ogooué, Ogooué-Maritime, Woleu-Ntem) — that list is real, visible, pixel-placed copy straight from `code.html`, not a closed dropdown, so expanding it to all 9 would be a fidelity deviation rather than an improvement.
+
 ## Deviations & judgment calls (flagged deliberately, not oversights)
 
 1. **`/terrains/[slug]` is a new route** — the Stitch export only shows a terrains *listing* screen, no land-detail screen. A detail page was built following the same visual language as the listing cards, since linking a land card to a dead end would violate the "no dead links" constraint.
@@ -48,6 +62,7 @@ Centralized under `data/`: `properties.ts`, `land.ts`, `neighborhoods.ts` (impli
 8. **Loan/budget simulator on `/acheter`** — the Stitch source shows a simulator UI without a specified formula. A real, simple amortization-style calculation was implemented (not left as a static mockup) so the "simulate" affordance is genuinely functional.
 9. **9-province tile split on the home/search province sections** — the source mixes icon-only and photo tiles inconsistently across provinces; implementation splits provinces into an icon-tile set and a photo-tile set based on which already have a real image asset in `data/image-manifest.ts`, rather than forcing a mismatched image onto every tile.
 10. **"Voir tout le catalogue" → `/recherche`** — a few catalogue-wide CTAs across screens point at `/recherche` (the most complete filterable listing view) rather than a screen-specific listing route, where the source's intent was clearly "see everything," not a specific new screen.
+11. **Two pre-existing dead/no-op location filters, found and fixed while integrating the real Gabon geography data**: `/acheter`'s province quick-nav grid linked to `/recherche?province=<slug>` (e.g. `estuaire`) while `/recherche` and every property's `province` field use the full display name (e.g. `Estuaire`), so the filter silently never matched; and `/louer`'s location `<select>` submitted `name="localisation"`, a param the page never read (it reads `quartier`), so the field did nothing. `/recherche` itself was also not reading its own `province` query param at all — added that filter. All three now function for real, consistent with the "no dead interactive element" constraint.
 
 ## Utility pages (no Stitch source — flagged explicitly)
 
