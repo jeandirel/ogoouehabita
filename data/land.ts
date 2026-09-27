@@ -1,0 +1,83 @@
+import { stitchImage } from "@/data/image-manifest";
+import type { Land } from "@/lib/types";
+
+export const lands: Land[] = [
+  {
+    slug: "parcelle-residentielle-viabilisee-ntoum",
+    title: "Parcelle Résidentielle Viabilisée",
+    location: "Ntoum — Km 27 Route Nationale",
+    province: "Estuaire",
+    priceLabel: "8 500 000 FCFA",
+    priceValue: 8_500_000,
+    areaLabel: "600 m²",
+    pricePerSqmLabel: "14 166 FCFA/m²",
+    trustLevel: 5,
+    levelLabel: "Niveau 5 - Titre Foncier",
+    levelBadgeClass: "bg-laterite text-on-primary",
+    accessLabel: "Accès route empierrée",
+    bornageLabel: "Bornes géomètre OK",
+    reference: "Passeport Ogooué #OG-8821",
+    image: stitchImage.terrain_terrain_ntoum_laterite,
+  },
+  {
+    slug: "terrain-panoramique-vue-fleuve-lambarene",
+    title: "Terrain Panoramique Vue Fleuve",
+    location: "Lambaréné — Quartier Adalbert",
+    province: "Moyen-Ogooué",
+    priceLabel: "12 000 000 FCFA",
+    priceValue: 12_000_000,
+    areaLabel: "1 200 m²",
+    pricePerSqmLabel: "10 000 FCFA/m²",
+    trustLevel: 4,
+    levelLabel: "Niveau 4 - Permis de Lotir",
+    levelBadgeClass: "bg-primary text-on-primary",
+    accessLabel: "Goudron + Piste",
+    bornageLabel: "Bornage contradictoire",
+    reference: "Passeport Ogooué #OG-9042",
+    image: stitchImage.terrain_terrain_lambarene_colline,
+  },
+];
+
+export const TRUST_LEVELS = [
+  {
+    level: 1,
+    tag: "À Risque",
+    title: "Coutumier Brut",
+    description: "Simple accord verbal ou attestation villageoise non enregistrée.",
+    badgeClass: "bg-error text-on-error",
+    tagClass: "text-error",
+  },
+  {
+    level: 2,
+    tag: "En Cours",
+    title: "Attestation Létale",
+    description: "Reconnaissance de mise en valeur visée par la mairie ou préfecture.",
+    badgeClass: "bg-laterite text-on-error",
+    tagClass: "text-laterite",
+  },
+  {
+    level: 3,
+    tag: "Intermédiaire",
+    title: "Bornage Géomètre",
+    description: "Procès-verbal de bornage contradictoire validé par l'Ordre.",
+    badgeClass: "bg-secondary text-on-secondary",
+    tagClass: "text-secondary",
+  },
+  {
+    level: 4,
+    tag: "Sécurisé",
+    title: "Permis d'Occuper",
+    description: "Arrêté ministériel ou foncier approuvé, en instance de mutation.",
+    badgeClass: "bg-primary-container text-on-primary",
+    tagClass: "text-primary-container",
+  },
+  {
+    level: 5,
+    tag: "Certifié Total",
+    title: "Titre Foncier",
+    description: "Propriété pleine et entière enregistrée à la Conservation Foncière.",
+    badgeClass: "bg-primary text-on-primary",
+    tagClass: "text-primary",
+    highlighted: true,
+  },
+] as const;

@@ -1,0 +1,25 @@
+import { SiteShell } from "@/components/layout/site-shell";
+import { SignupForm } from "@/components/auth/signup-form";
+import { Icon } from "@/components/ui/icon";
+
+export default function InscriptionPage() {
+  return (
+    <SiteShell>
+      <div className="min-h-[70vh] flex items-center justify-center px-6 lg:px-12 py-space-xl bg-surface-container-low">
+        <div className="w-full max-w-md bg-surface p-space-xl rounded-2xl shadow-lg flex flex-col gap-space-lg">
+          <div className="flex flex-col items-center text-center gap-2">
+            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
+              <Icon name="badge" className="text-on-primary text-[22px]" />
+            </div>
+            <h1 className="font-headline-lg text-on-surface">Créer un compte</h1>
+            <p className="text-body-sm text-on-surface-variant">
+              Rejoignez Ogooué Habitat pour enregistrer vos favoris, générer votre Passeport
+              Locataire et suivre vos annonces publiées.
+            </p>
+          </div>
+          <SignupForm />
+        </div>
+      </div>
+    </SiteShell>
+  );
+}
