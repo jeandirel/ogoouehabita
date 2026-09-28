@@ -1,12 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { GABON_GEOGRAPHY, getVillesByProvince, getQuartiersForVille } from "@/data/gabon-geography";
 import { insertPublishedListing } from "@/data/local/published-listings-store";
 import { formatFcfa, parseBudgetLabel } from "@/lib/format";
+
+const MAX_PHOTO_DIMENSION = 1280;
+
+function compressImageFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Lecture du fichier impossible"));
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = () => reject(new Error("Image invalide"));
+      image.onload = () => {
+        const scale = Math.min(1, MAX_PHOTO_DIMENSION / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Traitement d'image indisponible"));
+          return;
+        }
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      image.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 const TRANSACTION_TYPES = [
   { key: "vente", label: "Vente" },
@@ -39,6 +67,8 @@ export function PublishForm() {
   const [description, setDescription] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [createdSlug, setCreatedSlug] = useState<string | null>(null);
 
@@ -58,6 +88,23 @@ export function PublishForm() {
     setVille(value);
     setQuartierSelect("");
     setQuartierLibre("");
+  };
+
+  const handlePhotoChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setPhotoError("Veuillez sélectionner un fichier image.");
+      return;
+    }
+    try {
+      const compressed = await compressImageFile(file);
+      setPhotoDataUrl(compressed);
+      setPhotoError(null);
+    } catch {
+      setPhotoError("Impossible de traiter cette image, essayez-en une autre.");
+    }
   };
 
   const quartierFinal = hasQuartierData
@@ -97,6 +144,7 @@ export function PublishForm() {
       description: description.trim(),
       contactName: contactName.trim(),
       contactPhone: contactPhone.trim(),
+      photoDataUrl: photoDataUrl ?? undefined,
     });
     setCreatedSlug(listing.slug);
     setSubmitted(true);
@@ -176,6 +224,46 @@ export function PublishForm() {
             className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
           />
         </label>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <span className="text-label-md font-bold text-on-surface">Photo principale (optionnel)</span>
+        <div className="flex items-center gap-space-md">
+          {photoDataUrl ? (
+            <div
+              className="w-24 h-24 rounded-xl bg-cover bg-center shadow-sm shrink-0"
+              style={{ backgroundImage: `url('${photoDataUrl}')` }}
+              role="img"
+              aria-label="Aperçu de la photo sélectionnée"
+            />
+          ) : (
+            <div className="w-24 h-24 rounded-xl bg-surface-container-low flex items-center justify-center shrink-0">
+              <Icon name="add_a_photo" className="text-outline text-[28px]" />
+            </div>
+          )}
+          <div className="flex flex-col gap-2">
+            <label className="inline-flex items-center gap-2 bg-surface-container-low border border-outline-variant/40 px-4 py-2.5 rounded-xl text-label-md font-bold text-on-surface hover:bg-surface-container cursor-pointer w-fit">
+              <Icon name="upload" className="text-[18px]" />
+              {photoDataUrl ? "Changer la photo" : "Ajouter une photo"}
+              <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+            </label>
+            {photoDataUrl && (
+              <button
+                type="button"
+                onClick={() => setPhotoDataUrl(null)}
+                className="text-label-sm font-bold text-on-surface-variant hover:text-error text-left"
+              >
+                Retirer la photo
+              </button>
+            )}
+            {photoError && <span className="text-label-sm text-error">{photoError}</span>}
+            {!photoDataUrl && !photoError && (
+              <span className="text-label-sm text-on-surface-variant">
+                Sans photo, une image d&apos;illustration générique sera utilisée en attendant.
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1.5">

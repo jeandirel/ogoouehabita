@@ -26,6 +26,7 @@ export interface PublishListingInput {
   description: string;
   contactName: string;
   contactPhone: string;
+  photoDataUrl?: string;
 }
 
 export function usePublishedListings(): PublishedListing[] {
@@ -42,6 +43,8 @@ export function insertPublishedListing(input: PublishListingInput): PublishedLis
     input.surfaceM2 ? { icon: "square_foot", label: `${input.surfaceM2} m²` } : undefined,
   ].filter((spec): spec is { icon: string; label: string } => Boolean(spec));
 
+  const hasRealPhoto = Boolean(input.photoDataUrl);
+
   return publishedListingsStore.insert({
     slug: `annonce-${crypto.randomUUID()}`,
     title: input.title,
@@ -52,14 +55,14 @@ export function insertPublishedListing(input: PublishListingInput): PublishedLis
     priceLabel: input.priceLabel,
     priceValue: input.priceValue,
     priceSecondaryLabel: input.priceSecondaryLabel,
-    image: PLACEHOLDER_IMAGE,
+    image: hasRealPhoto ? { path: input.photoDataUrl!, alt: input.title } : PLACEHOLDER_IMAGE,
     specs: specs.length > 0 ? specs : [{ icon: "home", label: input.category }],
     description: input.description,
     agencyName: input.contactName,
     contactPhone: input.contactPhone,
     source: "local",
     status: "en_attente_verification",
-    hasRealPhoto: false,
+    hasRealPhoto,
     ownerId: getDeviceOwnerId(),
   });
 }

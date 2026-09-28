@@ -140,7 +140,7 @@ export interface LocalRecordBase {
 export interface PublishedListing extends Property, LocalRecordBase {
   source: "local";
   status: "en_attente_verification";
-  hasRealPhoto: false;
+  hasRealPhoto: boolean;
 }
 
 export type LeadKind = "diaspora" | "professionnels" | "neuf-notify" | "louer-alerte" | "contact-bien";
