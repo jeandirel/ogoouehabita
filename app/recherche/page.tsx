@@ -66,6 +66,17 @@ export default async function RecherchePage({
   const filtered = pool.filter((property) => matchesRechercheFilters(property, filters));
   const results = sortByPrice(filtered, sort);
 
+  // Pin positions are hand-placed against the one static illustrative map
+  // image (no real property coordinates exist to fabricate), so the map
+  // can only ever show these 3 — but it can at least stay honest about
+  // *which* of them still match the current filters/search/sort, instead
+  // of always showing all 3 regardless of what the list is showing.
+  const resultSlugs = new Set(results.map((property) => property.slug));
+  const visiblePins = MAP_PINS.filter((pin) => resultSlugs.has(pin.slug)).map((pin) => ({
+    ...pin,
+    active: pin.slug === results[0]?.slug,
+  }));
+
   const buildHref = (overrides: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
@@ -188,7 +199,7 @@ export default async function RecherchePage({
           </div>
 
           {/* Right Column: Interactive Map with Price Pins */}
-          <InteractiveMap pins={MAP_PINS} />
+          <InteractiveMap pins={visiblePins} />
         </div>
       </div>
     </SiteShell>
