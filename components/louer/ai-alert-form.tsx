@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
+import { insertLead } from "@/data/local/leads-store";
 
 export function AiAlertForm() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ export function AiAlertForm() {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!email.trim()) return;
+    insertLead("louer-alerte", email.trim(), {});
     setConfirmed(true);
   };
 

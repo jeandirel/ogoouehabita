@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
+import { insertLead } from "@/data/local/leads-store";
 
 export function PartnerForm() {
   const [agencyName, setAgencyName] = useState("");
@@ -14,6 +15,12 @@ export function PartnerForm() {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!agencyName.trim() || !contactName.trim() || !email.trim() || !phone.trim()) return;
+    insertLead("professionnels", email.trim(), {
+      agencyName: agencyName.trim(),
+      contactName: contactName.trim(),
+      phone: phone.trim(),
+      city: city.trim(),
+    });
     setSent(true);
   };
 

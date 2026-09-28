@@ -22,3 +22,11 @@ export function parseBudgetLabel(value?: string): number | undefined {
   const digits = value.replace(/[^\d]/g, "");
   return digits ? Number(digits) : undefined;
 }
+
+export function formatLocalDate(isoDate: string): string {
+  return new Date(isoDate).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
+import { insertLead } from "@/data/local/leads-store";
 
 export function NotifyForm() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ export function NotifyForm() {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!email.trim()) return;
+    insertLead("neuf-notify", email.trim(), {});
     setConfirmed(true);
   };
 

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
+import { insertLead } from "@/data/local/leads-store";
 
 const PROJECTS = [
   "Achat d'une villa ou maison",
@@ -20,6 +21,11 @@ export function DiasporaLeadForm() {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!name.trim() || !country.trim() || !contact.trim()) return;
+    insertLead("diaspora", contact.trim(), {
+      name: name.trim(),
+      country: country.trim(),
+      project,
+    });
     setSent(true);
   };
 

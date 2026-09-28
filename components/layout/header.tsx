@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { usePublishedListings } from "@/data/local/published-listings-store";
+import { useLeads } from "@/data/local/leads-store";
 
 const NAV_LINKS = [
   { path: "acheter", href: "/acheter", label: "Acheter" },
@@ -24,6 +26,10 @@ function isActive(pathname: string, href: string) {
 export function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const publishedListings = usePublishedListings();
+  const leads = useLeads();
+  const accountHref =
+    publishedListings.length > 0 ? "/mes-annonces" : leads.length > 0 ? "/mes-demandes" : "/connexion";
 
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-header">
@@ -72,7 +78,7 @@ export function Header() {
             Publier un bien
           </Link>
           <Link
-            href="/connexion"
+            href={accountHref}
             aria-label="Mon compte"
             className="w-8 h-8 rounded-full bg-primary flex items-center justify-center"
           >
@@ -114,11 +120,11 @@ export function Header() {
               <Icon name="favorite" />
             </Link>
             <Link
-              href="/connexion"
+              href={accountHref}
               onClick={() => setMobileOpen(false)}
               className="text-body-sm text-on-surface-variant font-medium"
             >
-              Connexion
+              {accountHref === "/connexion" ? "Connexion" : "Mon compte"}
             </Link>
           </div>
           <Link
