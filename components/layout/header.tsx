@@ -75,13 +75,6 @@ export function Header() {
         </nav>
         <div className="hidden xl:flex items-center gap-4">
           <Link
-            className="flex items-center gap-1.5 border border-outline-variant/50 text-on-surface-variant hover:text-on-surface hover:border-primary/50 transition-colors text-label-sm font-bold px-3 py-1.5 rounded-full"
-            href="/aide"
-          >
-            <Icon name="help" className="text-[16px]" />
-            Aide &amp; FAQ
-          </Link>
-          <Link
             className="p-2 text-on-surface-variant hover:text-on-surface transition-colors"
             href="/favoris"
             aria-label="Mes favoris"
@@ -127,10 +120,10 @@ export function Header() {
         )}
       >
         {menuContent && (
-          <div className="max-w-7xl mx-auto px-6 lg:px-12 py-space-lg grid grid-cols-1 lg:grid-cols-[1fr_1fr_minmax(0,320px)] gap-space-xl">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12 py-space-xl grid grid-cols-1 lg:grid-cols-[1fr_1fr_minmax(0,320px)] gap-x-space-xl gap-y-space-lg lg:divide-x divide-outline-variant/20">
             {menuContent.columns.map((column) => (
-              <div key={column.title} className="flex flex-col gap-1">
-                <div className="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider mb-2">
+              <div key={column.title} className="flex flex-col gap-1.5 lg:pl-space-xl first:pl-0">
+                <div className="text-label-md font-bold text-on-surface uppercase tracking-wider mb-2">
                   {column.title}
                 </div>
                 {column.links.map((link) => (
@@ -138,11 +131,11 @@ export function Header() {
                     key={link.href + link.label}
                     href={link.href}
                     onClick={() => setActiveMenu(null)}
-                    className="group/link flex items-center gap-3 px-3 py-2.5 rounded-xl text-body-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all hover:translate-x-1"
+                    className="group/link flex items-center gap-3 px-3 py-3 rounded-xl text-body-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all"
                   >
                     <Icon
                       name={link.icon}
-                      className="text-[20px] text-primary/70 group-hover/link:text-primary transition-colors"
+                      className="text-[20px] text-primary/60 group-hover/link:text-primary transition-colors"
                     />
                     {link.label}
                   </Link>
@@ -206,17 +199,9 @@ export function Header() {
             <Link
               href={accountHref}
               onClick={() => setMobileOpen(false)}
-              className="text-body-sm text-on-surface-variant font-medium"
+              className="text-body-sm text-on-surface-variant font-medium ml-auto"
             >
               {accountHref === "/connexion" ? "Connexion" : "Mon compte"}
-            </Link>
-            <Link
-              href="/aide"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-1 text-body-sm text-on-surface-variant font-medium ml-auto"
-            >
-              <Icon name="help" className="text-[18px]" />
-              Aide &amp; FAQ
             </Link>
           </div>
           <Link

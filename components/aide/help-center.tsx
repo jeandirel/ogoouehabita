@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,23 @@ export function HelpCenter() {
 
   const normalizedQuery = normalize(query.trim());
   const activeCategoryData = FAQ_CATEGORIES.find((category) => category.id === activeCategory);
+
+  // Deep link from the floating Aide & FAQ widget (`/aide#<article.id>`):
+  // reuses the same search filter a visitor would type, so the target
+  // article is guaranteed to render and expand, popular or not. Reading
+  // window.location.hash post-mount (not derivable at render time) is why
+  // this needs an effect rather than a lazy useState initializer.
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const article = FAQ_ARTICLES.find((item) => item.id === hash);
+    if (!article) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setQuery(article.question);
+    setOpenId(article.id);
+    const target = document.getElementById(article.id);
+    target?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
 
   const filtered = useMemo(() => {
     return FAQ_ARTICLES.filter((article) => {
@@ -185,7 +202,8 @@ export function HelpCenter() {
               return (
                 <div
                   key={article.id}
-                  className="bg-surface border border-outline-variant/30 rounded-xl shadow-sm overflow-hidden"
+                  id={article.id}
+                  className="bg-surface border border-outline-variant/30 rounded-xl shadow-sm overflow-hidden scroll-mt-24"
                 >
                   <button
                     type="button"
