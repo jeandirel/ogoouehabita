@@ -10,12 +10,15 @@ import type { Property } from "@/lib/types";
 
 const REQUEST_TYPE_LABELS = {
   visite: "Réservation de visite",
+  candidature: "Dossier de candidature locataire",
   whatsapp: "Discussion WhatsApp",
   appel: "Demande d'appel",
   message: "Message",
 } as const;
 
 const VISIT_SLOTS = ["Matin (9h-12h)", "Après-midi (14h-17h)", "Soir (17h-19h)"];
+
+type ActiveForm = "none" | "visite" | "candidature";
 
 function formatVisitDate(isoDate: string) {
   const [year, month, day] = isoDate.split("-").map(Number);
@@ -29,9 +32,13 @@ function formatVisitDate(isoDate: string) {
 
 export function ContactAgencyPanel({ property }: { property: Property }) {
   const [sent, setSent] = useState(false);
-  const [showVisitForm, setShowVisitForm] = useState(false);
+  const [activeForm, setActiveForm] = useState<ActiveForm>("none");
   const [visitDate, setVisitDate] = useState("");
   const [visitSlot, setVisitSlot] = useState(VISIT_SLOTS[0]);
+  const [profession, setProfession] = useState("");
+  const [revenuMensuel, setRevenuMensuel] = useState("");
+  const [employeur, setEmployeur] = useState("");
+  const [aGarant, setAGarant] = useState(false);
   const agency = property.agencyInitials ? agencyByInitials(property.agencyInitials) : undefined;
   const displayName = agency?.name ?? property.agencyName ?? "notre équipe Ogooué Habitat";
   const phone = property.contactPhone ?? agency?.phone;
@@ -53,6 +60,17 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
     requestContact("visite", {
       dateSouhaitee: formatVisitDate(visitDate),
       creneau: visitSlot,
+    });
+  };
+
+  const submitCandidature = (event: FormEvent) => {
+    event.preventDefault();
+    if (!profession.trim() || !revenuMensuel.trim()) return;
+    requestContact("candidature", {
+      profession: profession.trim(),
+      revenuMensuel: revenuMensuel.trim(),
+      employeur: employeur.trim(),
+      garant: aGarant ? "Oui" : "Non",
     });
   };
 
@@ -82,17 +100,27 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
             Votre demande a été transmise à {displayName}. Un conseiller vous recontactera sous 24h.
           </div>
         )}
-        {!sent && !showVisitForm && (
+        {!sent && activeForm === "none" && (
           <button
             type="button"
-            onClick={() => setShowVisitForm(true)}
+            onClick={() => setActiveForm("visite")}
             className="w-full bg-primary text-on-primary py-3 rounded-xl font-label-md hover:bg-forest-deep transition-all flex items-center justify-center gap-2 shadow-sm"
           >
             <Icon name="calendar_month" className="text-[20px]" />
             Réserver une visite
           </button>
         )}
-        {!sent && showVisitForm && (
+        {!sent && activeForm === "none" && property.transactionType === "location" && (
+          <button
+            type="button"
+            onClick={() => setActiveForm("candidature")}
+            className="w-full bg-surface border border-outline-variant/40 py-3 rounded-xl text-on-surface font-label-md hover:bg-surface-container transition-all flex items-center justify-center gap-2"
+          >
+            <Icon name="badge" className="text-[20px]" />
+            Envoyer mon dossier de candidature
+          </button>
+        )}
+        {!sent && activeForm === "visite" && (
           <form
             onSubmit={submitVisit}
             className="bg-surface border border-outline-variant/40 rounded-xl p-space-md flex flex-col gap-space-sm"
@@ -101,7 +129,7 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
               <span className="text-label-md font-bold text-on-surface">Choisir une date</span>
               <button
                 type="button"
-                onClick={() => setShowVisitForm(false)}
+                onClick={() => setActiveForm("none")}
                 aria-label="Annuler"
                 className="text-on-surface-variant hover:text-on-surface"
               >
@@ -132,6 +160,62 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
               className="w-full bg-primary text-on-primary py-2.5 rounded-xl font-label-md hover:bg-forest-deep transition-all"
             >
               Confirmer la demande de visite
+            </button>
+          </form>
+        )}
+        {!sent && activeForm === "candidature" && (
+          <form
+            onSubmit={submitCandidature}
+            className="bg-surface border border-outline-variant/40 rounded-xl p-space-md flex flex-col gap-space-sm"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-label-md font-bold text-on-surface">Dossier de candidature</span>
+              <button
+                type="button"
+                onClick={() => setActiveForm("none")}
+                aria-label="Annuler"
+                className="text-on-surface-variant hover:text-on-surface"
+              >
+                <Icon name="close" className="text-[18px]" />
+              </button>
+            </div>
+            <input
+              type="text"
+              required
+              placeholder="Profession"
+              value={profession}
+              onChange={(event) => setProfession(event.target.value)}
+              className="w-full bg-surface-container border border-outline-variant/40 rounded-lg px-3 py-2 text-body-md text-on-surface"
+            />
+            <input
+              type="text"
+              required
+              placeholder="Revenu mensuel net (FCFA)"
+              value={revenuMensuel}
+              onChange={(event) => setRevenuMensuel(event.target.value)}
+              className="w-full bg-surface-container border border-outline-variant/40 rounded-lg px-3 py-2 text-body-md text-on-surface"
+            />
+            <input
+              type="text"
+              placeholder="Employeur (optionnel)"
+              value={employeur}
+              onChange={(event) => setEmployeur(event.target.value)}
+              className="w-full bg-surface-container border border-outline-variant/40 rounded-lg px-3 py-2 text-body-md text-on-surface"
+            />
+            <label className="flex items-center gap-2 text-body-sm text-on-surface-variant">
+              <input
+                type="checkbox"
+                checked={aGarant}
+                onChange={(event) => setAGarant(event.target.checked)}
+                className="w-4 h-4"
+              />
+              Je dispose d&apos;un garant
+            </label>
+            <button
+              type="submit"
+              className="w-full bg-primary text-on-primary py-2.5 rounded-xl font-label-md hover:bg-forest-deep transition-all"
+            >
+              Envoyer mon dossier
             </button>
           </form>
         )}
