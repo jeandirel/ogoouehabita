@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/layout/site-shell";
@@ -13,6 +14,24 @@ function passportEligible(property: (typeof properties)[number]) {
 
 export function generateStaticParams() {
   return properties.filter(passportEligible).map((property) => ({ slug: property.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const property = properties.find((p) => p.slug === slug);
+
+  if (!property || !passportEligible(property)) {
+    return { title: "Passeport Ogooué" };
+  }
+
+  return {
+    title: `Passeport Ogooué — ${property.title}`,
+    description: `Timeline de vérification, score de confiance et audit de conformité pour ${property.title} (${property.location}).`,
+  };
 }
 
 export default async function PassportPage({ params }: { params: Promise<{ slug: string }> }) {

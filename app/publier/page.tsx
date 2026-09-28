@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { PublishForm } from "@/components/publier/publish-form";
+
+export const metadata: Metadata = {
+  title: "Publier un bien immobilier",
+  description:
+    "Publiez gratuitement votre bien à vendre ou à louer au Gabon, avec vérification Ogooué Shield avant mise en ligne.",
+};
 
 export default function PublierPage() {
   return (

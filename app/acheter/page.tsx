@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
@@ -10,6 +11,12 @@ import { ACHETER_TYPE_OPTIONS } from "@/data/property-types";
 import { parseBudgetLabel } from "@/lib/format";
 import { matchesAcheterFilters } from "@/lib/property-filters";
 import { stitchImage } from "@/data/image-manifest";
+
+export const metadata: Metadata = {
+  title: "Acheter un bien immobilier au Gabon",
+  description:
+    "Villas, appartements et terrains à vendre au Gabon, vérifiés Ogooué Shield. Filtrez par ville, budget et type de bien sur Ogooué Habitat.",
+};
 
 const ACHETER_SLUGS = [
   "villa-architecte-akanda",

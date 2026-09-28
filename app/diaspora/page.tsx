@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { DiasporaLeadForm } from "@/components/diaspora/diaspora-lead-form";
 import { stitchImage } from "@/data/image-manifest";
+
+export const metadata: Metadata = {
+  title: "Service Diaspora — Investir depuis l'étranger",
+  description:
+    "Visites vidéo en direct, Passeport Ogooué et agences partenaires certifiées pour acheter un bien au Gabon en toute confiance depuis l'étranger.",
+};
 
 const VALUE_PROPS = [
   {

@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { SignupForm } from "@/components/auth/signup-form";
 import { Icon } from "@/components/ui/icon";
+
+export const metadata: Metadata = {
+  title: "Créer un compte",
+  description: "Créez votre compte Ogooué Habitat pour enregistrer vos favoris et suivre vos annonces publiées.",
+};
 
 export default function InscriptionPage() {
   return (

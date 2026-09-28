@@ -9,8 +9,17 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
+// Vercel's default domain for this exact linked project name
+// (.vercel/project.json → "projectName":"ogoouehabita"); update if a
+// custom production domain is attached later.
+const SITE_URL = "https://ogoouehabita.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Ogooué Habitat — La plateforme immobilière de référence au Gabon",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Ogooué Habitat — La plateforme immobilière de référence au Gabon",
+    template: "%s | Ogooué Habitat",
+  },
   description:
     "Ogooué Habitat : achat, location, terrains et biens neufs au Gabon. Passeport Ogooué, Ogooué Shield et Ogooué AI pour une transaction immobilière vérifiée et sécurisée.",
 };

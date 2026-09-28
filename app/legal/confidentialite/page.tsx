@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
+
+export const metadata: Metadata = {
+  title: "Politique de confidentialité",
+  description: "Comment Ogooué Habitat collecte, utilise et conserve vos données, y compris le stockage local des favoris et annonces.",
+};
 
 const SECTIONS = [
   { id: "donnees-collectees", label: "Données collectées" },

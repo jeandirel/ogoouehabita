@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { NotifyForm } from "@/components/neuf/notify-form";
 import { stitchImage } from "@/data/image-manifest";
+
+export const metadata: Metadata = {
+  title: "Programmes immobiliers neufs (VEFA)",
+  description:
+    "Découvrez les futurs programmes immobiliers neufs au Gabon et soyez notifié en avant-première, avec Passeport Ogooué et vérification des promoteurs.",
+};
 
 const UPCOMING = [
   {

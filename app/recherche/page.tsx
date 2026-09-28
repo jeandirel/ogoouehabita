@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
@@ -7,6 +8,12 @@ import { SortSelect } from "@/components/search/sort-select";
 import { properties } from "@/data/properties";
 import { matchesRechercheFilters, sortByPrice } from "@/lib/property-filters";
 import type { TransactionType } from "@/lib/types";
+
+export const metadata: Metadata = {
+  title: "Recherche avancée immobilier Gabon",
+  description:
+    "Filtrez villas, appartements et terrains par budget, chambres, surface et certification Ogooué Shield, avec carte interactive.",
+};
 
 const RECHERCHE_SLUGS = [
   "villa-akande-executive",

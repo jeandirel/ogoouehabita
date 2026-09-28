@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
@@ -7,6 +8,12 @@ import { TerrainsSearchForm } from "@/components/terrains/search-form";
 import { lands, TRUST_LEVELS } from "@/data/land";
 import { parseBudgetLabel } from "@/lib/format";
 import { stitchImage } from "@/data/image-manifest";
+
+export const metadata: Metadata = {
+  title: "Terrains et foncier au Gabon",
+  description:
+    "Terrains à vendre au Gabon avec notre échelle de confiance foncière en 5 niveaux, du coutumier brut au titre foncier certifié.",
+};
 
 export default async function TerrainsPage({
   searchParams,

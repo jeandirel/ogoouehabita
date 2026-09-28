@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { LoginForm } from "@/components/auth/login-form";
 import { Icon } from "@/components/ui/icon";
+
+export const metadata: Metadata = {
+  title: "Connexion",
+  description: "Connectez-vous à votre espace Ogooué Habitat pour suivre vos favoris, alertes et demandes de visite.",
+};
 
 export default function ConnexionPage() {
   return (

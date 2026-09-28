@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
@@ -13,6 +14,12 @@ import { GABON_GEOGRAPHY } from "@/data/gabon-geography";
 import { parseBudgetLabel } from "@/lib/format";
 import { matchesLouerFilters } from "@/lib/property-filters";
 import { stitchImage } from "@/data/image-manifest";
+
+export const metadata: Metadata = {
+  title: "Louer un logement au Gabon",
+  description:
+    "Appartements, villas et studios à louer à Libreville et dans tout le Gabon, avec alerte Ogooué AI et Passeport Locataire vérifié.",
+};
 
 const LOUER_SLUGS = [
   "standing-superieur-vue-mer-batterie-iv",

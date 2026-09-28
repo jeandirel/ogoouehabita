@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { PartnerForm } from "@/components/professionnels/partner-form";
 import { stitchImage } from "@/data/image-manifest";
+
+export const metadata: Metadata = {
+  title: "Espace professionnels & agences",
+  description:
+    "Agences et promoteurs : exposez vos annonces à la diaspora gabonaise et bénéficiez de la certification Ogooué Shield sur Ogooué Habitat.",
+};
 
 const VALUE_PROPS = [
   {

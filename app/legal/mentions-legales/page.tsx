@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
+
+export const metadata: Metadata = {
+  title: "Mentions légales",
+  description: "Mentions légales, éditeur, hébergement et droit applicable pour Ogooué Habitat.",
+};
 
 const SECTIONS = [
   { id: "editeur", label: "Éditeur du site" },

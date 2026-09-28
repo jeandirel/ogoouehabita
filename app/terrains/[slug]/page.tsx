@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/layout/site-shell";
@@ -9,6 +10,24 @@ import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
   return lands.map((land) => ({ slug: land.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const land = lands.find((entry) => entry.slug === slug);
+
+  if (!land) {
+    return { title: "Terrain" };
+  }
+
+  return {
+    title: land.title,
+    description: `${land.title} — ${land.location}. ${land.priceLabel}, ${land.areaLabel}. ${land.levelLabel}.`,
+  };
 }
 
 export default async function LandDetailPage({ params }: { params: Promise<{ slug: string }> }) {
