@@ -14,6 +14,7 @@ const STATIC_ROUTES = [
   "/professionnels",
   "/neuf",
   "/publier",
+  "/aide",
   "/connexion",
   "/inscription",
   "/legal/mentions-legales",

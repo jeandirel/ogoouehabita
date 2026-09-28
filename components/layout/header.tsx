@@ -59,6 +59,13 @@ export function Header() {
         </nav>
         <div className="hidden xl:flex items-center gap-4">
           <Link
+            className="flex items-center gap-1.5 border border-outline-variant/50 text-on-surface-variant hover:text-on-surface hover:border-primary/50 transition-colors text-label-sm font-bold px-3 py-1.5 rounded-full"
+            href="/aide"
+          >
+            <Icon name="help" className="text-[16px]" />
+            Aide &amp; FAQ
+          </Link>
+          <Link
             className="p-2 text-on-surface-variant hover:text-on-surface transition-colors"
             href="/favoris"
             aria-label="Mes favoris"
@@ -125,6 +132,14 @@ export function Header() {
               className="text-body-sm text-on-surface-variant font-medium"
             >
               {accountHref === "/connexion" ? "Connexion" : "Mon compte"}
+            </Link>
+            <Link
+              href="/aide"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-1 text-body-sm text-on-surface-variant font-medium ml-auto"
+            >
+              <Icon name="help" className="text-[18px]" />
+              Aide &amp; FAQ
             </Link>
           </div>
           <Link

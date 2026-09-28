@@ -17,6 +17,7 @@ const LEGAL_LINKS = [
   { label: "Mentions Légales", href: "/legal/mentions-legales" },
   { label: "Politique de Confidentialité", href: "/legal/confidentialite" },
   { label: "Registre Foncier National", href: "/terrains" },
+  { label: "Aide & FAQ", href: "/aide" },
 ];
 
 export function Footer() {
