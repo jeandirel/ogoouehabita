@@ -25,6 +25,8 @@ const FIELD_LABELS: Record<string, string> = {
   city: "Ville",
   agence: "Agence",
   type: "Type de demande",
+  dateSouhaitee: "Date souhaitée",
+  creneau: "Créneau horaire",
   secteur: "Secteur recherché",
   typeBien: "Type de bien",
   budgetMax: "Budget max / mois",

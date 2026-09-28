@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
 import { agencyByInitials } from "@/data/agencies";
 import { insertLead } from "@/data/local/leads-store";
@@ -14,18 +14,44 @@ const REQUEST_TYPE_LABELS = {
   message: "Message",
 } as const;
 
+const VISIT_SLOTS = ["Matin (9h-12h)", "Après-midi (14h-17h)", "Soir (17h-19h)"];
+
+function formatVisitDate(isoDate: string) {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export function ContactAgencyPanel({ property }: { property: Property }) {
   const [sent, setSent] = useState(false);
+  const [showVisitForm, setShowVisitForm] = useState(false);
+  const [visitDate, setVisitDate] = useState("");
+  const [visitSlot, setVisitSlot] = useState(VISIT_SLOTS[0]);
   const agency = property.agencyInitials ? agencyByInitials(property.agencyInitials) : undefined;
   const displayName = agency?.name ?? property.agencyName ?? "notre équipe Ogooué Habitat";
   const phone = property.contactPhone ?? agency?.phone;
+  const todayIso = new Date().toISOString().slice(0, 10);
 
-  const requestContact = (type: keyof typeof REQUEST_TYPE_LABELS) => {
+  const requestContact = (type: keyof typeof REQUEST_TYPE_LABELS, extra?: Record<string, string>) => {
     setSent(true);
     insertLead("contact-bien", property.title, {
       slug: property.slug,
       agence: displayName,
       type: REQUEST_TYPE_LABELS[type],
+      ...extra,
+    });
+  };
+
+  const submitVisit = (event: FormEvent) => {
+    event.preventDefault();
+    if (!visitDate) return;
+    requestContact("visite", {
+      dateSouhaitee: formatVisitDate(visitDate),
+      creneau: visitSlot,
     });
   };
 
@@ -55,15 +81,58 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
             Votre demande a été transmise à {displayName}. Un conseiller vous recontactera sous 24h.
           </div>
         )}
-        {!sent && (
+        {!sent && !showVisitForm && (
           <button
             type="button"
-            onClick={() => requestContact("visite")}
+            onClick={() => setShowVisitForm(true)}
             className="w-full bg-primary text-on-primary py-3 rounded-xl font-label-md hover:bg-forest-deep transition-all flex items-center justify-center gap-2 shadow-sm"
           >
             <Icon name="calendar_month" className="text-[20px]" />
             Réserver une visite
           </button>
+        )}
+        {!sent && showVisitForm && (
+          <form
+            onSubmit={submitVisit}
+            className="bg-surface border border-outline-variant/40 rounded-xl p-space-md flex flex-col gap-space-sm"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-label-md font-bold text-on-surface">Choisir une date</span>
+              <button
+                type="button"
+                onClick={() => setShowVisitForm(false)}
+                aria-label="Annuler"
+                className="text-on-surface-variant hover:text-on-surface"
+              >
+                <Icon name="close" className="text-[18px]" />
+              </button>
+            </div>
+            <input
+              type="date"
+              required
+              min={todayIso}
+              value={visitDate}
+              onChange={(event) => setVisitDate(event.target.value)}
+              className="w-full bg-surface-container border border-outline-variant/40 rounded-lg px-3 py-2 text-body-md text-on-surface"
+            />
+            <select
+              value={visitSlot}
+              onChange={(event) => setVisitSlot(event.target.value)}
+              className="w-full bg-surface-container border border-outline-variant/40 rounded-lg px-3 py-2 text-body-md text-on-surface"
+            >
+              {VISIT_SLOTS.map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
+                </option>
+              ))}
+            </select>
+            <button
+              type="submit"
+              className="w-full bg-primary text-on-primary py-2.5 rounded-xl font-label-md hover:bg-forest-deep transition-all"
+            >
+              Confirmer la demande de visite
+            </button>
+          </form>
         )}
         {phone ? (
           <a
