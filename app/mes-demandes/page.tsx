@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
-import { useLeads } from "@/data/local/leads-store";
+import { useLeads, removeLead } from "@/data/local/leads-store";
 import { formatLocalDate } from "@/lib/format";
 import type { LeadKind, LeadSubmission } from "@/lib/types";
 
@@ -25,6 +25,10 @@ const FIELD_LABELS: Record<string, string> = {
   city: "Ville",
   agence: "Agence",
   type: "Type de demande",
+  secteur: "Secteur recherché",
+  typeBien: "Type de bien",
+  budgetMax: "Budget max / mois",
+  resultatsActuels: "Résultats correspondants au moment de la création",
 };
 
 function LeadCard({ lead }: { lead: LeadSubmission }) {
@@ -33,11 +37,21 @@ function LeadCard({ lead }: { lead: LeadSubmission }) {
   );
   return (
     <div className="bg-surface-container-low rounded-xl p-space-md flex flex-col gap-2">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <span className="font-label-md font-bold text-on-surface">{lead.contact}</span>
-        <span className="text-label-sm text-on-surface-variant">
-          {formatLocalDate(lead.createdAt)}
-        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-label-sm text-on-surface-variant">
+            {formatLocalDate(lead.createdAt)}
+          </span>
+          <button
+            type="button"
+            onClick={() => removeLead(lead.id)}
+            aria-label="Supprimer cette demande"
+            className="text-on-surface-variant hover:text-error transition-colors"
+          >
+            <Icon name="close" className="text-[16px]" />
+          </button>
+        </div>
       </div>
       {fields.length > 0 && (
         <div className="flex flex-col gap-1 text-body-sm text-on-surface-variant">

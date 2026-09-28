@@ -79,6 +79,15 @@ export default async function LouerPage({
   const listings = properties.filter((property) => LOUER_SLUGS.includes(property.slug));
   const filtered = listings.filter((property) => matchesLouerFilters(property, filters));
 
+  // Real criteria as currently set on this page (not the illustrative demo
+  // card further down) so the AI alert form persists what was actually
+  // searched, instead of only an email address.
+  const alertCriteria = {
+    secteur: locationIncludes ?? province ?? "Toutes localisations",
+    type: type ?? "Tous types",
+    budget: typeof params.budget === "string" ? params.budget : BUDGETS[0],
+  };
+
   return (
     <SiteShell>
       <div className="flex flex-col w-full">
@@ -377,7 +386,7 @@ export default async function LouerPage({
                 Laissez notre intelligence artificielle analyser vos critères et vous alerter en
                 temps réel dès qu&apos;un bien correspondant est certifié sur la plateforme.
               </p>
-              <AiAlertForm />
+              <AiAlertForm criteria={alertCriteria} resultCount={filtered.length} />
             </div>
             <div className="relative z-10 bg-surface/10 backdrop-blur-md p-8 rounded-xl border border-surface/20 max-w-md w-full flex flex-col gap-4">
               <div className="flex items-center gap-3">

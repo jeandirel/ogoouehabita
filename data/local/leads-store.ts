@@ -22,3 +22,7 @@ export function insertLead(kind: LeadKind, contact: string, payload: Record<stri
     ownerId: getDeviceOwnerId(),
   });
 }
+
+export function removeLead(id: string): void {
+  leadsStore.remove(id);
+}
