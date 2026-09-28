@@ -62,7 +62,7 @@ function bedroomCount(property: Property): number {
   return match ? parseInt(match[1], 10) : 0;
 }
 
-function surfaceArea(property: Property): number {
+export function surfaceArea(property: Property): number {
   const spec = property.specs.find((s) => /m²/.test(s.label));
   if (!spec) return 0;
   const digits = spec.label.replace(/[^\d]/g, "");

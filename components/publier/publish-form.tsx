@@ -350,6 +350,12 @@ export function PublishForm() {
             placeholder="Ex : 45 000 000"
             className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
           />
+          <Link
+            href="/estimation"
+            className="text-label-sm font-bold text-primary hover:underline w-fit"
+          >
+            Pas sûr du prix ? Essayez l&apos;estimateur
+          </Link>
         </label>
         <label className="flex flex-col gap-1.5">
           <span className="text-label-md font-bold text-on-surface">Surface (m²)</span>

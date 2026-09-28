@@ -15,6 +15,7 @@ const STATIC_ROUTES = [
   "/professionnels",
   "/neuf",
   "/publier",
+  "/estimation",
   "/agences",
   "/aide",
   "/connexion",
