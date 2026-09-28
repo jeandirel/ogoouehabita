@@ -25,8 +25,10 @@ export default async function TerrainsPage({
   const ville = typeof params.ville === "string" ? params.ville : undefined;
   const minAreaRaw = typeof params.minArea === "string" ? params.minArea : undefined;
   const maxBudgetRaw = typeof params.maxBudget === "string" ? params.maxBudget : undefined;
+  const trustMinRaw = typeof params.trustMin === "string" ? params.trustMin : undefined;
   const minArea = minAreaRaw ? Number(minAreaRaw) : undefined;
   const maxBudget = parseBudgetLabel(maxBudgetRaw);
+  const trustMin = trustMinRaw ? Number(trustMinRaw) : undefined;
 
   const filtered = lands.filter((land) => {
     if (province && land.province !== province) return false;
@@ -36,6 +38,7 @@ export default async function TerrainsPage({
       if (area < minArea) return false;
     }
     if (maxBudget && land.priceValue > maxBudget) return false;
+    if (trustMin && !Number.isNaN(trustMin) && land.trustLevel < trustMin) return false;
     return true;
   });
 
@@ -74,6 +77,7 @@ export default async function TerrainsPage({
               initialVille={ville}
               initialMinArea={minAreaRaw}
               initialMaxBudget={maxBudgetRaw}
+              initialTrustMin={trustMinRaw}
             />
           </div>
         </section>

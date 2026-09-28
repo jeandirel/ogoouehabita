@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { TRUST_LEVELS } from "@/data/land";
 
@@ -26,6 +27,12 @@ export function TrustLevelCard({ level }: { level: TrustLevel }) {
         <div className="font-headline-sm text-on-surface mb-1">{level.title}</div>
         <p className="text-body-sm text-on-surface-variant">{level.description}</p>
       </div>
+      <Link
+        href={`/terrains?trustMin=${level.level}`}
+        className={cn("text-label-sm font-bold hover:underline", level.tagClass)}
+      >
+        Voir les terrains de ce niveau et plus
+      </Link>
     </div>
   );
 }

@@ -3,17 +3,20 @@
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { GABON_GEOGRAPHY, getVillesByProvince } from "@/data/gabon-geography";
+import { TRUST_LEVELS } from "@/data/land";
 
 export function TerrainsSearchForm({
   initialProvince,
   initialVille,
   initialMinArea,
   initialMaxBudget,
+  initialTrustMin,
 }: {
   initialProvince?: string;
   initialVille?: string;
   initialMinArea?: string;
   initialMaxBudget?: string;
+  initialTrustMin?: string;
 }) {
   const [province, setProvince] = useState(initialProvince ?? GABON_GEOGRAPHY[0].name);
   const villesForProvince = useMemo(() => getVillesByProvince(province), [province]);
@@ -95,6 +98,23 @@ export function TerrainsSearchForm({
               type="text"
             />
           </div>
+        </div>
+        <div>
+          <label className="text-label-sm font-medium text-on-surface-variant mb-1 block">
+            Niveau de confiance minimum
+          </label>
+          <select
+            name="trustMin"
+            defaultValue={initialTrustMin ?? ""}
+            className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
+          >
+            <option value="">Indifférent</option>
+            {[...TRUST_LEVELS].reverse().map((level) => (
+              <option key={level.level} value={level.level}>
+                Niveau {level.level}+ — {level.title}
+              </option>
+            ))}
+          </select>
         </div>
         <button
           className="mt-2 w-full bg-primary text-on-primary py-3 rounded-xl font-label-md flex items-center justify-center gap-2 hover:bg-forest-deep transition-colors shadow-sm"
