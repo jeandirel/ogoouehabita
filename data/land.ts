@@ -18,6 +18,16 @@ export const lands: Land[] = [
     bornageLabel: "Bornes géomètre OK",
     reference: "Passeport Ogooué #OG-8821",
     image: stitchImage.terrain_terrain_ntoum_laterite,
+    disputeRisk: {
+      level: "faible",
+      note: "Titre foncier individuel déjà muté au nom du vendeur et enregistré à la Conservation Foncière de Libreville. Aucune indivision successorale en cours.",
+    },
+    landChecklist: [
+      { label: "Titre foncier", value: "Enregistré — Conservation Foncière de Libreville, vol. 214, folio 87", status: "ok" },
+      { label: "Bornage contradictoire", value: "Procès-verbal signé, bornes visibles sur site", status: "ok" },
+      { label: "Quitus fiscal foncier", value: "À jour (exercice en cours acquitté)", status: "ok" },
+      { label: "Certificat de non-litige", value: "Délivré par la mairie de Ntoum", status: "ok" },
+    ],
   },
   {
     slug: "terrain-panoramique-vue-fleuve-lambarene",
@@ -35,6 +45,43 @@ export const lands: Land[] = [
     bornageLabel: "Bornage contradictoire",
     reference: "Passeport Ogooué #OG-9042",
     image: stitchImage.terrain_terrain_lambarene_colline,
+    disputeRisk: {
+      level: "modere",
+      note: "Le permis de lotir est approuvé, mais la mutation définitive en titre foncier individuel est encore en instance auprès de l'ANUTTC — un dossier à suivre avant tout acte authentique.",
+    },
+    landChecklist: [
+      { label: "Permis de lotir", value: "Arrêté municipal approuvé", status: "ok" },
+      { label: "Bornage contradictoire", value: "Réalisé, en attente de validation de l'Ordre des géomètres", status: "attention" },
+      { label: "Mutation en titre foncier", value: "Dossier déposé à l'ANUTTC, en instance", status: "attention" },
+      { label: "Quitus fiscal foncier", value: "À jour", status: "ok" },
+    ],
+  },
+  {
+    slug: "parcelle-coutumiere-village-akok-oyem",
+    title: "Parcelle Coutumière Village Akok",
+    location: "Oyem — Village Akok, à 12 km du centre",
+    province: "Woleu-Ntem",
+    priceLabel: "2 200 000 FCFA",
+    priceValue: 2_200_000,
+    areaLabel: "2 500 m² (estimation orale)",
+    pricePerSqmLabel: "≈ 880 FCFA/m²",
+    trustLevel: 1,
+    levelLabel: "Niveau 1 - Coutumier Brut",
+    levelBadgeClass: "bg-error text-on-error",
+    accessLabel: "Piste non carrossable en saison des pluies",
+    bornageLabel: "Aucun bornage — limites orales",
+    reference: "Passeport Ogooué #OG-4410",
+    image: stitchImage.misc_hero_foret_vers_terrain_defriche,
+    disputeRisk: {
+      level: "eleve",
+      note: "Terrain transmis oralement au sein de la famille, sans acte enregistré. Une contestation d'un autre ayant droit ou un différend de succession reste possible tant qu'aucun titre foncier n'est établi.",
+    },
+    landChecklist: [
+      { label: "Attestation villageoise", value: "Accord verbal du chef de terre, non enregistré", status: "attention" },
+      { label: "Bornage contradictoire", value: "Non réalisé", status: "attention" },
+      { label: "Certificat de non-litige", value: "Non demandé auprès de la mairie", status: "attention" },
+      { label: "Quitus fiscal foncier", value: "Sans objet à ce stade", status: "attention" },
+    ],
   },
 ];
 

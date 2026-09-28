@@ -5,6 +5,7 @@ import { Icon } from "@/components/ui/icon";
 import { TrustLevelCard } from "@/components/land/trust-level-card";
 import { LandFavoriteButton } from "@/components/land/land-favorite-button";
 import { lands, TRUST_LEVELS } from "@/data/land";
+import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
   return lands.map((land) => ({ slug: land.slug }));
@@ -61,6 +62,63 @@ export default async function LandDetailPage({ params }: { params: Promise<{ slu
               </span>
             </div>
             <TrustLevelCard level={matchingLevel} />
+            {land.landChecklist && (
+              <div className="bg-surface-container-low p-space-lg rounded-xl shadow-sm">
+                <h3 className="font-headline-sm text-on-surface mb-space-md">
+                  Vérifications du dossier foncier
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                  {land.landChecklist.map((item) => (
+                    <div key={item.label}>
+                      <div className="text-label-sm text-on-surface-variant">{item.label}</div>
+                      <div className="font-label-md text-on-surface flex items-center gap-1.5 mt-1">
+                        <Icon
+                          name={item.status === "ok" ? "verified" : "warning"}
+                          className={cn(
+                            "text-[18px]",
+                            item.status === "ok" ? "text-secondary" : "text-laterite",
+                          )}
+                        />
+                        {item.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {land.disputeRisk && (
+              <div
+                className={cn(
+                  "flex gap-3 p-space-lg rounded-xl border",
+                  land.disputeRisk.level === "faible" &&
+                    "bg-secondary-fixed/20 border-secondary/30 text-on-surface",
+                  land.disputeRisk.level === "modere" &&
+                    "bg-laterite/10 border-laterite/40 text-on-surface",
+                  land.disputeRisk.level === "eleve" && "bg-error/10 border-error/40 text-on-surface",
+                )}
+              >
+                <Icon
+                  name={land.disputeRisk.level === "faible" ? "shield" : "gpp_maybe"}
+                  className={cn(
+                    "text-[22px] shrink-0",
+                    land.disputeRisk.level === "faible" && "text-secondary",
+                    land.disputeRisk.level === "modere" && "text-laterite",
+                    land.disputeRisk.level === "eleve" && "text-error",
+                  )}
+                />
+                <div>
+                  <div className="font-label-md font-bold mb-1">
+                    Risque de litige :{" "}
+                    {land.disputeRisk.level === "faible"
+                      ? "Faible"
+                      : land.disputeRisk.level === "modere"
+                        ? "Modéré"
+                        : "Élevé"}
+                  </div>
+                  <p className="text-body-sm text-on-surface-variant">{land.disputeRisk.note}</p>
+                </div>
+              </div>
+            )}
           </div>
           <div className="lg:col-span-5">
             <div className="sticky top-28 bg-surface-container-low rounded-xl p-6 shadow-sm flex flex-col gap-4">

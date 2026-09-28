@@ -60,6 +60,12 @@ export interface Property {
   hasRealPhoto?: boolean;
 }
 
+export interface LandChecklistItem {
+  label: string;
+  value: string;
+  status: "ok" | "attention";
+}
+
 export interface Land {
   slug: string;
   title: string;
@@ -76,6 +82,11 @@ export interface Land {
   bornageLabel: string;
   reference: string;
   image: StitchImage;
+  disputeRisk?: {
+    level: "faible" | "modere" | "eleve";
+    note: string;
+  };
+  landChecklist?: LandChecklistItem[];
 }
 
 export interface Neighborhood {
