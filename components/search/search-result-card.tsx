@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { useFavorites } from "@/components/providers/favorites-provider";
+import { toFavoriteId } from "@/data/local/favorite-id";
 import { agencyByInitials } from "@/data/agencies";
 import type { Property } from "@/lib/types";
 
 export function SearchResultCard({ property }: { property: Property }) {
   const { isFavorite, toggleFavorite } = useFavorites();
-  const favorite = isFavorite(property.slug);
+  const favoriteId = toFavoriteId("property", property.slug);
+  const favorite = isFavorite(favoriteId);
   const agency = property.agencyInitials ? agencyByInitials(property.agencyInitials) : undefined;
 
   return (
@@ -38,7 +40,7 @@ export function SearchResultCard({ property }: { property: Property }) {
         </div>
         <button
           type="button"
-          onClick={() => toggleFavorite(property.slug)}
+          onClick={() => toggleFavorite(favoriteId)}
           aria-pressed={favorite}
           aria-label={favorite ? "Retirer des favoris" : "Ajouter aux favoris"}
           className="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface/80 backdrop-blur-md flex items-center justify-center text-on-surface hover:bg-surface transition-all shadow-md"

@@ -4,6 +4,7 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { ContactAgencyPanel } from "@/components/property/contact-agency-panel";
 import { AiQuestionForm } from "@/components/property/ai-question-form";
+import { PropertyDetailActions } from "@/components/property/property-detail-actions";
 import { properties } from "@/data/properties";
 import { stitchImage } from "@/data/image-manifest";
 
@@ -54,22 +55,7 @@ export default async function PropertyDetailPage({
                 {property.addressLine ?? property.location}
               </p>
             </div>
-            <div className="flex items-center gap-space-sm">
-              <button
-                type="button"
-                className="bg-surface-container p-space-sm rounded-xl text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 font-label-md shadow-sm"
-              >
-                <Icon name="favorite" />
-                Sauvegarder
-              </button>
-              <button
-                type="button"
-                className="bg-surface-container p-space-sm rounded-xl text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 font-label-md shadow-sm"
-              >
-                <Icon name="share" />
-                Partager
-              </button>
-            </div>
+            <PropertyDetailActions property={property} />
           </div>
         </div>
 

@@ -54,6 +54,8 @@ export interface Property {
   features?: FeatureItem[];
   passportChecklist?: FeatureItem[];
   neighborhoodBlurb?: string;
+  source?: "local";
+  status?: "en_attente_verification";
 }
 
 export interface Land {
@@ -105,4 +107,30 @@ export interface Agency {
   initials: string;
   city: string;
   badgeClass: string;
+}
+
+/**
+ * Shape shared by every record created locally (on-device) rather than
+ * seeded from data/*.ts — mirrors the columns a real DB row would have
+ * (id, created_at, owner_id) so these stores are a drop-in target for a
+ * future Supabase connection.
+ */
+export interface LocalRecordBase {
+  id: string;
+  createdAt: string;
+  ownerId: string;
+}
+
+export interface PublishedListing extends Property, LocalRecordBase {
+  source: "local";
+  status: "en_attente_verification";
+  hasRealPhoto: false;
+}
+
+export type LeadKind = "diaspora" | "professionnels" | "neuf-notify" | "louer-alerte";
+
+export interface LeadSubmission extends LocalRecordBase {
+  kind: LeadKind;
+  contact: string;
+  payload: Record<string, string>;
 }

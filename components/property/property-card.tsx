@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Property } from "@/lib/types";
 
 export function PropertyCard({ property }: { property: Property }) {
@@ -11,6 +13,10 @@ export function PropertyCard({ property }: { property: Property }) {
         role="img"
         aria-label={property.image.alt}
       >
+        <FavoriteButton
+          favoriteId={toFavoriteId("property", property.slug)}
+          className="absolute top-4 right-4"
+        />
         {property.passportScore !== undefined && (
           <div className="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1.5 rounded-full text-label-sm font-bold flex items-center gap-1 shadow-md">
             <Icon name="verified" className="text-[16px]" />

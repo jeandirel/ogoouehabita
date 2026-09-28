@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { TrustLevelCard } from "@/components/land/trust-level-card";
+import { LandFavoriteButton } from "@/components/land/land-favorite-button";
 import { lands, TRUST_LEVELS } from "@/data/land";
 
 export function generateStaticParams() {
@@ -74,12 +75,7 @@ export default async function LandDetailPage({ params }: { params: Promise<{ slu
               >
                 Demander une vérification terrain
               </Link>
-              <Link
-                href="/favoris"
-                className="border border-outline-variant text-on-surface py-3 rounded-xl font-label-md text-center hover:bg-surface transition-all"
-              >
-                Ajouter aux favoris
-              </Link>
+              <LandFavoriteButton land={land} />
             </div>
           </div>
         </div>

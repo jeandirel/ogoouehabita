@@ -1,52 +1,7 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useSyncExternalStore,
-} from "react";
-
-const STORAGE_KEY = "ogooue-habitat:favorites";
-const EMPTY: string[] = [];
-
-let cached: string[] | null = null;
-
-function readFavorites(): string[] {
-  if (typeof window === "undefined") return EMPTY;
-  if (cached) return cached;
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    cached = stored ? JSON.parse(stored) : EMPTY;
-  } catch {
-    cached = EMPTY;
-  }
-  return cached!;
-}
-
-function writeFavorites(ids: string[]) {
-  cached = ids;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
-  window.dispatchEvent(new Event("ogooue-habitat:favorites-change"));
-}
-
-function getServerSnapshot(): string[] {
-  return EMPTY;
-}
-
-function subscribe(callback: () => void) {
-  const handleExternalChange = () => {
-    cached = null;
-    callback();
-  };
-  window.addEventListener("storage", handleExternalChange);
-  window.addEventListener("ogooue-habitat:favorites-change", callback);
-  return () => {
-    window.removeEventListener("storage", handleExternalChange);
-    window.removeEventListener("ogooue-habitat:favorites-change", callback);
-  };
-}
+import { createContext, useCallback, useContext, useMemo } from "react";
+import { favoritesIdSetStore } from "@/data/local/favorites-store";
 
 interface FavoritesContextValue {
   favoriteIds: string[];
@@ -57,14 +12,10 @@ interface FavoritesContextValue {
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
-  const favoriteIds = useSyncExternalStore(subscribe, readFavorites, getServerSnapshot);
+  const favoriteIds = favoritesIdSetStore.useIds();
 
   const toggleFavorite = useCallback((id: string) => {
-    const current = readFavorites();
-    const next = current.includes(id)
-      ? current.filter((existing) => existing !== id)
-      : [...current, id];
-    writeFavorites(next);
+    favoritesIdSetStore.toggle(id);
   }, []);
 
   const isFavorite = useCallback(

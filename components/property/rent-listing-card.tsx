@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Property } from "@/lib/types";
 
 const TAG_STYLES: Record<string, string> = {
@@ -23,6 +25,10 @@ export function RentListingCard({ property }: { property: Property }) {
         <div className="absolute top-4 right-4 bg-surface/90 backdrop-blur-md text-on-surface px-3 py-1 rounded-full text-label-sm font-bold">
           {property.category}
         </div>
+        <FavoriteButton
+          favoriteId={toFavoriteId("property", property.slug)}
+          className="absolute bottom-4 right-4"
+        />
       </div>
       <div className="p-6 flex flex-col flex-1 justify-between">
         <div>

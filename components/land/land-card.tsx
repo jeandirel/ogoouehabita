@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Land } from "@/lib/types";
 
 export function LandCard({ land }: { land: Land }) {
@@ -16,6 +18,10 @@ export function LandCard({ land }: { land: Land }) {
         >
           {land.levelLabel}
         </div>
+        <FavoriteButton
+          favoriteId={toFavoriteId("land", land.slug)}
+          className="absolute top-3 right-3 w-9 h-9"
+        />
         <div className="absolute bottom-3 right-3 bg-surface/90 backdrop-blur-md px-3 py-1 rounded-lg text-body-sm font-bold text-primary">
           {land.priceLabel}
         </div>

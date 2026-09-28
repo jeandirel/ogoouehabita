@@ -4,12 +4,27 @@ import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { SearchResultCard } from "@/components/search/search-result-card";
+import { LandCard } from "@/components/land/land-card";
 import { useFavorites } from "@/components/providers/favorites-provider";
+import { parseFavoriteId } from "@/data/local/favorite-id";
 import { properties } from "@/data/properties";
+import { lands } from "@/data/land";
 
 export default function FavorisPage() {
   const { favoriteIds } = useFavorites();
-  const favoriteProperties = properties.filter((property) => favoriteIds.includes(property.slug));
+  const favoriteSlugsByKind = favoriteIds.reduce(
+    (acc, id) => {
+      const parsed = parseFavoriteId(id);
+      if (parsed) acc[parsed.kind].add(parsed.slug);
+      return acc;
+    },
+    { property: new Set<string>(), land: new Set<string>() },
+  );
+  const favoriteProperties = properties.filter((property) =>
+    favoriteSlugsByKind.property.has(property.slug),
+  );
+  const favoriteLands = lands.filter((land) => favoriteSlugsByKind.land.has(land.slug));
+  const hasFavorites = favoriteProperties.length > 0 || favoriteLands.length > 0;
 
   return (
     <SiteShell>
@@ -25,11 +40,32 @@ export default function FavorisPage() {
           </p>
         </div>
 
-        {favoriteProperties.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {favoriteProperties.map((property) => (
-              <SearchResultCard key={property.slug} property={property} />
-            ))}
+        {hasFavorites ? (
+          <div className="flex flex-col gap-space-xl">
+            {favoriteProperties.length > 0 && (
+              <div>
+                <h2 className="font-headline-md text-on-surface mb-space-md">
+                  Biens ({favoriteProperties.length})
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {favoriteProperties.map((property) => (
+                    <SearchResultCard key={property.slug} property={property} />
+                  ))}
+                </div>
+              </div>
+            )}
+            {favoriteLands.length > 0 && (
+              <div>
+                <h2 className="font-headline-md text-on-surface mb-space-md">
+                  Terrains ({favoriteLands.length})
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {favoriteLands.map((land) => (
+                    <LandCard key={land.slug} land={land} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex flex-col items-center text-center gap-space-md bg-surface-container-low rounded-2xl py-24 px-6">
