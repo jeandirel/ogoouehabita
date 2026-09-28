@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
 import { ContactAgencyPanel } from "@/components/property/contact-agency-panel";
 import { AiQuestionForm } from "@/components/property/ai-question-form";
 import { PropertyDetailActions } from "@/components/property/property-detail-actions";
+import { PropertyGallery } from "@/components/property/property-gallery";
 import { stitchImage } from "@/data/image-manifest";
 import type { Property } from "@/lib/types";
 
 export function PropertyDetailView({ property }: { property: Property }) {
   const transactionLabel = property.transactionType === "location" ? "Location" : "Vente";
-  const gallery = property.gallery;
+  const galleryImages = property.gallery ?? [{ image: property.image, caption: property.title }];
   const passportEligible = property.passportScore !== undefined && property.reference !== undefined;
   const quickStats: { icon: string; label: string; value?: string }[] = property.detailSpecs
     ? property.detailSpecs.map((s) => ({ icon: s.icon, label: s.label, value: s.value }))
@@ -52,55 +52,7 @@ export function PropertyDetailView({ property }: { property: Property }) {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-space-lg w-full">
-        {/* Gallery */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-md lg:h-[540px]">
-          <div
-            className="lg:col-span-2 h-64 lg:h-full rounded-xl overflow-hidden shadow-md relative bg-cover bg-center"
-            style={{ backgroundImage: `url('${(gallery?.[0]?.image ?? property.image).path}')` }}
-            role="img"
-            aria-label={(gallery?.[0]?.image ?? property.image).alt}
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-anthracite/60 via-transparent to-transparent opacity-60" />
-            <div className="absolute bottom-6 left-6 text-on-primary">
-              <span className="bg-primary/80 backdrop-blur-md px-3 py-1 rounded-full text-label-sm font-bold">
-                Vue principale
-              </span>
-              <div className="font-headline-lg mt-2">{gallery?.[0]?.caption ?? property.title}</div>
-            </div>
-            {property.hasRealPhoto === false && (
-              <PhotoPendingBadge className="absolute top-6 right-6" />
-            )}
-          </div>
-          {gallery && gallery.length > 1 && (
-            <div className="hidden lg:grid grid-rows-2 gap-space-md h-full">
-              <div
-                className="rounded-xl overflow-hidden shadow-md relative bg-cover bg-center"
-                style={{ backgroundImage: `url('${gallery[1].image.path}')` }}
-                role="img"
-                aria-label={gallery[1].image.alt}
-              >
-                <div className="absolute bottom-4 left-4 text-on-primary">
-                  <span className="text-label-sm font-bold">{gallery[1].caption}</span>
-                </div>
-              </div>
-              {gallery[2] && (
-                <div
-                  className="rounded-xl overflow-hidden shadow-md relative bg-cover bg-center"
-                  style={{ backgroundImage: `url('${gallery[2].image.path}')` }}
-                  role="img"
-                  aria-label={gallery[2].image.alt}
-                >
-                  <div className="absolute inset-0 bg-anthracite/30 flex items-center justify-center">
-                    <span className="bg-surface/90 text-on-surface px-space-md py-space-sm rounded-xl font-label-md backdrop-blur-md shadow-lg flex items-center gap-2">
-                      <Icon name="grid_view" />
-                      Voir les {gallery.length} photos
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <PropertyGallery images={galleryImages} hasRealPhoto={property.hasRealPhoto} />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl mt-space-xl">
           <div className="lg:col-span-8 flex flex-col gap-space-xl">
