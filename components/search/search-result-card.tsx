@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
+import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
 import { useFavorites } from "@/components/providers/favorites-provider";
 import { toFavoriteId } from "@/data/local/favorite-id";
 import { agencyByInitials } from "@/data/agencies";
@@ -23,6 +24,13 @@ export function SearchResultCard({ property }: { property: Property }) {
           aria-label={property.image.alt}
         />
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          {property.status === "en_attente_verification" && (
+            <span className="bg-surface/90 backdrop-blur-md text-on-surface-variant px-3 py-1 rounded-full text-label-sm font-bold shadow-md flex items-center gap-1">
+              <Icon name="hourglass_top" className="text-[14px]" />
+              <span>En cours de vérification</span>
+            </span>
+          )}
+          {property.hasRealPhoto === false && <PhotoPendingBadge />}
           {property.passportScore !== undefined && (
             <span className="bg-primary text-on-primary px-3 py-1 rounded-full text-label-sm font-bold shadow-md flex items-center gap-1">
               <Icon name="verified" filled className="text-[14px]" />

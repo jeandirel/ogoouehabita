@@ -7,11 +7,12 @@ import { SearchResultCard } from "@/components/search/search-result-card";
 import { LandCard } from "@/components/land/land-card";
 import { useFavorites } from "@/components/providers/favorites-provider";
 import { parseFavoriteId } from "@/data/local/favorite-id";
-import { properties } from "@/data/properties";
+import { useMergedProperties } from "@/data/local/published-listings-store";
 import { lands } from "@/data/land";
 
 export default function FavorisPage() {
   const { favoriteIds } = useFavorites();
+  const properties = useMergedProperties();
   const favoriteSlugsByKind = favoriteIds.reduce(
     (acc, id) => {
       const parsed = parseFavoriteId(id);

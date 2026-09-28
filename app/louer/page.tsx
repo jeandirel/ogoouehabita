@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
-import { RentListingCard } from "@/components/property/rent-listing-card";
+import { LouerResults } from "@/components/louer/louer-results";
 import { NeighborhoodCard } from "@/components/neighborhood/neighborhood-card";
 import { RecentListingRow } from "@/components/property/recent-listing-row";
 import { AiAlertForm } from "@/components/louer/ai-alert-form";
@@ -11,6 +11,7 @@ import { recentListings } from "@/data/recent-listings";
 import { LOUER_TYPE_OPTIONS } from "@/data/property-types";
 import { GABON_GEOGRAPHY } from "@/data/gabon-geography";
 import { parseBudgetLabel } from "@/lib/format";
+import { matchesLouerFilters } from "@/lib/property-filters";
 import { stitchImage } from "@/data/image-manifest";
 
 const LOUER_SLUGS = [
@@ -64,23 +65,12 @@ export default async function LouerPage({
     ...neighborhoods.map((n) => ({ value: n.slug, label: `${n.name} (Libreville)` })),
   ];
 
+  const locationIncludes = quartier
+    ? (neighborhoods.find((n) => n.slug === quartier)?.name ?? quartier)
+    : undefined;
+  const filters = { type, locationIncludes, province, budget };
   const listings = properties.filter((property) => LOUER_SLUGS.includes(property.slug));
-  const filtered = listings.filter((property) => {
-    if (type && type !== "Tous types") {
-      if (property.category !== type && property.tag !== type) return false;
-    }
-    if (quartier) {
-      const neighborhood = neighborhoods.find((n) => n.slug === quartier);
-      if (neighborhood) {
-        if (!property.location.includes(neighborhood.name)) return false;
-      } else if (!property.location.includes(quartier)) {
-        return false;
-      }
-    }
-    if (province && property.province !== province) return false;
-    if (budget && property.priceValue > budget) return false;
-    return true;
-  });
+  const filtered = listings.filter((property) => matchesLouerFilters(property, filters));
 
   return (
     <SiteShell>
@@ -217,20 +207,7 @@ export default async function LouerPage({
               Voir toutes les locations <Icon name="arrow_forward" className="text-[18px]" />
             </Link>
           </div>
-          {filtered.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filtered.map((property) => (
-                <RentListingCard key={property.slug} property={property} />
-              ))}
-            </div>
-          ) : (
-            <div className="bg-surface-container-low rounded-xl p-8 text-center text-body-md text-on-surface-variant">
-              Aucune location ne correspond à ces critères pour le moment.{" "}
-              <Link href="/louer" className="text-primary font-bold hover:underline">
-                Réinitialiser
-              </Link>
-            </div>
-          )}
+          <LouerResults curated={filtered} filters={filters} />
         </section>
 
         {/* Passeport Locataire */}

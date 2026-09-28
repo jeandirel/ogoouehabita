@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
 import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Property } from "@/lib/types";
 
@@ -19,12 +20,21 @@ export function RentListingCard({ property }: { property: Property }) {
           role="img"
           aria-label={property.image.alt}
         />
-        <div className="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-label-sm font-bold flex items-center gap-1 shadow-sm">
-          <Icon name="verified" className="text-[14px]" /> Certifié Ogooué
-        </div>
+        {property.status === "en_attente_verification" ? (
+          <div className="absolute top-4 left-4 bg-surface/90 backdrop-blur-md text-on-surface-variant px-3 py-1 rounded-full text-label-sm font-bold flex items-center gap-1 shadow-sm">
+            <Icon name="hourglass_top" className="text-[14px]" /> En cours de vérification
+          </div>
+        ) : (
+          <div className="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-label-sm font-bold flex items-center gap-1 shadow-sm">
+            <Icon name="verified" className="text-[14px]" /> Certifié Ogooué
+          </div>
+        )}
         <div className="absolute top-4 right-4 bg-surface/90 backdrop-blur-md text-on-surface px-3 py-1 rounded-full text-label-sm font-bold">
           {property.category}
         </div>
+        {property.hasRealPhoto === false && (
+          <PhotoPendingBadge className="absolute bottom-4 left-4" />
+        )}
         <FavoriteButton
           favoriteId={toFavoriteId("property", property.slug)}
           className="absolute bottom-4 right-4"

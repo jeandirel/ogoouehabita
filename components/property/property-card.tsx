@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
 import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Property } from "@/lib/types";
 
@@ -22,6 +23,15 @@ export function PropertyCard({ property }: { property: Property }) {
             <Icon name="verified" className="text-[16px]" />
             <span>Passeport Ogooué™ {property.passportScore}%</span>
           </div>
+        )}
+        {property.status === "en_attente_verification" && (
+          <div className="absolute top-4 left-4 bg-surface/90 backdrop-blur-md text-on-surface-variant px-3 py-1.5 rounded-full text-label-sm font-bold flex items-center gap-1 shadow-md">
+            <Icon name="hourglass_top" className="text-[16px]" />
+            <span>En cours de vérification</span>
+          </div>
+        )}
+        {property.hasRealPhoto === false && (
+          <PhotoPendingBadge className="absolute bottom-4 left-4" />
         )}
         <div className="absolute bottom-4 right-4 bg-surface/90 backdrop-blur-md px-3 py-1 rounded-xl text-label-sm font-bold text-primary">
           {property.priceLabel}

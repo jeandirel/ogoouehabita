@@ -56,6 +56,7 @@ export interface Property {
   neighborhoodBlurb?: string;
   source?: "local";
   status?: "en_attente_verification";
+  hasRealPhoto?: boolean;
 }
 
 export interface Land {

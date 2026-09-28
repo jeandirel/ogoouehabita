@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { HeroSearch } from "@/components/home/hero-search";
-import { PropertyCard } from "@/components/property/property-card";
+import { PropertyGrid } from "@/components/home/property-grid";
 import { ProvinceCard } from "@/components/property/province-card";
 import { Icon } from "@/components/ui/icon";
-import { properties } from "@/data/properties";
 import { provinces } from "@/data/provinces";
 import { stitchImage } from "@/data/image-manifest";
 
@@ -71,11 +70,7 @@ export default function HomePage() {
               vérification d&apos;identité du propriétaire.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {properties.map((property) => (
-              <PropertyCard key={property.slug} property={property} />
-            ))}
-          </div>
+          <PropertyGrid />
         </section>
 
         <section className="bg-surface-container-low py-20 relative overflow-hidden">

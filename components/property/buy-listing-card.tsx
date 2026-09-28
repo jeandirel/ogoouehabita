@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { FavoriteButton } from "@/components/ui/favorite-button";
+import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
 import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Property } from "@/lib/types";
 
 export function BuyListingCard({ property }: { property: Property }) {
-  const badgeLabel = property.badges?.[0] ?? `Passeport Ogooué ${property.passportGrade}`;
+  const isPending = property.status === "en_attente_verification";
+  const badgeLabel = isPending
+    ? "En cours de vérification"
+    : (property.badges?.[0] ?? (property.passportGrade ? `Passeport Ogooué ${property.passportGrade}` : undefined));
 
   return (
     <div className="relative bg-surface-container-low rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group">
@@ -20,10 +24,19 @@ export function BuyListingCard({ property }: { property: Property }) {
           role="img"
           aria-label={property.image.alt}
         >
-          <div className="absolute top-3 left-3 bg-primary text-on-primary px-3 py-1 rounded-full text-label-sm flex items-center gap-1 shadow-sm">
-            <Icon name="verified" className="text-[14px]" />
-            <span>{badgeLabel}</span>
-          </div>
+          {badgeLabel && (
+            <div
+              className={`absolute top-3 left-3 px-3 py-1 rounded-full text-label-sm flex items-center gap-1 shadow-sm ${
+                isPending ? "bg-surface/90 backdrop-blur-md text-on-surface-variant" : "bg-primary text-on-primary"
+              }`}
+            >
+              <Icon name={isPending ? "hourglass_top" : "verified"} className="text-[14px]" />
+              <span>{badgeLabel}</span>
+            </div>
+          )}
+          {property.hasRealPhoto === false && (
+            <PhotoPendingBadge className="absolute bottom-3 left-3" />
+          )}
           <div className="absolute bottom-3 right-3 bg-surface/90 backdrop-blur-md px-3 py-1 rounded-full text-label-md font-bold text-primary">
             {property.priceLabel}
           </div>

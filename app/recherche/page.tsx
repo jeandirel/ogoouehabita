@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
-import { SearchResultCard } from "@/components/search/search-result-card";
+import { RechercheResults } from "@/components/recherche/recherche-results";
 import { SortSelect } from "@/components/search/sort-select";
 import { properties } from "@/data/properties";
 import { stitchImage } from "@/data/image-manifest";
-import type { Property, TransactionType } from "@/lib/types";
+import { matchesRechercheFilters, sortByPrice } from "@/lib/property-filters";
+import type { TransactionType } from "@/lib/types";
 
 const RECHERCHE_SLUGS = [
   "villa-akande-executive",
@@ -28,20 +29,6 @@ const MAP_PINS = [
   { slug: "duplex-panorama-ocean", priceShort: "95M FCFA", top: "55%", left: "60%", active: false },
   { slug: "terrain-residentiel-angondje", priceShort: "45M FCFA", top: "20%", left: "70%", active: false },
 ] as const;
-
-function bedroomCount(property: Property): number {
-  const spec = property.specs.find((s) => /chambres?/i.test(s.label));
-  if (!spec) return 0;
-  const match = spec.label.match(/(\d+)/);
-  return match ? parseInt(match[1], 10) : 0;
-}
-
-function surfaceArea(property: Property): number {
-  const spec = property.specs.find((s) => /m²/.test(s.label));
-  if (!spec) return 0;
-  const digits = spec.label.replace(/[^\d]/g, "");
-  return digits ? parseInt(digits, 10) : 0;
-}
 
 export default async function RecherchePage({
   searchParams,
@@ -67,28 +54,10 @@ export default async function RecherchePage({
   };
   const activeChipCount = Object.values(activeChips).filter(Boolean).length;
 
+  const filters = { transactionType, province, q, chips: activeChips };
   const pool = properties.filter((property) => RECHERCHE_SLUGS.includes(property.slug));
-
-  let results = pool.filter((property) => {
-    if (property.transactionType !== transactionType) return false;
-    if (province && property.province !== province) return false;
-    if (q && !`${property.title} ${property.location}`.toLowerCase().includes(q)) return false;
-    if (activeChips.villa && !["Villa", "Maison"].includes(property.category ?? "")) return false;
-    if (activeChips.budget && (property.priceValue < 50_000_000 || property.priceValue > 250_000_000))
-      return false;
-    if (activeChips.chambres && bedroomCount(property) < 4) return false;
-    if (activeChips.surface && surfaceArea(property) < 300) return false;
-    if (activeChips.shield && property.passportScore !== 100) return false;
-    if (activeChips.piscine && !property.amenities?.some((a) => /piscine/i.test(a))) return false;
-    if (activeChips.vue && !property.amenities?.some((a) => /vue/i.test(a))) return false;
-    return true;
-  });
-
-  results = [...results].sort((a, b) => {
-    if (sort === "prix-asc") return a.priceValue - b.priceValue;
-    if (sort === "prix-desc") return b.priceValue - a.priceValue;
-    return 0;
-  });
+  const filtered = pool.filter((property) => matchesRechercheFilters(property, filters));
+  const results = sortByPrice(filtered, sort);
 
   const buildHref = (overrides: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
@@ -203,26 +172,12 @@ export default async function RecherchePage({
         <div className="w-full flex flex-col lg:flex-row lg:h-[calc(100vh-160px)]">
           {/* Left Column: Listings */}
           <div className="w-full lg:w-[42%] lg:h-full lg:overflow-y-auto px-6 py-space-md flex flex-col gap-space-md">
-            <div className="flex items-center justify-between pb-2">
-              <div>
-                <span className="font-headline-sm font-bold text-on-surface">{results.length} biens</span>
-                <span className="text-body-sm text-on-surface-variant ml-2">trouvés à Libreville</span>
-              </div>
-              <div className="flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-xl">
-                <span className="text-label-sm text-on-surface-variant">Trier par :</span>
-                <SortSelect />
-              </div>
-            </div>
-            {results.length > 0 ? (
-              results.map((property) => <SearchResultCard key={property.slug} property={property} />)
-            ) : (
-              <div className="bg-surface-container-low rounded-xl p-8 text-center text-body-md text-on-surface-variant">
-                Aucun bien ne correspond à ces critères.{" "}
-                <Link href="/recherche" className="text-primary font-bold hover:underline">
-                  Réinitialiser la recherche
-                </Link>
-              </div>
-            )}
+            <RechercheResults
+              curated={results}
+              filters={filters}
+              sort={sort}
+              sortSelect={<SortSelect />}
+            />
           </div>
 
           {/* Right Column: Interactive Map with Price Pins */}

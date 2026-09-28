@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
-import { BuyListingCard } from "@/components/property/buy-listing-card";
+import { AcheterResults } from "@/components/acheter/acheter-results";
 import { LoanSimulator } from "@/components/acheter/loan-simulator";
 import { properties } from "@/data/properties";
 import { PROVINCE_QUICK_LINKS } from "@/data/provinces";
 import { GABON_GEOGRAPHY, formatVilleLabel } from "@/data/gabon-geography";
-import { ACHETER_TYPE_OPTIONS, ACHETER_CATEGORY_MAP } from "@/data/property-types";
+import { ACHETER_TYPE_OPTIONS } from "@/data/property-types";
 import { parseBudgetLabel } from "@/lib/format";
+import { matchesAcheterFilters } from "@/lib/property-filters";
 import { stitchImage } from "@/data/image-manifest";
 
 const ACHETER_SLUGS = [
@@ -74,15 +75,9 @@ export default async function AcheterPage({
   const budget = parseBudgetLabel(typeof params.budget === "string" ? params.budget : undefined);
   const q = typeof params.q === "string" ? params.q.toLowerCase().trim() : undefined;
 
+  const filters = { ville, province, type, budget, q };
   const listings = properties.filter((property) => ACHETER_SLUGS.includes(property.slug));
-  const filtered = listings.filter((property) => {
-    if (ville && !property.location.includes(ville)) return false;
-    if (province && property.province !== province) return false;
-    if (type && property.category !== ACHETER_CATEGORY_MAP[type]) return false;
-    if (budget && property.priceValue > budget) return false;
-    if (q && !`${property.title} ${property.location}`.toLowerCase().includes(q)) return false;
-    return true;
-  });
+  const filtered = listings.filter((property) => matchesAcheterFilters(property, filters));
   const isFiltered = Boolean(ville || province || type || budget || q);
 
   return (
@@ -216,28 +211,7 @@ export default async function AcheterPage({
               <Icon name="arrow_forward" className="text-[16px]" />
             </Link>
           </div>
-          {filtered.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
-              {filtered.map((property) => (
-                <BuyListingCard key={property.slug} property={property} />
-              ))}
-            </div>
-          ) : (
-            <div className="bg-surface-container-low rounded-xl p-8 text-center text-body-md text-on-surface-variant">
-              Aucun bien ne correspond à ces critères pour le moment.{" "}
-              <Link href="/acheter" className="text-primary font-bold hover:underline">
-                Réinitialiser la recherche
-              </Link>
-            </div>
-          )}
-          {isFiltered && (
-            <p className="text-body-sm text-on-surface-variant mt-4">
-              Filtre actif — {filtered.length} bien(s) affiché(s).{" "}
-              <Link href="/acheter" className="text-primary font-bold hover:underline">
-                Voir tous les biens
-              </Link>
-            </p>
-          )}
+          <AcheterResults curated={filtered} filters={filters} isFiltered={isFiltered} />
         </section>
 
         {/* Explorer par ville */}

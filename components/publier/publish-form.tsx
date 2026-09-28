@@ -1,9 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { GABON_GEOGRAPHY, getVillesByProvince, getQuartiersForVille } from "@/data/gabon-geography";
+import { insertPublishedListing } from "@/data/local/published-listings-store";
+import { formatFcfa, parseBudgetLabel } from "@/lib/format";
 
 const TRANSACTION_TYPES = [
   { key: "vente", label: "Vente" },
@@ -11,6 +14,13 @@ const TRANSACTION_TYPES = [
 ] as const;
 
 const CATEGORIES = ["Villa", "Maison", "Appartement", "Studio", "Terrain", "Immeuble commercial"];
+
+// Aligns the form's long "Immeuble commercial" label with the short category
+// token every other page's filters actually compare against (see
+// data/property-types.ts's ACHETER_CATEGORY_MAP + data/properties.ts).
+const CATEGORY_TOKEN: Record<string, string> = {
+  "Immeuble commercial": "Immeuble",
+};
 
 const AUTRE_QUARTIER = "__autre__";
 
@@ -30,6 +40,7 @@ export function PublishForm() {
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [createdSlug, setCreatedSlug] = useState<string | null>(null);
 
   const villesForProvince = useMemo(() => getVillesByProvince(province), [province]);
   const quartiersForVille = useMemo(() => getQuartiersForVille(ville), [ville]);
@@ -66,6 +77,28 @@ export function PublishForm() {
     ) {
       return;
     }
+
+    const priceValue = parseBudgetLabel(price) ?? 0;
+    const priceLabel =
+      transactionType === "location" ? `${formatFcfa(priceValue)} / mois` : formatFcfa(priceValue);
+    const surfaceM2 = parseBudgetLabel(surface);
+    const bedroomsCount = bedrooms.trim() ? parseBudgetLabel(bedrooms) : undefined;
+
+    const listing = insertPublishedListing({
+      title: title.trim(),
+      transactionType,
+      category: CATEGORY_TOKEN[category] ?? category,
+      location,
+      province,
+      priceValue,
+      priceLabel,
+      surfaceM2,
+      bedrooms: bedroomsCount,
+      description: description.trim(),
+      contactName: contactName.trim(),
+      contactPhone: contactPhone.trim(),
+    });
+    setCreatedSlug(listing.slug);
     setSubmitted(true);
   };
 
@@ -77,14 +110,23 @@ export function PublishForm() {
         </div>
         <h2 className="font-headline-sm text-on-surface">Annonce soumise pour vérification</h2>
         <p className="text-body-md text-on-surface font-medium">
-          Votre annonce « {title} » a été soumise pour vérification par l&apos;équipe Ogooué
-          Shield.
+          Votre annonce « {title} » est déjà visible sur cet appareil, marquée « en cours de
+          vérification ».
         </p>
         <p className="text-body-sm text-on-surface-variant max-w-md">
-          Elle sera publiée sur la plateforme après validation du dossier (titre foncier, identité
-          du vendeur/bailleur), généralement sous 48h en moyenne. Vous serez contacté au{" "}
-          {contactPhone} si des documents complémentaires sont nécessaires.
+          L&apos;équipe Ogooué Shield doit encore valider le dossier (titre foncier, identité du
+          vendeur/bailleur) avant de retirer ce statut, généralement sous 48h en moyenne. Vous
+          serez contacté au {contactPhone} si des documents complémentaires sont nécessaires.
+          L&apos;annonce n&apos;est conservée que dans ce navigateur, sur cet appareil.
         </p>
+        {createdSlug && (
+          <Link
+            href={`/bien/${createdSlug}`}
+            className="bg-primary text-on-primary px-6 py-3 rounded-xl font-label-md hover:bg-forest-deep transition-all shadow-sm mt-2"
+          >
+            Voir mon annonce
+          </Link>
+        )}
       </div>
     );
   }
