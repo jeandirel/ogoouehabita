@@ -3,8 +3,16 @@
 import { useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { agencyByInitials } from "@/data/agencies";
+import { insertLead } from "@/data/local/leads-store";
 import { toWhatsAppDigits } from "@/lib/format";
 import type { Property } from "@/lib/types";
+
+const REQUEST_TYPE_LABELS = {
+  visite: "Réservation de visite",
+  whatsapp: "Discussion WhatsApp",
+  appel: "Demande d'appel",
+  message: "Message",
+} as const;
 
 export function ContactAgencyPanel({ property }: { property: Property }) {
   const [sent, setSent] = useState(false);
@@ -12,7 +20,14 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
   const displayName = agency?.name ?? property.agencyName ?? "notre équipe Ogooué Habitat";
   const phone = property.contactPhone ?? agency?.phone;
 
-  const requestContact = () => setSent(true);
+  const requestContact = (type: keyof typeof REQUEST_TYPE_LABELS) => {
+    setSent(true);
+    insertLead("contact-bien", property.title, {
+      slug: property.slug,
+      agence: displayName,
+      type: REQUEST_TYPE_LABELS[type],
+    });
+  };
 
   return (
     <div className="sticky top-28 bg-surface-container-low p-space-lg rounded-xl shadow-lg flex flex-col gap-space-md">
@@ -27,6 +42,12 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
           Disponible
         </span>
       </div>
+      {property.transactionType === "location" && property.cautionLabel && (
+        <div className="flex items-center gap-2 text-body-sm text-on-surface-variant bg-surface-container rounded-lg px-3 py-2">
+          <Icon name="savings" className="text-secondary text-[16px]" />
+          {property.cautionLabel}
+        </div>
+      )}
       <div className="flex flex-col gap-space-sm pt-4 border-t border-outline-variant/30">
         {sent && (
           <div className="flex items-center gap-2 bg-primary-fixed/40 text-primary p-space-md rounded-xl text-body-sm font-medium">
@@ -37,7 +58,7 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
         {!sent && (
           <button
             type="button"
-            onClick={requestContact}
+            onClick={() => requestContact("visite")}
             className="w-full bg-primary text-on-primary py-3 rounded-xl font-label-md hover:bg-forest-deep transition-all flex items-center justify-center gap-2 shadow-sm"
           >
             <Icon name="calendar_month" className="text-[20px]" />
@@ -60,7 +81,7 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
           !sent && (
             <button
               type="button"
-              onClick={requestContact}
+              onClick={() => requestContact("whatsapp")}
               className="w-full bg-ogooue-blue text-on-secondary py-3 rounded-xl font-label-md hover:bg-secondary transition-all flex items-center justify-center gap-2 shadow-sm"
             >
               <Icon name="chat" className="text-[20px]" />
@@ -81,7 +102,7 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
             ) : (
               <button
                 type="button"
-                onClick={requestContact}
+                onClick={() => requestContact("appel")}
                 className="bg-surface border border-outline-variant/40 py-2.5 rounded-xl text-on-surface font-label-md hover:bg-surface-container transition-all flex items-center justify-center gap-2"
               >
                 <Icon name="call" className="text-[18px]" />
@@ -90,7 +111,7 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
             )}
             <button
               type="button"
-              onClick={requestContact}
+              onClick={() => requestContact("message")}
               className="bg-surface border border-outline-variant/40 py-2.5 rounded-xl text-on-surface font-label-md hover:bg-surface-container transition-all flex items-center justify-center gap-2"
             >
               <Icon name="mail" className="text-[18px]" />

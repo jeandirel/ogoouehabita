@@ -16,6 +16,7 @@ export const properties: Property[] = [
     priceLabel: "1 200 000 FCFA / mois",
     priceValue: 1_200_000,
     passportScore: 94,
+    cautionLabel: "Caution : 3 mois de loyer + 1 mois d'avance",
     image: stitchImage.properties_villa_batterie_iv,
     specs: [
       { icon: "king_bed", label: "4 Chambres" },
@@ -35,6 +36,7 @@ export const properties: Property[] = [
     priceLabel: "450 000 FCFA / mois",
     priceValue: 450_000,
     passportScore: 91,
+    cautionLabel: "Caution : 2 mois de loyer + 1 mois d'avance",
     image: stitchImage.properties_appartement_angondje,
     specs: [
       { icon: "king_bed", label: "3 Chambres" },
@@ -141,6 +143,7 @@ export const properties: Property[] = [
     priceValue: 750_000,
     tag: "Meublé",
     badges: ["Certifié Ogooué"],
+    cautionLabel: "Caution : 2 mois de loyer + 1 mois d'avance (mobilier inclus)",
     image: stitchImage.misc_passeport_locataire_interieur,
     specs: [
       { icon: "bed", label: "3 Chambres" },
@@ -161,6 +164,7 @@ export const properties: Property[] = [
     priceValue: 1_500_000,
     tag: "Exclusivité",
     badges: ["Certifié Ogooué"],
+    cautionLabel: "Caution : 3 mois de loyer + 1 mois d'avance",
     image: stitchImage.properties_villa_louis,
     specs: [
       { icon: "bed", label: "4 Chambres" },
@@ -181,6 +185,7 @@ export const properties: Property[] = [
     priceValue: 350_000,
     tag: "Meublé",
     badges: ["Certifié Ogooué"],
+    cautionLabel: "Caution : 1 mois de loyer + 1 mois d'avance (meublé)",
     image: stitchImage.properties_studio_glass,
     specs: [
       { icon: "bed", label: "1 Pièce" },
@@ -271,6 +276,7 @@ export const properties: Property[] = [
     priceSecondaryLabel: "/ mois (charges incluses)",
     passportScore: 92,
     reference: "OH-88219",
+    cautionLabel: "Caution : 2 mois de loyer + 1 mois d'avance",
     image: stitchImage.properties_villa_angondje_facade,
     gallery: [
       { image: stitchImage.properties_villa_angondje_facade, caption: "Façade & Architecture" },

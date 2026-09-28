@@ -8,6 +8,7 @@ import { formatLocalDate } from "@/lib/format";
 import type { LeadKind, LeadSubmission } from "@/lib/types";
 
 const KIND_SECTIONS: { kind: LeadKind; title: string; icon: string }[] = [
+  { kind: "contact-bien", title: "Demandes sur des biens", icon: "calendar_month" },
   { kind: "diaspora", title: "Ogooué Diaspora", icon: "public" },
   { kind: "professionnels", title: "Devenir partenaire", icon: "handshake" },
   { kind: "neuf-notify", title: "Alerte Ogooué Neuf", icon: "apartment" },
@@ -22,10 +23,14 @@ const FIELD_LABELS: Record<string, string> = {
   contactName: "Contact",
   phone: "Téléphone",
   city: "Ville",
+  agence: "Agence",
+  type: "Type de demande",
 };
 
 function LeadCard({ lead }: { lead: LeadSubmission }) {
-  const fields = Object.entries(lead.payload).filter(([, value]) => value.trim().length > 0);
+  const fields = Object.entries(lead.payload).filter(
+    ([key, value]) => key !== "slug" && value.trim().length > 0,
+  );
   return (
     <div className="bg-surface-container-low rounded-xl p-space-md flex flex-col gap-2">
       <div className="flex items-center justify-between">
@@ -43,6 +48,15 @@ function LeadCard({ lead }: { lead: LeadSubmission }) {
             </span>
           ))}
         </div>
+      )}
+      {lead.kind === "contact-bien" && lead.payload.slug && (
+        <Link
+          href={`/bien/${lead.payload.slug}`}
+          className="inline-flex items-center gap-1 text-label-sm font-bold text-primary hover:underline mt-1"
+        >
+          Voir l&apos;annonce
+          <Icon name="arrow_forward" className="text-[14px]" />
+        </Link>
       )}
     </div>
   );
@@ -103,8 +117,8 @@ export default function MesDemandesPage() {
                 Vous n&apos;avez envoyé aucune demande
               </h2>
               <p className="text-body-md text-on-surface-variant">
-                Vos demandes envoyées depuis Ogooué Diaspora, Professionnels, Ogooué Neuf ou les
-                alertes de location apparaîtront ici.
+                Vos demandes de visite/contact sur un bien, ainsi que celles envoyées depuis Ogooué
+                Diaspora, Professionnels, Ogooué Neuf ou les alertes de location, apparaîtront ici.
               </p>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-space-sm mt-2">

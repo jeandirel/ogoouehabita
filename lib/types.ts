@@ -54,6 +54,7 @@ export interface Property {
   features?: FeatureItem[];
   passportChecklist?: FeatureItem[];
   neighborhoodBlurb?: string;
+  cautionLabel?: string;
   contactPhone?: string;
   source?: "local";
   status?: "en_attente_verification";
@@ -142,7 +143,7 @@ export interface PublishedListing extends Property, LocalRecordBase {
   hasRealPhoto: false;
 }
 
-export type LeadKind = "diaspora" | "professionnels" | "neuf-notify" | "louer-alerte";
+export type LeadKind = "diaspora" | "professionnels" | "neuf-notify" | "louer-alerte" | "contact-bien";
 
 export interface LeadSubmission extends LocalRecordBase {
   kind: LeadKind;
