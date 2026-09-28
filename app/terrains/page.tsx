@@ -143,7 +143,7 @@ export default async function TerrainsPage({
         </section>
 
         {/* Trust ladder */}
-        <section className="bg-surface-container py-16 px-6 lg:px-12 w-full my-8">
+        <section id="echelle-confiance" className="bg-surface-container py-16 px-6 lg:px-12 w-full my-8 scroll-mt-24">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <div className="text-label-md text-laterite uppercase tracking-widest font-bold mb-2">

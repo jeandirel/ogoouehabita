@@ -363,7 +363,7 @@ export default async function LouerPage({
         </section>
 
         {/* Ogooué AI alert */}
-        <section className="w-full py-24 px-6 lg:px-12 max-w-7xl mx-auto">
+        <section id="alerte-ai" className="w-full py-24 px-6 lg:px-12 max-w-7xl mx-auto scroll-mt-24">
           <div className="bg-primary text-on-primary rounded-2xl p-8 lg:p-16 relative overflow-hidden shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-12">
             <div className="absolute -right-20 -bottom-20 w-96 h-96 rounded-full bg-secondary/20 blur-3xl pointer-events-none" />
             <div className="flex flex-col gap-6 max-w-xl relative z-10">

@@ -36,7 +36,7 @@ export default function NeufPage() {
     <SiteShell>
       <div className="flex flex-col w-full bg-surface">
         {/* Hero */}
-        <section className="relative w-full min-h-[520px] bg-primary flex items-center -mt-20 pt-20 overflow-hidden">
+        <section id="notifier" className="relative w-full min-h-[520px] bg-primary flex items-center -mt-20 pt-20 overflow-hidden scroll-mt-24">
           <div
             className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
             style={{ backgroundImage: `url('${stitchImage.misc_hero_foret_vers_terrain_defriche.path}')` }}
@@ -64,7 +64,7 @@ export default function NeufPage() {
         </section>
 
         {/* What's coming */}
-        <section className="w-full py-20 px-6 lg:px-12 max-w-7xl mx-auto">
+        <section id="a-venir" className="w-full py-20 px-6 lg:px-12 max-w-7xl mx-auto scroll-mt-24">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <div className="text-label-md text-secondary font-bold uppercase tracking-wider mb-2">
               Ce qui arrive

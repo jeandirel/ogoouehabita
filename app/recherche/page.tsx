@@ -176,7 +176,7 @@ export default async function RecherchePage({
         </div>
 
         {/* Main Split Marketplace Layout */}
-        <div className="w-full flex flex-col lg:flex-row lg:h-[calc(100vh-160px)]">
+        <div id="carte" className="w-full flex flex-col lg:flex-row lg:h-[calc(100vh-160px)] scroll-mt-20">
           {/* Left Column: Listings */}
           <div className="w-full lg:w-[42%] lg:h-full lg:overflow-y-auto px-6 py-space-md flex flex-col gap-space-md">
             <RechercheResults

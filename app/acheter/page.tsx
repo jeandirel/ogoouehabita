@@ -342,7 +342,7 @@ export default async function AcheterPage({
         </section>
 
         {/* Loan simulator */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-12 py-space-xl">
+        <section id="simulateur-pret" className="max-w-7xl mx-auto px-6 lg:px-12 py-space-xl scroll-mt-24">
           <LoanSimulator />
         </section>
 

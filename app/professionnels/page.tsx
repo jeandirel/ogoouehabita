@@ -63,7 +63,7 @@ export default function ProfessionnelsPage() {
         </section>
 
         {/* Value props */}
-        <section className="w-full py-20 px-6 lg:px-12 max-w-7xl mx-auto">
+        <section id="pourquoi" className="w-full py-20 px-6 lg:px-12 max-w-7xl mx-auto scroll-mt-24">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <div className="text-label-md text-secondary font-bold uppercase tracking-wider mb-2">
               Pourquoi rejoindre le réseau
@@ -84,7 +84,7 @@ export default function ProfessionnelsPage() {
         </section>
 
         {/* Partner form */}
-        <section className="w-full bg-surface-container py-24 px-6 lg:px-12">
+        <section id="rejoindre" className="w-full bg-surface-container py-24 px-6 lg:px-12 scroll-mt-24">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="flex flex-col gap-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary w-fit text-label-sm font-bold">
