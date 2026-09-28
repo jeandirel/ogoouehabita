@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { CompareTray } from "@/components/compare/compare-tray";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
@@ -7,6 +8,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <CompareTray />
     </>
   );
 }

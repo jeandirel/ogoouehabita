@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { FavoriteButton } from "@/components/ui/favorite-button";
+import { CompareButton } from "@/components/ui/compare-button";
 import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
 import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Property } from "@/lib/types";
@@ -13,10 +14,10 @@ export function BuyListingCard({ property }: { property: Property }) {
 
   return (
     <div className="relative bg-surface-container-low rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group">
-      <FavoriteButton
-        favoriteId={toFavoriteId("property", property.slug)}
-        className="absolute top-3 right-3 z-10"
-      />
+      <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
+        <FavoriteButton favoriteId={toFavoriteId("property", property.slug)} />
+        <CompareButton compareId={toFavoriteId("property", property.slug)} />
+      </div>
       <Link href={`/bien/${property.slug}`} className="flex flex-col flex-1">
         <div
           className="relative h-64 bg-cover bg-center"

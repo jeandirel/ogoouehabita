@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { FavoriteButton } from "@/components/ui/favorite-button";
+import { CompareButton } from "@/components/ui/compare-button";
 import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
 import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Property } from "@/lib/types";
@@ -35,10 +36,10 @@ export function RentListingCard({ property }: { property: Property }) {
         {property.hasRealPhoto === false && (
           <PhotoPendingBadge className="absolute bottom-4 left-4" />
         )}
-        <FavoriteButton
-          favoriteId={toFavoriteId("property", property.slug)}
-          className="absolute bottom-4 right-4"
-        />
+        <div className="absolute bottom-4 right-4 flex items-center gap-2">
+          <CompareButton compareId={toFavoriteId("property", property.slug)} />
+          <FavoriteButton favoriteId={toFavoriteId("property", property.slug)} />
+        </div>
       </div>
       <div className="p-6 flex flex-col flex-1 justify-between">
         <div>

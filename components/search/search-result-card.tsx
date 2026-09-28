@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
+import { CompareButton } from "@/components/ui/compare-button";
 import { useFavorites } from "@/components/providers/favorites-provider";
 import { toFavoriteId } from "@/data/local/favorite-id";
 import { agencyByInitials } from "@/data/agencies";
@@ -46,15 +47,18 @@ export function SearchResultCard({ property }: { property: Property }) {
             </span>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={() => toggleFavorite(favoriteId)}
-          aria-pressed={favorite}
-          aria-label={favorite ? "Retirer des favoris" : "Ajouter aux favoris"}
-          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface/80 backdrop-blur-md flex items-center justify-center text-on-surface hover:bg-surface transition-all shadow-md"
-        >
-          <Icon name="favorite" filled={favorite} className={favorite ? "text-laterite" : "text-on-surface"} />
-        </button>
+        <div className="absolute top-4 right-4 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => toggleFavorite(favoriteId)}
+            aria-pressed={favorite}
+            aria-label={favorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+            className="w-10 h-10 rounded-full bg-surface/80 backdrop-blur-md flex items-center justify-center text-on-surface hover:bg-surface transition-all shadow-md"
+          >
+            <Icon name="favorite" filled={favorite} className={favorite ? "text-laterite" : "text-on-surface"} />
+          </button>
+          <CompareButton compareId={favoriteId} />
+        </div>
         <div className="absolute bottom-4 left-4 bg-surface/90 backdrop-blur-md px-4 py-2 rounded-xl shadow-lg">
           <div className="font-headline-sm text-primary font-bold">{property.priceLabel}</div>
           {property.priceSecondaryLabel && (
