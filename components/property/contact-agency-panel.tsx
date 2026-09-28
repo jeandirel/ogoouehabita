@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui/icon";
 import { agencyByInitials } from "@/data/agencies";
@@ -190,22 +191,37 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
         )}
       </div>
       {property.agencyInitials ? (
-        <div className="pt-4 border-t border-outline-variant/30 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center font-headline-sm text-primary">
-            {property.agencyInitials}
-          </div>
-          <div>
-            <div className="text-label-md font-bold text-on-surface">{displayName}</div>
-            {agency?.rccmNumber ? (
-              <div className="text-body-sm text-on-surface-variant flex items-center gap-1">
-                <Icon name="verified" className="text-[14px] text-secondary" /> Partenaire certifié —{" "}
-                {agency.rccmNumber}
-              </div>
-            ) : (
+        agency ? (
+          <Link
+            href={`/agences/${agency.slug}`}
+            className="pt-4 border-t border-outline-variant/30 flex items-center gap-4 hover:opacity-80 transition-opacity"
+          >
+            <div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center font-headline-sm text-primary">
+              {property.agencyInitials}
+            </div>
+            <div>
+              <div className="text-label-md font-bold text-on-surface">{displayName}</div>
+              {agency.rccmNumber ? (
+                <div className="text-body-sm text-on-surface-variant flex items-center gap-1">
+                  <Icon name="verified" className="text-[14px] text-secondary" /> Partenaire certifié —{" "}
+                  {agency.rccmNumber}
+                </div>
+              ) : (
+                <div className="text-body-sm text-on-surface-variant">Agence partenaire</div>
+              )}
+            </div>
+          </Link>
+        ) : (
+          <div className="pt-4 border-t border-outline-variant/30 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center font-headline-sm text-primary">
+              {property.agencyInitials}
+            </div>
+            <div>
+              <div className="text-label-md font-bold text-on-surface">{displayName}</div>
               <div className="text-body-sm text-on-surface-variant">Agence partenaire</div>
-            )}
+            </div>
           </div>
-        </div>
+        )
       ) : (
         property.source === "local" && (
           <div className="pt-4 border-t border-outline-variant/30 flex items-center gap-4">

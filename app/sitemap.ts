@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { properties } from "@/data/properties";
 import { lands } from "@/data/land";
+import { agencies } from "@/data/agencies";
 
 const SITE_URL = "https://ogoouehabita.vercel.app";
 
@@ -14,6 +15,7 @@ const STATIC_ROUTES = [
   "/professionnels",
   "/neuf",
   "/publier",
+  "/agences",
   "/aide",
   "/connexion",
   "/inscription",
@@ -44,5 +46,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 
-  return [...staticEntries, ...propertyEntries, ...passportEntries, ...landEntries];
+  const agencyEntries: MetadataRoute.Sitemap = agencies.map((agency) => ({
+    url: `${SITE_URL}/agences/${agency.slug}`,
+    lastModified: new Date(),
+  }));
+
+  return [
+    ...staticEntries,
+    ...propertyEntries,
+    ...passportEntries,
+    ...landEntries,
+    ...agencyEntries,
+  ];
 }
