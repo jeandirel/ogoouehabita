@@ -20,7 +20,7 @@ export function SignupForm() {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (!name.trim() || !email.trim() || !phone.trim() || !password.trim()) return;
+    if (!name.trim() || !phone.trim() || !password.trim()) return;
     setSubmitted(true);
   };
 
@@ -72,24 +72,25 @@ export function SignupForm() {
         />
       </label>
       <label className="flex flex-col gap-1.5">
-        <span className="text-label-md font-bold text-on-surface">Adresse email</span>
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="vous@exemple.com"
-          className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
-        />
-      </label>
-      <label className="flex flex-col gap-1.5">
-        <span className="text-label-md font-bold text-on-surface">Téléphone</span>
+        <span className="text-label-md font-bold text-on-surface">Téléphone / WhatsApp</span>
         <input
           type="tel"
           required
           value={phone}
           onChange={(event) => setPhone(event.target.value)}
           placeholder="+241 XX XX XX XX"
+          className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
+        />
+      </label>
+      <label className="flex flex-col gap-1.5">
+        <span className="text-label-md font-bold text-on-surface">
+          Adresse email <span className="font-medium text-on-surface-variant">(optionnel)</span>
+        </span>
+        <input
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="vous@exemple.com"
           className="bg-surface-container-low border border-outline-variant/40 px-space-md py-3 rounded-xl text-body-md focus:outline-none focus:border-ogooue-blue"
         />
       </label>

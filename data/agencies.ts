@@ -7,6 +7,8 @@ export const agencies: Agency[] = [
     initials: "OG",
     city: "Libreville",
     badgeClass: "bg-secondary-fixed text-on-secondary-fixed",
+    phone: "+241 74 01 02 03",
+    rccmNumber: "RCCM LBV 2018 B 14872",
   },
   {
     slug: "gabon-habitat-direct",
@@ -14,6 +16,8 @@ export const agencies: Agency[] = [
     initials: "OH",
     city: "Libreville",
     badgeClass: "bg-ogooue-blue text-on-primary",
+    phone: "+241 65 11 22 33",
+    rccmNumber: "RCCM LBV 2020 B 19045",
   },
   {
     slug: "ogooue-foncier-national",
@@ -21,6 +25,8 @@ export const agencies: Agency[] = [
     initials: "OF",
     city: "Libreville",
     badgeClass: "bg-primary text-on-primary",
+    phone: "+241 77 44 55 66",
+    rccmNumber: "RCCM LBV 2016 B 09931",
   },
 ];
 

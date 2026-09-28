@@ -54,6 +54,7 @@ export interface Property {
   features?: FeatureItem[];
   passportChecklist?: FeatureItem[];
   neighborhoodBlurb?: string;
+  contactPhone?: string;
   source?: "local";
   status?: "en_attente_verification";
   hasRealPhoto?: boolean;
@@ -108,6 +109,8 @@ export interface Agency {
   initials: string;
   city: string;
   badgeClass: string;
+  phone: string;
+  rccmNumber?: string;
 }
 
 /**

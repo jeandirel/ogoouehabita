@@ -50,7 +50,7 @@ export const TRUST_LEVELS = [
   {
     level: 2,
     tag: "En Cours",
-    title: "Attestation Létale",
+    title: "Attestation Légale",
     description: "Reconnaissance de mise en valeur visée par la mairie ou préfecture.",
     badgeClass: "bg-laterite text-on-error",
     tagClass: "text-laterite",

@@ -56,6 +56,7 @@ export function insertPublishedListing(input: PublishListingInput): PublishedLis
     specs: specs.length > 0 ? specs : [{ icon: "home", label: input.category }],
     description: input.description,
     agencyName: input.contactName,
+    contactPhone: input.contactPhone,
     source: "local",
     status: "en_attente_verification",
     hasRealPhoto: false,

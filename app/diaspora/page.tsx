@@ -26,7 +26,13 @@ const VALUE_PROPS = [
     icon: "account_balance",
     title: "Accompagnement notarié et paiement sécurisé",
     description:
-      "Conseils sur les démarches notariales gabonaises et les circuits de paiement sécurisés pour finaliser votre achat sans vous déplacer.",
+      "Conseils sur les démarches notariales gabonaises et les circuits de paiement disponibles pour finaliser votre achat sans vous déplacer : virement bancaire notarié, ou Airtel Money / Moov Money pour les frais de dossier et acomptes.",
+  },
+  {
+    icon: "edit_document",
+    title: "Procuration à distance",
+    description:
+      "Vous ne pouvez pas signer en personne ? Nos conseillers vous expliquent comment établir une procuration notariée pour qu'un mandataire de confiance signe l'acte authentique en votre nom, sans que vous ayez à voyager.",
   },
 ];
 
@@ -75,7 +81,7 @@ export default function DiasporaPage() {
             {VALUE_PROPS.map((item) => (
               <div
                 key={item.title}
-                className="flex gap-space-md bg-surface-container-low p-space-lg rounded-2xl"
+                className="flex gap-space-md bg-surface-container-low p-space-lg rounded-2xl last:md:col-span-2"
               >
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Icon name={item.icon} className="text-primary text-[24px]" />
