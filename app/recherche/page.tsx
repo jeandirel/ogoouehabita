@@ -2,9 +2,9 @@ import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { RechercheResults } from "@/components/recherche/recherche-results";
+import { InteractiveMap } from "@/components/recherche/interactive-map";
 import { SortSelect } from "@/components/search/sort-select";
 import { properties } from "@/data/properties";
-import { stitchImage } from "@/data/image-manifest";
 import { matchesRechercheFilters, sortByPrice } from "@/lib/property-filters";
 import type { TransactionType } from "@/lib/types";
 
@@ -181,80 +181,7 @@ export default async function RecherchePage({
           </div>
 
           {/* Right Column: Interactive Map with Price Pins */}
-          <div className="w-full h-[420px] lg:w-[58%] lg:h-full relative">
-            <div
-              className="w-full h-full bg-cover bg-center relative"
-              style={{ backgroundImage: `url('${stitchImage.misc_carte_illustrative_libreville.path}')` }}
-              role="img"
-              aria-label={stitchImage.misc_carte_illustrative_libreville.alt}
-            >
-              {MAP_PINS.map((pin) => (
-                <Link
-                  key={pin.slug}
-                  href={`/bien/${pin.slug}`}
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer group"
-                  style={{ top: pin.top, left: pin.left }}
-                >
-                  <div
-                    className={`px-3.5 py-2 rounded-2xl shadow-xl flex items-center gap-1.5 border-2 transition-transform group-hover:scale-110 ${
-                      pin.active
-                        ? "bg-primary text-on-primary border-surface scale-105"
-                        : "bg-surface text-on-surface border-outline-variant/30"
-                    }`}
-                  >
-                    {pin.active && (
-                      <Icon name="verified" filled className="text-[16px] text-primary-fixed" />
-                    )}
-                    <span className="font-label-md font-bold">{pin.priceShort}</span>
-                  </div>
-                  <div
-                    className={`w-3 h-3 rotate-45 mx-auto -mt-1.5 shadow-md ${
-                      pin.active ? "bg-primary" : "bg-surface"
-                    }`}
-                  />
-                </Link>
-              ))}
-
-              <div className="absolute bottom-6 right-6 flex flex-col gap-2 z-30">
-                <button
-                  type="button"
-                  className="w-12 h-12 bg-surface text-on-surface rounded-2xl shadow-lg flex items-center justify-center hover:bg-surface-container transition-all"
-                  aria-label="Zoomer"
-                >
-                  <Icon name="add" />
-                </button>
-                <button
-                  type="button"
-                  className="w-12 h-12 bg-surface text-on-surface rounded-2xl shadow-lg flex items-center justify-center hover:bg-surface-container transition-all"
-                  aria-label="Dézoomer"
-                >
-                  <Icon name="remove" />
-                </button>
-                <button
-                  type="button"
-                  className="w-12 h-12 bg-primary text-on-primary rounded-2xl shadow-lg flex items-center justify-center hover:bg-forest-deep transition-all mt-2"
-                  aria-label="Me localiser"
-                >
-                  <Icon name="my_location" />
-                </button>
-              </div>
-              <div className="absolute top-6 right-6 bg-surface/90 backdrop-blur-md p-1.5 rounded-2xl shadow-lg flex items-center gap-1 z-30">
-                <button type="button" className="px-3 py-1.5 rounded-xl text-label-sm font-bold bg-primary text-on-primary">
-                  Carte
-                </button>
-                <button type="button" className="px-3 py-1.5 rounded-xl text-label-sm font-medium text-on-surface-variant hover:text-on-surface">
-                  Satellite
-                </button>
-                <button type="button" className="px-3 py-1.5 rounded-xl text-label-sm font-medium text-on-surface-variant hover:text-on-surface">
-                  Cadastre
-                </button>
-              </div>
-              <div className="absolute top-6 left-6 bg-surface/90 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg flex items-center gap-2 z-30">
-                <Icon name="security" filled className="text-secondary" />
-                <span className="text-label-sm font-bold text-on-surface">Registre Foncier National Synchronisé</span>
-              </div>
-            </div>
-          </div>
+          <InteractiveMap pins={MAP_PINS} />
         </div>
       </div>
     </SiteShell>
