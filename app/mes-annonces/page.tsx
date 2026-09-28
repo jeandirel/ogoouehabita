@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { SearchResultCard } from "@/components/search/search-result-card";
+import { ListingActivity } from "@/components/mes-annonces/listing-activity";
 import { usePublishedListings } from "@/data/local/published-listings-store";
 
 export default function MesAnnoncesPage() {
@@ -20,7 +21,10 @@ export default function MesAnnoncesPage() {
           <p className="text-body-md text-on-surface-variant mt-2 max-w-2xl">
             Les annonces que vous avez publiées depuis cet appareil. Elles ne sont conservées que
             dans ce navigateur, sur cet appareil — elles disparaîtraient si vous videz vos données
-            de navigation.
+            de navigation. Pour la même raison, le compteur de demandes affiché sous chaque annonce
+            ne reflète que les demandes envoyées et reçues sur cet appareil : une demande envoyée
+            par un visiteur depuis un autre appareil n&apos;apparaîtra pas ici tant qu&apos;aucune
+            base de données partagée n&apos;est connectée.
           </p>
           <Link
             href="/mes-demandes"
@@ -34,7 +38,10 @@ export default function MesAnnoncesPage() {
         {listings.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {listings.map((listing) => (
-              <SearchResultCard key={listing.slug} property={listing} />
+              <div key={listing.slug} className="flex flex-col">
+                <SearchResultCard property={listing} />
+                <ListingActivity slug={listing.slug} />
+              </div>
             ))}
           </div>
         ) : (
