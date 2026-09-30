@@ -22,6 +22,7 @@ export function TrustScoreGauge({ score }: { score: number }) {
       <div className="absolute text-center flex flex-col items-center justify-center">
         <span className="font-headline-md text-primary font-bold leading-none">{score}%</span>
       </div>
+      <div className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-ogooue-gold border-2 border-surface" />
     </div>
   );
 }

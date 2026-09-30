@@ -3,26 +3,40 @@
 @tailwind utilities;
 
 :root {
-  /* Semantic tokens (mission-mandated) mapped onto the Stitch/DESIGN.md palette */
-  --background: #fbf9f5;
-  --surface: #fbf9f5;
-  --foreground: #1b1c1a;
-  --muted: #414844;
-  --border: #c1c8c3;
-  --primary: #002217;
-  --secondary: #2f647d;
-  --accent: #b85d33;
-  --success: #3f6657;
-  --warning: #b85d33;
-  --danger: #ba1a1a;
+  /* Semantic tokens mapped onto the Ogooué Habitat v2 brand palette */
+  --background: #F7F5EF;
+  --surface: #F7F5EF;
+  --foreground: #17201B;
+  --muted: #68746D;
+  --border: #DFE5E1;
+  --primary: #123D2A;
+  --secondary: #123D2A;
+  --accent: #D6A536;
+  --success: #218657;
+  --warning: #D6A536;
+  --danger: #B84040;
 
-  /* Ogooué Habitat brand tokens */
-  --forest-deep: #0f382b;
-  --ogooue-blue: #124e66;
-  --ivory-warm: #fbf9f5;
-  --sand: #f3efe6;
-  --laterite: #b85d33;
-  --anthracite: #1c2321;
+  /* Ogooué Habitat brand tokens (legacy names, new values) */
+  --forest-deep: #0C2F20;
+  --ogooue-blue: #123D2A;
+  --ivory-warm: #F7F5EF;
+  --sand: #F7F5EF;
+  --laterite: #8A6420;
+  --anthracite: #0E3023;
+
+  /* Ogooué Habitat brand tokens (explicit v2 names) */
+  --ogooue-green: #123D2A;
+  --ogooue-green-dark: #0C2F20;
+  --ogooue-green-light: #EAF2ED;
+  --ogooue-gold: #D6A536;
+  --ogooue-gold-light: #F5E7BB;
+  --ogooue-background: #F7F5EF;
+  --ogooue-surface: #ffffff;
+  --ogooue-text: #17201B;
+  --ogooue-muted: #68746D;
+  --ogooue-border: #DFE5E1;
+  --ogooue-success: #218657;
+  --ogooue-error: #B84040;
 }
 
 .material-symbols-outlined {

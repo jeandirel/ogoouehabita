@@ -273,7 +273,7 @@ export default async function LouerPage({
               <div className="pt-4">
                 <Link
                   href="/inscription"
-                  className="bg-secondary text-on-secondary px-8 py-4 rounded-xl font-label-md hover:bg-ogooue-blue transition-all shadow-md inline-flex items-center gap-2"
+                  className="bg-secondary text-on-secondary px-8 py-4 rounded-xl font-label-md hover:bg-forest-deep transition-all shadow-md inline-flex items-center gap-2"
                 >
                   <span>Générer mon Passeport Gratuitement</span>
                   <Icon name="arrow_forward" />

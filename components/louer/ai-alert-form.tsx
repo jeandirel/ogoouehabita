@@ -56,7 +56,7 @@ export function AiAlertForm({ criteria, resultCount }: AiAlertFormProps) {
       />
       <button
         type="submit"
-        className="bg-secondary text-on-secondary px-8 py-3.5 rounded-xl font-label-md hover:bg-ogooue-blue transition-all shadow-md"
+        className="bg-secondary text-on-secondary px-8 py-3.5 rounded-xl font-label-md hover:bg-forest-deep transition-all shadow-md"
       >
         Créer une Alerte AI
       </button>

@@ -1,9 +1,15 @@
 import type { Config } from "tailwindcss";
 
-// Design tokens ported verbatim from the validated Stitch export
-// (ogoou_habitat_design_system/DESIGN.md + the tailwind.config block
-// embedded identically in every reference code.html). Do not "clean up"
-// or round these values — they are what produced the reference screenshots.
+// Ogooué Habitat brand palette (v2 — "premium gabonais lumineux").
+// Superseded the original Stitch-export values on every one of these
+// keys by direct, deliberate, user-authorized request: a full visual
+// identity overhaul (still no business logic / routes / API changes).
+// Legacy Material-Design-3-style token *names* are kept as-is so the
+// hundreds of existing `bg-primary` / `text-on-surface-variant` / etc.
+// call sites across the app repaint automatically — only the hex
+// *values* below changed. New `ogooue-*` keys are the literal palette
+// requested for anything written against it directly going forward.
+// See STITCH_IMPLEMENTATION.md deviation entry for the full mapping.
 const config: Config = {
   darkMode: "class",
   content: [
@@ -14,59 +20,72 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "primary-fixed-dim": "#a6d0bd",
-        "secondary-fixed-dim": "#9acdea",
+        ogooue: {
+          green: "#123D2A",
+          "green-dark": "#0C2F20",
+          "green-light": "#EAF2ED",
+          gold: "#D6A536",
+          "gold-light": "#F5E7BB",
+          background: "#F7F5EF",
+          text: "#17201B",
+          muted: "#68746D",
+          border: "#DFE5E1",
+          success: "#218657",
+          error: "#B84040",
+        },
+        "primary-fixed-dim": "#CFE3D6",
+        "secondary-fixed-dim": "#D3E5DA",
         "on-secondary": "#ffffff",
-        laterite: "#b85d33",
-        error: "#ba1a1a",
-        "on-primary-container": "#79a291",
+        laterite: "#8A6420",
+        error: "#B84040",
+        "on-primary-container": "#C8DCCF",
         "tertiary-container": "#4d2624",
-        "surface-variant": "#e4e2de",
-        "surface-bright": "#fbf9f5",
-        "secondary-container": "#ade1fe",
-        "tertiary-fixed": "#ffdad7",
-        "primary-container": "#0f382b",
-        "on-primary-fixed": "#002117",
-        "forest-deep": "#0f382b",
+        "surface-variant": "#DCE8E1",
+        "surface-bright": "#F7F5EF",
+        "secondary-container": "#EAF2ED",
+        "tertiary-fixed": "#F5E7BB",
+        "primary-container": "#0C2F20",
+        "on-primary-fixed": "#123D2A",
+        "forest-deep": "#0C2F20",
         "surface-container-high": "#eae8e4",
-        "outline-variant": "#c1c8c3",
-        surface: "#fbf9f5",
-        "secondary-fixed": "#c1e8ff",
+        "outline-variant": "#DFE5E1",
+        surface: "#F7F5EF",
+        "secondary-fixed": "#EAF2ED",
         tertiary: "#341210",
-        secondary: "#2f647d",
+        secondary: "#123D2A",
         "tertiary-fixed-dim": "#f5b7b3",
         "inverse-on-surface": "#f2f0ed",
-        background: "#fbf9f5",
+        background: "#F7F5EF",
         "surface-container-highest": "#e4e2de",
-        "ivory-warm": "#fbf9f5",
-        anthracite: "#1c2321",
+        "ivory-warm": "#F7F5EF",
+        anthracite: "#0E3023",
         "surface-dim": "#dbdad6",
         "on-tertiary-fixed": "#331110",
         "on-error-container": "#93000a",
-        "on-secondary-fixed-variant": "#0f4c64",
+        "on-secondary-fixed-variant": "#0C2F20",
         "surface-container-lowest": "#ffffff",
         "surface-container-low": "#f5f3ef",
-        "on-surface-variant": "#414844",
+        "on-surface-variant": "#68746D",
         "on-tertiary": "#ffffff",
         "surface-container": "#efeeea",
         "on-primary": "#ffffff",
         "error-container": "#ffdad6",
-        "on-secondary-fixed": "#001e2b",
-        "on-surface": "#1b1c1a",
-        outline: "#717974",
+        "on-secondary-fixed": "#123D2A",
+        "on-surface": "#17201B",
+        outline: "#A9B3AC",
         "on-tertiary-fixed-variant": "#663b38",
-        "primary-fixed": "#c1ecd9",
-        sand: "#f3efe6",
-        "inverse-primary": "#a6d0bd",
-        "inverse-surface": "#30312e",
+        "primary-fixed": "#EAF2ED",
+        sand: "#F7F5EF",
+        "inverse-primary": "#CFE3D6",
+        "inverse-surface": "#1E2B24",
         "on-error": "#ffffff",
         "on-tertiary-container": "#c38b87",
-        "on-primary-fixed-variant": "#274e40",
-        "on-background": "#1b1c1a",
-        "surface-tint": "#3f6657",
-        "ogooue-blue": "#124e66",
-        "on-secondary-container": "#30657e",
-        primary: "#002217",
+        "on-primary-fixed-variant": "#0C2F20",
+        "on-background": "#17201B",
+        "surface-tint": "#123D2A",
+        "ogooue-blue": "#123D2A",
+        "on-secondary-container": "#123D2A",
+        primary: "#123D2A",
       },
       borderRadius: {
         DEFAULT: "0.125rem",

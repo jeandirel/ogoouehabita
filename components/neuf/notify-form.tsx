@@ -39,7 +39,7 @@ export function NotifyForm() {
       />
       <button
         type="submit"
-        className="bg-secondary text-on-secondary px-8 py-3.5 rounded-xl font-label-md hover:bg-ogooue-blue transition-all shadow-md whitespace-nowrap"
+        className="bg-secondary text-on-secondary px-8 py-3.5 rounded-xl font-label-md hover:bg-forest-deep transition-all shadow-md whitespace-nowrap"
       >
         Être averti en premier
       </button>

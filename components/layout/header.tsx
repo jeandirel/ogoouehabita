@@ -64,7 +64,7 @@ export function Header() {
               href={link.href}
               onMouseEnter={() => openMenu(link.path)}
               className={cn(
-                "relative py-2 text-body-sm text-on-surface-variant hover:text-on-surface transition-colors after:absolute after:left-0 after:right-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-secondary after:origin-center after:transition-transform after:duration-200",
+                "relative py-2 text-body-sm text-on-surface-variant hover:text-on-surface transition-colors after:absolute after:left-0 after:right-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-ogooue-gold after:origin-center after:transition-transform after:duration-200",
                 isActive(pathname, link.href) ? "text-primary font-bold after:scale-x-100" : "after:scale-x-0",
                 activeMenu === link.path && "text-on-surface after:scale-x-100",
               )}

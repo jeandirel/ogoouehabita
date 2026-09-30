@@ -84,7 +84,7 @@ export default async function AgenceDetailPage({
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-ogooue-blue text-on-secondary px-5 py-3 rounded-xl font-label-md hover:bg-secondary transition-all flex items-center justify-center gap-2 shadow-sm"
+              className="bg-ogooue-blue text-on-secondary px-5 py-3 rounded-xl font-label-md hover:bg-forest-deep transition-all flex items-center justify-center gap-2 shadow-sm"
             >
               <Icon name="chat" className="text-[18px]" />
               WhatsApp
