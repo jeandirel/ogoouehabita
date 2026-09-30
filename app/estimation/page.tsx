@@ -13,12 +13,12 @@ export default function EstimationPage() {
   return (
     <SiteShell>
       <div className="w-full bg-surface-container-low">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-space-xl">
-          <div className="max-w-3xl mx-auto text-center mb-space-xl">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 lg:py-16">
+          <div className="max-w-3xl mx-auto text-center mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary w-fit text-label-sm font-bold mx-auto mb-4">
               <Icon name="calculate" className="text-[18px]" /> Estimation indicative
             </div>
-            <h1 className="font-headline-xl text-on-surface tracking-tight mb-4">
+            <h1 className="font-headline-lg text-on-surface tracking-tight mb-3">
               Estimer le prix de mon bien
             </h1>
             <p className="text-body-md text-on-surface-variant">

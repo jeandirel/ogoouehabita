@@ -18,11 +18,11 @@ export function PropertyDetailView({ property }: { property: Property }) {
   return (
     <div className="flex flex-col w-full bg-surface">
       {/* Header bar */}
-      <div className="w-full bg-surface-container-low pt-space-md pb-space-lg">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-space-md">
+      <div className="w-full border-b border-outline-variant/70 bg-surface py-5 lg:py-6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-space-md">
           <div>
             <div className="flex flex-wrap items-center gap-space-sm mb-2">
-              <span className="bg-primary text-on-primary px-space-sm py-0.5 rounded-full text-label-sm font-bold uppercase tracking-wider">
+                <span className="bg-primary text-on-primary px-space-sm py-1 rounded-full text-label-sm font-bold uppercase tracking-wider">
                 {transactionLabel}
               </span>
               {property.status === "en_attente_verification" && (
@@ -32,7 +32,7 @@ export function PropertyDetailView({ property }: { property: Property }) {
                 </span>
               )}
               {property.passportScore !== undefined && (
-                <span className="bg-primary-fixed-dim/40 text-primary px-space-sm py-0.5 rounded-full text-label-sm font-bold flex items-center gap-1">
+                  <span className="bg-primary-fixed text-primary px-space-sm py-1 rounded-full text-label-sm font-bold flex items-center gap-1">
                   <Icon name="verified" filled className="text-[14px]" />
                   Passeport Ogooué — {property.passportScore}% vérifié
                 </span>
@@ -41,7 +41,7 @@ export function PropertyDetailView({ property }: { property: Property }) {
                 <span className="text-on-surface-variant text-body-sm">Réf: {property.reference}</span>
               )}
             </div>
-            <h1 className="font-headline-xl text-primary tracking-tight">{property.title}</h1>
+            <h1 className="font-headline-lg text-on-surface tracking-tight">{property.title}</h1>
             <p className="text-body-lg text-on-surface-variant mt-1 flex items-center gap-2">
               <Icon name="location_on" className="text-secondary" />
               {property.addressLine ?? property.location}
@@ -51,16 +51,16 @@ export function PropertyDetailView({ property }: { property: Property }) {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-space-lg w-full">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-space-lg w-full">
         <PropertyGallery images={galleryImages} hasRealPhoto={property.hasRealPhoto} />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl mt-space-xl">
           <div className="lg:col-span-8 flex flex-col gap-space-xl">
             {/* Quick stats */}
-            <div className="bg-surface-container-low p-space-lg rounded-xl shadow-sm flex flex-wrap justify-between items-center gap-space-md">
+            <div className="border border-outline-variant/60 bg-surface p-4 rounded-xl shadow-sm flex flex-wrap justify-between items-center gap-space-md">
               {quickStats.map((spec, index) => (
                 <div key={`${spec.label}-${index}`} className="flex items-center gap-space-md">
-                  <div className="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
+                    <div className="w-11 h-11 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
                     <Icon name={spec.icon} className="text-[24px]" />
                   </div>
                   <div>
@@ -91,7 +91,7 @@ export function PropertyDetailView({ property }: { property: Property }) {
                 <h2 className="font-headline-md text-primary mb-space-md">Caractéristiques principales</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-space-sm">
                   {property.features.map((feature) => (
-                    <div key={feature.label} className="bg-surface-container-low p-space-md rounded-xl">
+                    <div key={feature.label} className="border border-outline-variant/50 bg-surface-container-low p-space-md rounded-lg">
                       <div className="text-label-sm text-on-surface-variant">{feature.label}</div>
                       <div className="font-label-md text-on-surface mt-1">{feature.value}</div>
                     </div>
@@ -114,7 +114,7 @@ export function PropertyDetailView({ property }: { property: Property }) {
             )}
 
             {property.passportChecklist && (
-              <div className="bg-surface-container-low p-space-lg rounded-xl shadow-sm">
+              <div className="border border-outline-variant/60 bg-surface p-space-lg rounded-xl shadow-sm">
                 <div className="flex items-center justify-between mb-space-md">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
@@ -165,7 +165,7 @@ export function PropertyDetailView({ property }: { property: Property }) {
               </div>
             )}
 
-            <div className="bg-primary-container text-on-primary p-space-lg rounded-xl shadow-md">
+            <div className="bg-primary-container text-on-primary p-space-lg rounded-xl shadow-sm">
               <div className="flex items-center gap-3 mb-space-sm">
                 <Icon name="smart_toy" className="text-primary-fixed-dim text-[32px]" />
                 <div>

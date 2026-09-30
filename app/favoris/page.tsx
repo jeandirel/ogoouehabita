@@ -29,12 +29,12 @@ export default function FavorisPage() {
 
   return (
     <SiteShell>
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-space-xl w-full">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 lg:py-16 w-full">
         <div className="mb-space-lg">
           <div className="text-label-md text-secondary font-bold uppercase tracking-wider mb-2">
             Mon espace
           </div>
-          <h1 className="font-headline-xl text-on-surface tracking-tight">Mes favoris</h1>
+          <h1 className="font-headline-lg text-on-surface tracking-tight">Mes favoris</h1>
           <p className="text-body-md text-on-surface-variant mt-2 max-w-2xl">
             Retrouvez ici les biens que vous avez enregistrés pendant vos recherches. Vos favoris
             sont conservés localement sur cet appareil, dans ce navigateur.
@@ -69,7 +69,7 @@ export default function FavorisPage() {
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center text-center gap-space-md bg-surface-container-low rounded-2xl py-24 px-6">
+          <div className="flex flex-col items-center text-center gap-space-md border border-outline-variant/60 bg-surface py-16 px-6 rounded-xl">
             <div className="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center">
               <Icon name="favorite" className="text-[32px] text-outline" />
             </div>

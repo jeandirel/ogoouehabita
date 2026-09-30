@@ -36,12 +36,12 @@ export function PropertyDetailActions({ property }: { property: Property }) {
   };
 
   return (
-    <div className="flex items-center gap-space-sm relative">
+    <div className="relative flex flex-wrap items-center gap-2">
       <button
         type="button"
         onClick={() => toggleFavorite(favoriteId)}
         aria-pressed={favorite}
-        className="bg-surface-container p-space-sm rounded-xl text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 font-label-md shadow-sm"
+        className="flex items-center gap-2 rounded-xl border border-outline-variant/70 bg-surface px-3 py-2.5 font-label-md text-on-surface shadow-sm transition-colors hover:bg-surface-container-low"
       >
         <Icon name="favorite" filled={favorite} className={favorite ? "text-laterite" : undefined} />
         {favorite ? "Sauvegardé" : "Sauvegarder"}
@@ -49,7 +49,7 @@ export function PropertyDetailActions({ property }: { property: Property }) {
       <button
         type="button"
         onClick={handleShare}
-        className="bg-surface-container p-space-sm rounded-xl text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 font-label-md shadow-sm"
+        className="flex items-center gap-2 rounded-xl border border-outline-variant/70 bg-surface px-3 py-2.5 font-label-md text-on-surface shadow-sm transition-colors hover:bg-surface-container-low"
       >
         <Icon name="share" />
         Partager

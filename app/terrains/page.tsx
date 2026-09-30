@@ -44,29 +44,29 @@ export default async function TerrainsPage({
 
   return (
     <SiteShell>
-      <div className="flex flex-col w-full">
-        {/* Hero */}
-        <section className="relative w-full bg-forest-deep text-on-primary py-16 px-6 lg:px-12 overflow-hidden">
+      <div className="portal-page">
+        {/* Search-first header */}
+        <section className="relative w-full bg-forest-deep text-on-primary py-8 sm:py-10 overflow-hidden">
           <div
             className="absolute inset-0 opacity-15 bg-cover bg-center pointer-events-none"
             style={{ backgroundImage: `url('${stitchImage.misc_hero_foret_vers_terrain_defriche.path}')` }}
             role="img"
             aria-label={stitchImage.misc_hero_foret_vers_terrain_defriche.alt}
           />
-          <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-7 flex flex-col gap-space-md">
+          <div className="portal-container relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_420px] items-start">
+            <div className="flex flex-col gap-3 pt-1">
               <div className="flex items-center gap-2">
-                <span className="bg-laterite text-on-primary text-label-sm px-3 py-1 rounded-full uppercase tracking-widest font-bold">
+                <span className="bg-laterite text-on-primary text-label-sm px-3 py-1 rounded-full uppercase tracking-[0.14em] font-bold">
                   Cadastre &amp; Foncier National
                 </span>
                 <span className="text-primary-fixed-dim text-label-sm font-medium">
                   Répertoire Officiel Gabon
                 </span>
               </div>
-              <h1 className="text-headline-xl text-on-primary tracking-tight">
+              <h1 className="font-headline-xl text-on-primary tracking-[-0.04em]">
                 Le foncier, avec plus de transparence.
               </h1>
-              <p className="text-body-lg text-surface-variant max-w-xl">
+              <p className="text-body-md text-surface-variant max-w-xl">
                 Sécurisez l&apos;acquisition de vos parcelles et terrains bâtissables à travers le
                 Gabon grâce à notre système de certification par niveau de confiance et nos
                 géomètres agréés.
@@ -83,28 +83,20 @@ export default async function TerrainsPage({
         </section>
 
         {/* Map + parcels */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <section className="portal-container py-8 sm:py-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
             <div>
               <div className="text-label-md text-laterite uppercase tracking-widest font-bold mb-1">
-                Cartographie &amp; Parcelles
+                Terrains disponibles
               </div>
               <h2 className="text-headline-lg text-on-surface font-bold">
-                Sélection de terrains viabilisés &amp; bornés
+                {filtered.length} terrain{filtered.length > 1 ? "s" : ""} correspondant à votre recherche
               </h2>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-body-sm text-on-surface-variant">Affichage:</span>
-              <button className="bg-surface-container-high px-4 py-2 rounded-xl text-label-md font-bold text-primary shadow-sm">
-                Grille
-              </button>
-              <button className="bg-surface text-on-surface-variant px-4 py-2 rounded-xl text-label-md font-medium">
-                Vue Satellite Active
-              </button>
-            </div>
+            <Link href="/terrains" className="rounded-xl border border-outline-variant bg-surface-container-lowest px-3 py-2 text-label-sm font-bold text-primary hover:bg-primary-fixed">Réinitialiser la recherche</Link>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-1 bg-surface-container-low p-6 rounded-xl flex flex-col gap-4 shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5">
+            <div className="portal-panel p-5 flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <div className="text-headline-sm text-on-surface font-bold">Carte Foncier Live</div>
                 <Icon name="satellite_alt" className="text-secondary animate-pulse" />
@@ -131,7 +123,7 @@ export default async function TerrainsPage({
                 <span className="text-label-sm font-bold text-primary">Il y a 2h</span>
               </div>
             </div>
-            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {filtered.length > 0 ? (
                 filtered.map((land) => <LandCard key={land.slug} land={land} />)
               ) : (

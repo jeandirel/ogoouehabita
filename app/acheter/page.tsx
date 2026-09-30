@@ -89,35 +89,35 @@ export default async function AcheterPage({
 
   return (
     <SiteShell>
-      <div className="flex flex-col w-full bg-surface text-on-surface">
-        {/* Hero */}
-        <section className="relative w-full pt-16 pb-24 px-6 lg:px-12 bg-primary text-on-primary overflow-hidden">
+      <div className="portal-page">
+        {/* Search-first header */}
+        <section className="relative w-full border-b border-outline-variant/20 bg-primary text-on-primary overflow-hidden">
           <div
             className="absolute inset-0 opacity-10 bg-cover bg-center pointer-events-none"
             style={{ backgroundImage: `url('${stitchImage.misc_hero_rainforest_canopy.path}')` }}
             role="img"
             aria-label={stitchImage.misc_hero_rainforest_canopy.alt}
           />
-          <div className="max-w-7xl mx-auto relative z-10 flex flex-col gap-space-lg">
+          <div className="portal-container relative z-10 flex flex-col gap-5 py-8 sm:py-10">
             <div className="flex items-center gap-space-sm">
               <Icon name="verified" className="text-secondary-fixed" />
-              <span className="text-label-md text-primary-fixed uppercase tracking-wider">
+              <span className="text-label-sm text-primary-fixed-dim uppercase tracking-[0.14em] font-extrabold">
                 Registre Foncier National
               </span>
             </div>
             <div className="max-w-2xl">
-              <h1 className="font-headline-xl text-headline-xl text-on-primary mb-space-sm">
+              <h1 className="font-headline-xl text-on-primary tracking-[-0.04em]">
                 Achetez avec confiance.
               </h1>
-              <p className="text-body-lg text-primary-fixed-dim">
+              <p className="mt-2 text-body-md text-on-primary/75">
                 Découvrez des biens vérifiés partout au Gabon.
               </p>
             </div>
             <form
               action="/acheter"
-              className="bg-surface text-on-surface p-space-md rounded-xl shadow-xl mt-space-md grid grid-cols-1 md:grid-cols-5 gap-space-sm items-center"
+              className="portal-panel mt-1 grid grid-cols-1 gap-1 p-2 text-on-surface md:grid-cols-2 xl:grid-cols-5"
             >
-              <div className="flex flex-col p-2">
+              <div className="flex min-h-14 flex-col justify-center rounded-xl px-3 py-2 hover:bg-surface-container-low">
                 <label className="text-label-sm text-on-surface-variant font-bold mb-1">
                   Localisation
                 </label>
@@ -125,9 +125,10 @@ export default async function AcheterPage({
                   <Icon name="location_on" className="text-secondary" />
                   <select
                     name="ville"
-                    defaultValue={ville ?? "Libreville"}
-                    className="bg-transparent text-body-sm font-medium focus:outline-none w-full"
+                    defaultValue={ville ?? ""}
+                    className="portal-input"
                   >
+                    <option value="">Toutes les villes</option>
                     {GABON_GEOGRAPHY.map((province) => (
                       <optgroup key={province.name} label={province.name}>
                         {province.villes.map((v) => (
@@ -140,7 +141,7 @@ export default async function AcheterPage({
                   </select>
                 </div>
               </div>
-              <div className="flex flex-col p-2">
+              <div className="flex min-h-14 flex-col justify-center rounded-xl px-3 py-2 hover:bg-surface-container-low">
                 <label className="text-label-sm text-on-surface-variant font-bold mb-1">
                   Type de bien
                 </label>
@@ -148,16 +149,17 @@ export default async function AcheterPage({
                   <Icon name="home" className="text-secondary" />
                   <select
                     name="type"
-                    defaultValue={type ?? PROPERTY_TYPES[0]}
-                    className="bg-transparent text-body-sm font-medium focus:outline-none w-full"
+                    defaultValue={type ?? ""}
+                    className="portal-input"
                   >
+                    <option value="">Tous les types</option>
                     {PROPERTY_TYPES.map((option) => (
                       <option key={option}>{option}</option>
                     ))}
                   </select>
                 </div>
               </div>
-              <div className="flex flex-col p-2">
+              <div className="flex min-h-14 flex-col justify-center rounded-xl px-3 py-2 hover:bg-surface-container-low">
                 <label className="text-label-sm text-on-surface-variant font-bold mb-1">
                   Budget max (FCFA)
                 </label>
@@ -165,13 +167,13 @@ export default async function AcheterPage({
                   <Icon name="payments" className="text-secondary" />
                   <input
                     name="budget"
-                    className="bg-transparent text-body-sm font-medium focus:outline-none w-full"
+                    className="portal-input"
                     type="text"
-                    defaultValue={typeof params.budget === "string" ? params.budget : "150 000 000"}
+                    defaultValue={typeof params.budget === "string" ? params.budget : ""}
                   />
                 </div>
               </div>
-              <div className="flex flex-col p-2">
+              <div className="flex min-h-14 flex-col justify-center rounded-xl px-3 py-2 hover:bg-surface-container-low">
                 <label className="text-label-sm text-on-surface-variant font-bold mb-1">
                   Ogooué AI Query
                 </label>
@@ -180,16 +182,16 @@ export default async function AcheterPage({
                   <input
                     name="q"
                     defaultValue={typeof params.q === "string" ? params.q : ""}
-                    className="bg-transparent text-body-sm font-medium focus:outline-none w-full placeholder:text-outline"
+                    className="portal-input"
                     placeholder="Ex: Villa sécurisée avec piscine à Akanda..."
                     type="text"
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-center p-2">
+              <div className="flex items-center justify-center p-1">
                 <button
                   type="submit"
-                  className="w-full bg-primary text-on-primary py-3 px-space-md rounded-xl font-label-md hover:bg-forest-deep transition-all flex items-center justify-center gap-2 shadow-sm"
+                  className="w-full min-h-14 bg-primary text-on-primary py-3 px-space-md rounded-xl font-label-md hover:bg-forest-deep transition-all flex items-center justify-center gap-2 shadow-sm"
                 >
                   <Icon name="search" />
                   <span>Rechercher</span>
@@ -200,21 +202,21 @@ export default async function AcheterPage({
         </section>
 
         {/* Verified properties */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-12 py-space-xl w-full">
-          <div className="flex items-end justify-between mb-space-lg">
+        <section className="portal-container py-8 sm:py-10">
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
             <div>
-              <span className="text-label-md text-laterite uppercase font-bold tracking-wider">
-                Sélection exclusive
+              <span className="portal-eyebrow">
+                Résultats à acheter
               </span>
               <h2 className="font-headline-lg text-headline-lg text-primary mt-1">
-                Biens à acheter vérifiés
+                {filtered.length} bien{filtered.length > 1 ? "s" : ""} disponible{filtered.length > 1 ? "s" : ""}
               </h2>
             </div>
             <Link
               className="text-body-sm font-bold text-secondary hover:underline flex items-center gap-1"
               href="/recherche"
             >
-              <span>Voir tout le catalogue</span>
+              <span>Carte et filtres avancés</span>
               <Icon name="arrow_forward" className="text-[16px]" />
             </Link>
           </div>

@@ -36,7 +36,7 @@ export function EstimationForm() {
     <div className="flex flex-col gap-space-lg max-w-3xl mx-auto">
       <form
         onSubmit={handleSubmit}
-        className="bg-surface p-space-lg lg:p-space-xl rounded-2xl shadow-lg flex flex-col gap-space-md"
+        className="bg-surface p-space-lg lg:p-space-xl rounded-xl border border-outline-variant/70 shadow-sm flex flex-col gap-space-md"
       >
         <div className="flex bg-surface-container p-1 rounded-xl w-fit">
           {TRANSACTION_TYPES.map((option) => (
@@ -111,7 +111,7 @@ export function EstimationForm() {
       </form>
 
       {result === null && (
-        <div className="bg-surface-container-low p-space-lg rounded-2xl flex flex-col items-center text-center gap-space-sm">
+        <div className="border border-outline-variant/60 bg-surface-container-low p-space-lg rounded-xl flex flex-col items-center text-center gap-space-sm">
           <Icon name="info" className="text-outline text-[28px]" />
           <p className="text-body-md text-on-surface-variant max-w-md">
             Pas encore assez d&apos;annonces comparables ({category}, {TRANSACTION_TYPES.find((t) => t.key === transactionType)?.label.toLowerCase()}) sur Ogooué Habitat pour produire une estimation. Un conseiller d&apos;une agence partenaire peut vous aider directement.
@@ -127,7 +127,7 @@ export function EstimationForm() {
       )}
 
       {result && (
-        <div className="bg-primary-fixed/30 p-space-lg rounded-2xl flex flex-col gap-space-sm">
+        <div className="bg-primary-fixed/30 p-space-lg rounded-xl flex flex-col gap-space-sm">
           <span className="text-label-md font-bold text-secondary uppercase tracking-wider">
             Estimation indicative
           </span>

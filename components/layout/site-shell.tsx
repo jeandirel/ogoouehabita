@@ -7,7 +7,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className="flex-1">{children}</main>
+      <main className="flex flex-1 flex-col pt-[64px]">{children}</main>
       <Footer />
       <CompareTray />
       <HelpWidget />

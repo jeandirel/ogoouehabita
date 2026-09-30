@@ -1,83 +1,48 @@
 import Link from "next/link";
-import { Icon } from "@/components/ui/icon";
-import { FavoriteButton } from "@/components/ui/favorite-button";
+import { CardImageCarousel } from "@/components/property/card-image-carousel";
 import { CompareButton } from "@/components/ui/compare-button";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { Icon } from "@/components/ui/icon";
 import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
 import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Property } from "@/lib/types";
 
 const TAG_STYLES: Record<string, string> = {
-  "Meublé": "text-secondary font-bold bg-secondary-fixed/50",
-  "Exclusivité": "text-laterite font-medium bg-tertiary-fixed/40",
+  Meublé: "bg-primary-fixed text-primary",
+  Exclusivité: "bg-tertiary-fixed text-laterite",
 };
 
 export function RentListingCard({ property }: { property: Property }) {
+  const pending = property.status === "en_attente_verification";
+  const images = property.gallery?.length ? property.gallery.map((entry) => entry.image) : [property.image];
+  const favoriteId = toFavoriteId("property", property.slug);
+
   return (
-    <div className="bg-surface-container-low rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col">
-      <div className="relative h-64 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-          style={{ backgroundImage: `url('${property.image.path}')` }}
-          role="img"
-          aria-label={property.image.alt}
-        />
-        {property.status === "en_attente_verification" ? (
-          <div className="absolute top-4 left-4 bg-surface/90 backdrop-blur-md text-on-surface-variant px-3 py-1 rounded-full text-label-sm font-bold flex items-center gap-1 shadow-sm">
-            <Icon name="hourglass_top" className="text-[14px]" /> En cours de vérification
-          </div>
-        ) : (
-          <div className="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-label-sm font-bold flex items-center gap-1 shadow-sm">
-            <Icon name="verified" className="text-[14px]" /> Certifié Ogooué
-          </div>
-        )}
-        <div className="absolute top-4 right-4 bg-surface/90 backdrop-blur-md text-on-surface px-3 py-1 rounded-full text-label-sm font-bold">
-          {property.category}
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-outline-variant/70 bg-surface shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+      <div className="relative h-52 overflow-hidden">
+        <CardImageCarousel images={images} imageClassName="group-hover:scale-105" />
+        <span className={pending ? "absolute left-3 top-3 z-20 inline-flex items-center gap-1 rounded-full bg-surface/90 px-2.5 py-1 text-label-sm font-bold text-on-surface-variant shadow-sm backdrop-blur" : "absolute left-3 top-3 z-20 inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-label-sm font-bold text-on-primary shadow-sm"}>
+          <Icon name={pending ? "hourglass_top" : "verified"} className="text-[14px]" />
+          {pending ? "En vérification" : "Certifié Ogooué"}
+        </span>
+        <div className="absolute right-3 top-3 z-20 flex flex-col gap-2">
+          <FavoriteButton favoriteId={favoriteId} />
+          <CompareButton compareId={favoriteId} />
         </div>
-        {property.hasRealPhoto === false && (
-          <PhotoPendingBadge className="absolute bottom-4 left-4" />
-        )}
-        <div className="absolute bottom-4 right-4 flex items-center gap-2">
-          <CompareButton compareId={toFavoriteId("property", property.slug)} />
-          <FavoriteButton favoriteId={toFavoriteId("property", property.slug)} />
-        </div>
+        {property.hasRealPhoto === false && <PhotoPendingBadge className="absolute bottom-3 left-3 z-20" />}
       </div>
-      <div className="p-6 flex flex-col flex-1 justify-between">
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-label-sm text-on-surface-variant flex items-center gap-1">
-              <Icon name="location_on" className="text-[16px] text-secondary" /> {property.location}
-            </span>
-            {property.tag && (
-              <span
-                className={`text-label-sm px-2.5 py-0.5 rounded-full ${TAG_STYLES[property.tag] ?? "text-secondary font-bold bg-secondary-fixed/50"}`}
-              >
-                {property.tag}
-              </span>
-            )}
-          </div>
-          <h3 className="font-headline-sm text-on-surface mb-3">{property.title}</h3>
-          <div className="flex items-center gap-4 text-body-sm text-on-surface-variant mb-4">
-            {property.specs.map((spec) => (
-              <span key={spec.label} className="flex items-center gap-1">
-                <Icon name={spec.icon} className="text-[18px]" /> {spec.label}
-              </span>
-            ))}
-          </div>
+      <Link href={`/bien/${property.slug}`} className="flex flex-1 flex-col p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div><p className="text-headline-sm font-extrabold tracking-[-0.03em] text-primary">{property.priceLabel}</p><p className="mt-0.5 text-label-sm text-on-surface-variant">{property.priceSecondaryLabel ?? "Location"}</p></div>
+          {property.tag && <span className={`rounded-md px-2 py-1 text-label-sm font-bold ${TAG_STYLES[property.tag] ?? "bg-primary-fixed text-primary"}`}>{property.tag}</span>}
         </div>
-        <div className="pt-4 border-t border-outline-variant/20 flex items-center justify-between">
-          <div>
-            <span className="text-headline-md text-primary font-bold">{property.priceLabel}</span>
-            <span className="text-body-sm text-on-surface-variant"> / mois</span>
-          </div>
-          <Link
-            href={`/bien/${property.slug}`}
-            aria-label={`Voir ${property.title}`}
-            className="bg-primary/10 hover:bg-primary text-primary hover:text-on-primary p-3 rounded-xl transition-all"
-          >
-            <Icon name="visibility" />
-          </Link>
+        <p className="mt-3 flex items-center gap-1 text-body-sm text-on-surface-variant"><Icon name="location_on" className="text-[17px] text-secondary" />{property.location}</p>
+        <h3 className="mt-1 font-headline-sm font-bold text-on-surface group-hover:text-primary">{property.title}</h3>
+        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-2 border-y border-outline-variant/60 py-2.5">
+          {property.specs.map((spec) => <span key={spec.label} className="flex items-center gap-1 text-label-sm text-on-surface-variant"><Icon name={spec.icon} className="text-[17px] text-secondary" />{spec.label}</span>)}
         </div>
-      </div>
-    </div>
+        <div className="mt-auto flex items-center justify-between gap-3 pt-4"><span className="truncate text-label-sm text-on-surface-variant">{property.agencyName ?? "Annonce immobilière"}</span><span className="inline-flex shrink-0 items-center gap-1 text-label-md font-bold text-primary">Voir le bien <Icon name="arrow_forward" className="text-[17px]" /></span></div>
+      </Link>
+    </article>
   );
 }

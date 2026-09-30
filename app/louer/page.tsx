@@ -90,9 +90,9 @@ export default async function LouerPage({
 
   return (
     <SiteShell>
-      <div className="flex flex-col w-full">
-        {/* Hero */}
-        <section className="relative w-full min-h-[580px] bg-primary flex items-center justify-center -mt-20 pt-20 overflow-hidden">
+      <div className="portal-page">
+        {/* Search-first header */}
+        <section className="relative w-full bg-primary overflow-hidden">
           <div
             className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
             style={{ backgroundImage: `url('${stitchImage.misc_hero_libreville_drone_dusk.path}')` }}
@@ -100,25 +100,25 @@ export default async function LouerPage({
             aria-label={stitchImage.misc_hero_libreville_drone_dusk.alt}
           />
           <div className="absolute inset-0 z-0 bg-gradient-to-t from-primary via-primary/70 to-transparent" />
-          <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full py-20 flex flex-col items-center text-center">
-            <div className="inline-flex items-center gap-space-xs px-3 py-1.5 rounded-full bg-surface/10 backdrop-blur-md text-surface mb-6 border border-surface/20">
+          <div className="portal-container relative z-10 py-8 sm:py-10 flex flex-col">
+            <div className="inline-flex w-fit items-center gap-space-xs px-3 py-1.5 rounded-full bg-surface/10 text-surface mb-4 border border-surface/20">
               <Icon name="verified" className="text-primary-fixed-dim text-[18px]" />
               <span className="text-label-sm font-medium tracking-wide">
                 Registre National des Locations Certifiées
               </span>
             </div>
-            <h1 className="font-headline-xl text-surface max-w-4xl tracking-tight mb-6">
+            <h1 className="font-headline-xl text-surface max-w-4xl tracking-[-0.04em] mb-3">
               Trouvez plus qu&apos;un logement. <span className="text-primary-fixed-dim">Trouvez votre place.</span>
             </h1>
-            <p className="text-body-lg text-surface-variant max-w-2xl mb-10 font-light">
+            <p className="text-body-md text-surface-variant max-w-2xl mb-6">
               Accédez aux meilleures opportunités immobilières en location au Gabon, vérifiées et
               garanties sans intermédiaires abusifs.
             </p>
             <form
               action="/louer"
-              className="w-full max-w-4xl bg-surface p-4 rounded-xl shadow-2xl flex flex-col lg:flex-row gap-3"
+              className="portal-panel w-full max-w-none p-2 flex flex-col lg:flex-row gap-1"
             >
-              <div className="flex-1 flex items-center gap-3 bg-surface-container-low px-4 py-3 rounded-lg">
+              <div className="flex-1 flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-surface-container-low">
                 <Icon name="location_on" className="text-secondary" />
                 <div className="flex flex-col text-left w-full">
                   <span className="text-label-sm text-on-surface-variant font-medium">
@@ -127,7 +127,7 @@ export default async function LouerPage({
                   <select
                     name="quartier"
                     defaultValue={quartier ?? ""}
-                    className="bg-transparent text-on-surface font-medium focus:outline-none cursor-pointer"
+                    className="portal-input cursor-pointer"
                   >
                     <optgroup label="Libreville">
                       {LIBREVILLE_OPTIONS.map((option) => (
@@ -148,7 +148,7 @@ export default async function LouerPage({
                   </select>
                 </div>
               </div>
-              <div className="flex-1 flex items-center gap-3 bg-surface-container-low px-4 py-3 rounded-lg">
+              <div className="flex-1 flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-surface-container-low">
                 <Icon name="home" className="text-secondary" />
                 <div className="flex flex-col text-left w-full">
                   <span className="text-label-sm text-on-surface-variant font-medium">
@@ -156,16 +156,17 @@ export default async function LouerPage({
                   </span>
                   <select
                     name="type"
-                    defaultValue={type ?? PROPERTY_TYPES[0]}
-                    className="bg-transparent text-on-surface font-medium focus:outline-none cursor-pointer"
+                    defaultValue={type ?? ""}
+                    className="portal-input cursor-pointer"
                   >
+                    <option value="">Tous les types</option>
                     {PROPERTY_TYPES.map((option) => (
                       <option key={option}>{option}</option>
                     ))}
                   </select>
                 </div>
               </div>
-              <div className="flex-1 flex items-center gap-3 bg-surface-container-low px-4 py-3 rounded-lg">
+              <div className="flex-1 flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-surface-container-low">
                 <Icon name="payments" className="text-secondary" />
                 <div className="flex flex-col text-left w-full">
                   <span className="text-label-sm text-on-surface-variant font-medium">
@@ -174,7 +175,7 @@ export default async function LouerPage({
                   <select
                     name="budget"
                     defaultValue={typeof params.budget === "string" ? params.budget : BUDGETS[0]}
-                    className="bg-transparent text-on-surface font-medium focus:outline-none cursor-pointer"
+                    className="portal-input cursor-pointer"
                   >
                     {BUDGETS.map((option) => (
                       <option key={option}>{option}</option>
@@ -184,14 +185,14 @@ export default async function LouerPage({
               </div>
               <button
                 type="submit"
-                className="bg-primary text-on-primary px-8 py-4 rounded-xl font-label-md hover:bg-forest-deep transition-all flex items-center justify-center gap-2 shadow-md"
+                className="bg-primary text-on-primary px-7 py-4 rounded-xl font-label-md hover:bg-forest-deep transition-all flex items-center justify-center gap-2 shadow-sm"
               >
                 <Icon name="search" />
                 <span>Rechercher</span>
               </button>
             </form>
-            <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
-              <span className="text-surface-variant text-label-sm mr-2">Filtres rapides :</span>
+            <div className="flex flex-wrap items-center gap-2 mt-4">
+              <span className="text-surface-variant text-label-sm mr-1">Filtres rapides :</span>
               {QUICK_FILTERS.map((filter) => (
                 <Link
                   key={filter.label}
@@ -208,13 +209,13 @@ export default async function LouerPage({
         </section>
 
         {/* Verified listings */}
-        <section className="w-full py-20 px-6 lg:px-12 max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <section className="portal-container py-8 sm:py-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
             <div>
               <div className="text-label-md text-secondary font-bold uppercase tracking-wider mb-2">
-                Sélection rigoureuse
+                Résultats location
               </div>
-              <h2 className="font-headline-lg text-on-surface">Annonces Vérifiées Ogooué Shield</h2>
+              <h2 className="font-headline-lg text-on-surface">{filtered.length} résultat{filtered.length > 1 ? "s" : ""} disponible{filtered.length > 1 ? "s" : ""}</h2>
             </div>
             <Link
               className="text-label-md text-primary font-bold hover:underline flex items-center gap-1 mt-4 md:mt-0"

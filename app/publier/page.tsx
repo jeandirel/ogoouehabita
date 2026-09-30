@@ -13,12 +13,12 @@ export default function PublierPage() {
   return (
     <SiteShell>
       <div className="w-full bg-surface-container-low">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-space-xl">
-          <div className="max-w-3xl mx-auto text-center mb-space-xl">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 lg:py-16">
+          <div className="max-w-3xl mx-auto text-center mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary w-fit text-label-sm font-bold mx-auto mb-4">
               <Icon name="verified" className="text-[18px]" /> Vérification Ogooué Shield
             </div>
-            <h1 className="font-headline-xl text-on-surface tracking-tight mb-4">
+            <h1 className="font-headline-lg text-on-surface tracking-tight mb-3">
               Publier un bien
             </h1>
             <p className="text-body-md text-on-surface-variant">
@@ -27,7 +27,7 @@ export default function PublierPage() {
               la plateforme pour tous les visiteurs.
             </p>
           </div>
-          <div className="bg-surface p-space-lg lg:p-space-xl rounded-2xl shadow-lg">
+          <div className="bg-surface p-space-lg lg:p-space-xl rounded-xl border border-outline-variant/70 shadow-sm">
             <PublishForm />
           </div>
         </div>

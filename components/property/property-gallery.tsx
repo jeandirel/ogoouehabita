@@ -32,17 +32,17 @@ export function PropertyGallery({
 
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-md lg:h-[540px]">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3 lg:h-[500px]">
         <button
           type="button"
           onClick={() => setOpenIndex(0)}
-          className="lg:col-span-2 h-64 lg:h-full rounded-xl overflow-hidden shadow-md relative bg-cover bg-center text-left cursor-zoom-in"
+          className="lg:col-span-2 h-72 sm:h-96 lg:h-full rounded-xl overflow-hidden shadow-sm relative bg-cover bg-center text-left cursor-zoom-in group"
           style={{ backgroundImage: `url('${main.image.path}')` }}
           aria-label={main.image.alt}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-anthracite/60 via-transparent to-transparent opacity-60" />
-          <div className="absolute bottom-6 left-6 text-on-primary">
-            <span className="bg-primary/80 backdrop-blur-md px-3 py-1 rounded-full text-label-sm font-bold">
+          <div className="absolute bottom-5 left-5 text-on-primary">
+            <span className="bg-primary/85 backdrop-blur-md px-3 py-1 rounded-full text-label-sm font-bold">
               Vue principale
             </span>
             <div className="font-headline-lg mt-2">{main.caption}</div>
@@ -54,7 +54,7 @@ export function PropertyGallery({
             <button
               type="button"
               onClick={() => setOpenIndex(1)}
-              className="rounded-xl overflow-hidden shadow-md relative bg-cover bg-center text-left cursor-zoom-in"
+              className="rounded-xl overflow-hidden shadow-sm relative bg-cover bg-center text-left cursor-zoom-in"
               style={{ backgroundImage: `url('${second.image.path}')` }}
               aria-label={second.image.alt}
             >
@@ -66,7 +66,7 @@ export function PropertyGallery({
               <button
                 type="button"
                 onClick={() => setOpenIndex(2)}
-                className="rounded-xl overflow-hidden shadow-md relative bg-cover bg-center text-left cursor-zoom-in"
+                className="rounded-xl overflow-hidden shadow-sm relative bg-cover bg-center text-left cursor-zoom-in"
                 style={{ backgroundImage: `url('${third.image.path}')` }}
                 aria-label={third.image.alt}
               >
@@ -81,6 +81,16 @@ export function PropertyGallery({
           </div>
         )}
       </div>
+
+      {images.length > 1 && (
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1 lg:hidden no-scrollbar">
+          {images.map((image, index) => (
+            <button key={image.image.path} type="button" onClick={() => setOpenIndex(index)} className="relative h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-cover bg-center" style={{ backgroundImage: `url('${image.image.path}')` }} aria-label={`Voir la photo ${index + 1}`}>
+              <span className="absolute inset-0 bg-primary/10" />
+            </button>
+          ))}
+        </div>
+      )}
 
       {openIndex !== null && (
         <div className="fixed inset-0 z-50 bg-anthracite/95 flex items-center justify-center">

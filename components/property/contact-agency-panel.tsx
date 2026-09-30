@@ -75,7 +75,7 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
   };
 
   return (
-    <div className="sticky top-28 bg-surface-container-low p-space-lg rounded-xl shadow-lg flex flex-col gap-space-md">
+    <div className="sticky top-24 border border-outline-variant/70 bg-surface p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
       <div className="flex items-baseline justify-between">
         <div>
           <div className="text-headline-lg text-primary font-bold">{property.priceLabel}</div>
@@ -83,7 +83,7 @@ export function ContactAgencyPanel({ property }: { property: Property }) {
             <div className="text-body-sm text-on-surface-variant">{property.priceSecondaryLabel}</div>
           )}
         </div>
-        <span className="bg-secondary-fixed text-on-secondary-fixed px-2.5 py-1 rounded-full text-label-sm font-bold">
+        <span className="bg-secondary-fixed text-on-secondary-fixed px-2 py-1 rounded-full text-label-sm font-bold">
           Disponible
         </span>
       </div>

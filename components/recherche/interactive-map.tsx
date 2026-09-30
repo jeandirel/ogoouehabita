@@ -64,7 +64,7 @@ export function InteractiveMap({ pins }: { pins: readonly MapPin[] }) {
   };
 
   return (
-    <div className="w-full h-[420px] lg:w-[58%] lg:h-full relative overflow-hidden">
+    <div className="relative h-[420px] w-full overflow-hidden border-t border-outline-variant/70 bg-surface-container-low lg:h-full lg:w-[58%] lg:border-l lg:border-t-0">
       <div
         className="w-full h-full bg-cover bg-center relative transition-transform duration-300"
         style={{
@@ -159,7 +159,7 @@ export function InteractiveMap({ pins }: { pins: readonly MapPin[] }) {
           ))}
         </div>
 
-        <div className="absolute top-6 left-6 bg-surface/90 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg flex items-center gap-2 z-30">
+        <div className="absolute left-4 top-4 z-30 flex items-center gap-2 rounded-xl bg-surface/90 px-3 py-2 shadow-lg backdrop-blur-md sm:left-6 sm:top-6 sm:px-4 sm:py-2.5">
           <Icon name="security" filled className="text-secondary" />
           <span className="text-label-sm font-bold text-on-surface">
             Registre Foncier National Synchronisé
@@ -178,6 +178,9 @@ export function InteractiveMap({ pins }: { pins: readonly MapPin[] }) {
             "La géolocalisation n'est pas disponible sur cet appareil ou ce navigateur."}
         </div>
       )}
+      <p className="absolute bottom-3 left-4 z-30 rounded-lg bg-surface/85 px-2 py-1 text-[10px] font-medium text-on-surface-variant backdrop-blur sm:left-6">
+        Carte illustrative non géoréférencée
+      </p>
     </div>
   );
 }

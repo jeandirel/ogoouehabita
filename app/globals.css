@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  --font-plus-jakarta-sans: "Avenir Next", Avenir, "Segoe UI", Helvetica, Arial, sans-serif;
   /* Semantic tokens mapped onto the Ogooué Habitat v2 brand palette */
   --background: #F7F5EF;
   --surface: #F7F5EF;
@@ -74,6 +75,47 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
+  text-rendering: optimizeLegibility;
+}
+
+@layer components {
+  .portal-page {
+    @apply w-full bg-surface text-on-surface;
+  }
+
+  .portal-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-10;
+  }
+
+  .portal-eyebrow {
+    @apply text-label-sm font-extrabold uppercase tracking-[0.14em] text-secondary;
+  }
+
+  .portal-panel {
+    @apply rounded-xl border border-outline-variant/80 bg-surface-container-lowest shadow-sm;
+  }
+
+  .portal-input {
+    @apply w-full bg-transparent text-body-sm font-medium text-on-surface outline-none placeholder:text-outline;
+  }
+}
+
+::selection {
+  background: #D6A536;
+  color: #123D2A;
+}
+
+button,
+a,
+select,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(214, 165, 54, 0.7);
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {

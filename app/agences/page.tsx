@@ -15,12 +15,12 @@ export const metadata: Metadata = {
 export default function AgencesPage() {
   return (
     <SiteShell>
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-space-xl w-full">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 lg:py-16 w-full">
         <div className="mb-space-lg">
           <div className="text-label-md text-secondary font-bold uppercase tracking-wider mb-2">
             Réseau partenaire
           </div>
-          <h1 className="font-headline-xl text-on-surface tracking-tight">
+          <h1 className="font-headline-lg text-on-surface tracking-tight">
             Annuaire des agences partenaires
           </h1>
           <p className="text-body-md text-on-surface-variant mt-2 max-w-2xl">
@@ -29,7 +29,7 @@ export default function AgencesPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {agencies.map((agency) => {
             const listingCount = properties.filter(
               (property) => property.agencyInitials === agency.initials,
@@ -38,7 +38,7 @@ export default function AgencesPage() {
               <Link
                 key={agency.slug}
                 href={`/agences/${agency.slug}`}
-                className="bg-surface-container-lowest rounded-2xl p-space-lg shadow-md hover:shadow-xl transition-all flex flex-col gap-space-md"
+                className="bg-surface rounded-xl border border-outline-variant/70 p-space-lg shadow-sm hover:shadow-md transition-all flex flex-col gap-space-md"
               >
                 <div className="flex items-center gap-4">
                   <div

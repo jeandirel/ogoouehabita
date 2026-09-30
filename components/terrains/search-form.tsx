@@ -30,14 +30,17 @@ export function TerrainsSearchForm({
   return (
     <form
       action="/terrains"
-      className="lg:col-span-5 bg-surface p-6 rounded-xl shadow-xl text-on-surface"
+      className="portal-panel p-4 text-on-surface sm:p-5"
     >
       <div className="flex items-center justify-between mb-4">
-        <div className="text-headline-sm text-primary font-bold">Recherche Foncière</div>
+        <div>
+          <div className="text-headline-sm font-bold text-primary">Recherche foncière</div>
+          <div className="mt-0.5 text-label-sm text-on-surface-variant">Affinez votre sélection</div>
+        </div>
         <Icon name="explore" className="text-secondary" />
       </div>
       <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label className="text-label-sm font-medium text-on-surface-variant mb-1 block">
               Province
@@ -46,7 +49,7 @@ export function TerrainsSearchForm({
               name="province"
               value={province}
               onChange={(event) => handleProvinceChange(event.target.value)}
-              className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
+              className="w-full rounded-xl border border-outline-variant/70 bg-surface-container-low px-3 py-3 text-body-sm text-on-surface outline-none focus:border-primary"
             >
               {GABON_GEOGRAPHY.map((p) => (
                 <option key={p.name} value={p.name}>
@@ -63,7 +66,7 @@ export function TerrainsSearchForm({
               name="ville"
               value={ville}
               onChange={(event) => setVille(event.target.value)}
-              className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
+              className="w-full rounded-xl border border-outline-variant/70 bg-surface-container-low px-3 py-3 text-body-sm text-on-surface outline-none focus:border-primary"
             >
               {villesForProvince.map((v) => (
                 <option key={v.name} value={v.name}>
@@ -73,7 +76,7 @@ export function TerrainsSearchForm({
             </select>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label className="text-label-sm font-medium text-on-surface-variant mb-1 block">
               Surface Min (m²)
@@ -81,7 +84,7 @@ export function TerrainsSearchForm({
             <input
               name="minArea"
               defaultValue={initialMinArea}
-              className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
+              className="w-full rounded-xl border border-outline-variant/70 bg-surface-container-low px-3 py-3 text-body-sm text-on-surface outline-none focus:border-primary"
               placeholder="ex: 500"
               type="number"
             />
@@ -93,7 +96,7 @@ export function TerrainsSearchForm({
             <input
               name="maxBudget"
               defaultValue={initialMaxBudget}
-              className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
+              className="w-full rounded-xl border border-outline-variant/70 bg-surface-container-low px-3 py-3 text-body-sm text-on-surface outline-none focus:border-primary"
               placeholder="ex: 15.000.000"
               type="text"
             />
@@ -106,7 +109,7 @@ export function TerrainsSearchForm({
           <select
             name="trustMin"
             defaultValue={initialTrustMin ?? ""}
-            className="w-full bg-sand border-0 rounded-xl p-3 text-body-sm text-on-surface focus:ring-2 focus:ring-ogooue-blue"
+            className="w-full rounded-xl border border-outline-variant/70 bg-surface-container-low px-3 py-3 text-body-sm text-on-surface outline-none focus:border-primary"
           >
             <option value="">Indifférent</option>
             {[...TRUST_LEVELS].reverse().map((level) => (
@@ -117,7 +120,7 @@ export function TerrainsSearchForm({
           </select>
         </div>
         <button
-          className="mt-2 w-full bg-primary text-on-primary py-3 rounded-xl font-label-md flex items-center justify-center gap-2 hover:bg-forest-deep transition-colors shadow-sm"
+          className="mt-1 w-full rounded-xl bg-primary py-3 text-on-primary font-label-md flex items-center justify-center gap-2 hover:bg-forest-deep transition-colors shadow-sm"
           type="submit"
         >
           <Icon name="search" className="text-[18px]" />

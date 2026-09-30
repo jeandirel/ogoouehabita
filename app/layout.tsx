@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import { FavoritesProvider } from "@/components/providers/favorites-provider";
 import "./globals.css";
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta-sans",
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-});
 
 // Vercel's default domain for this exact linked project name
 // (.vercel/project.json → "projectName":"ogoouehabita"); update if a
@@ -26,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fr" className={`${plusJakartaSans.variable} h-full antialiased`}>
+    <html lang="fr" className="h-full antialiased">
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font -- App Router root layout is the documented place for shared fonts; this rule only targets the Pages Router's pages/_document.js */}
         <link

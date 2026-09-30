@@ -1,83 +1,23 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 
-// Exact 4-item list from the Stitch source's footer (fixed 4-row column
-// aligned against "Liens Rapides"/"Administratif & Légal") — intentionally
-// not expanded to all 9 real provinces, see STITCH_IMPLEMENTATION.md.
 const PROVINCES = ["Estuaire", "Haut-Ogooué", "Ogooué-Maritime", "Woleu-Ntem"];
-
-const QUICK_LINKS = [
-  { label: "Acheter", href: "/acheter" },
-  { label: "Louer", href: "/louer" },
-  { label: "Ogooué Diaspora", href: "/diaspora" },
-  { label: "Ogooué AI", href: "/recherche" },
-];
-
-const LEGAL_LINKS = [
-  { label: "Mentions Légales", href: "/legal/mentions-legales" },
-  { label: "Politique de Confidentialité", href: "/legal/confidentialite" },
-  { label: "Registre Foncier National", href: "/terrains" },
-  { label: "Aide & FAQ", href: "/aide" },
-];
+const EXPLORE_LINKS = [{ label: "Acheter", href: "/acheter" }, { label: "Louer", href: "/louer" }, { label: "Terrains", href: "/terrains" }, { label: "Recherche immobilière", href: "/recherche" }];
+const SERVICE_LINKS = [{ label: "Ogooué Diaspora", href: "/diaspora" }, { label: "Agences partenaires", href: "/agences" }, { label: "Aide & FAQ", href: "/aide" }, { label: "Publier un bien", href: "/publier" }];
+const LEGAL_LINKS = [{ label: "Mentions légales", href: "/legal/mentions-legales" }, { label: "Confidentialité", href: "/legal/confidentialite" }];
 
 export function Footer() {
-  return (
-    <footer className="w-full bg-forest-deep py-space-xl">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-space-lg mb-space-xl">
-        <div className="flex flex-col gap-space-sm">
-          <div className="font-headline-sm text-on-primary font-bold">Ogooué Habitat</div>
-          <p className="text-body-sm text-on-primary/75">
-            La plateforme nationale de confiance immobilière du Gabon.
-          </p>
-          <div className="flex items-center gap-space-xs mt-2 bg-on-primary/10 p-2 rounded-xl w-fit">
-            <Icon name="verified" className="text-ogooue-gold" />
-            <span className="text-label-sm font-bold text-on-primary">
-              Ogooué Shield Certifié
-            </span>
-          </div>
-        </div>
-        <div className="flex flex-col gap-space-xs">
-          <div className="text-label-md font-bold text-on-primary mb-2">Provinces</div>
-          {PROVINCES.map((province) => (
-            <Link
-              key={province}
-              className="text-body-sm text-on-primary/75 hover:text-ogooue-gold transition-colors"
-              href={`/recherche?province=${encodeURIComponent(province)}`}
-            >
-              {province}
-            </Link>
-          ))}
-        </div>
-        <div className="flex flex-col gap-space-xs">
-          <div className="text-label-md font-bold text-on-primary mb-2">Liens Rapides</div>
-          {QUICK_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              className="text-body-sm text-on-primary/75 hover:text-ogooue-gold transition-colors"
-              href={link.href}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-        <div className="flex flex-col gap-space-xs">
-          <div className="text-label-md font-bold text-on-primary mb-2">
-            Administratif &amp; Légal
-          </div>
-          {LEGAL_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              className="text-body-sm text-on-primary/75 hover:text-ogooue-gold transition-colors"
-              href={link.href}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      </div>
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-space-md border-t border-on-primary/10 text-center text-on-primary/60 text-body-sm">
-        © 2024 Ogooué Habitat. Tous droits réservés.
-      </div>
-    </footer>
-  );
+  return <footer className="mt-auto w-full bg-forest-deep text-on-primary">
+    <div className="mx-auto grid max-w-7xl gap-8 px-6 py-11 sm:px-8 lg:grid-cols-[1.45fr_repeat(3,1fr)] lg:px-10">
+      <div><Link href="/" className="font-headline-md font-extrabold tracking-[-0.04em]">Ogooué Habitat</Link><p className="mt-4 max-w-xs text-body-sm leading-6 text-on-primary/70">La plateforme immobilière gabonaise qui rend chaque projet plus clair, plus simple et mieux vérifié.</p><div className="mt-5 inline-flex items-center gap-2 rounded-full border border-primary-fixed-dim/20 bg-surface/10 px-3 py-2 text-label-sm font-bold"><Icon name="verified_user" className="text-[18px] text-primary-fixed-dim" />Ogooué Shield</div></div>
+      <FooterColumn title="Explorer" links={EXPLORE_LINKS} />
+      <FooterColumn title="Nos services" links={SERVICE_LINKS} />
+      <div><h2 className="text-label-sm font-extrabold uppercase tracking-[0.14em] text-primary-fixed-dim">Par province</h2><div className="mt-4 grid gap-3">{PROVINCES.map((province) => <Link key={province} href={`/recherche?province=${encodeURIComponent(province)}`} className="text-body-sm text-on-primary/70 transition-colors hover:text-ogooue-gold">{province}</Link>)}</div></div>
+    </div>
+    <div className="border-t border-on-primary/10"><div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-5 text-body-sm text-on-primary/55 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10"><span>© 2024 Ogooué Habitat. Tous droits réservés.</span><div className="flex flex-wrap gap-x-5 gap-y-2">{LEGAL_LINKS.map((link) => <Link key={link.href} href={link.href} className="hover:text-ogooue-gold">{link.label}</Link>)}</div></div></div>
+  </footer>;
+}
+
+function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
+  return <div><h2 className="text-label-sm font-extrabold uppercase tracking-[0.14em] text-primary-fixed-dim">{title}</h2><div className="mt-4 grid gap-3">{links.map((link) => <Link key={link.href} href={link.href} className="text-body-sm text-on-primary/70 transition-colors hover:text-ogooue-gold">{link.label}</Link>)}</div></div>;
 }

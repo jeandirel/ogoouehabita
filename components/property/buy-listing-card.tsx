@@ -1,66 +1,56 @@
 import Link from "next/link";
-import { Icon } from "@/components/ui/icon";
-import { FavoriteButton } from "@/components/ui/favorite-button";
+import { CardImageCarousel } from "@/components/property/card-image-carousel";
 import { CompareButton } from "@/components/ui/compare-button";
+import { FavoriteButton } from "@/components/ui/favorite-button";
+import { Icon } from "@/components/ui/icon";
 import { PhotoPendingBadge } from "@/components/ui/photo-pending-badge";
 import { toFavoriteId } from "@/data/local/favorite-id";
 import type { Property } from "@/lib/types";
 
 export function BuyListingCard({ property }: { property: Property }) {
-  const isPending = property.status === "en_attente_verification";
-  const badgeLabel = isPending
+  const pending = property.status === "en_attente_verification";
+  const badge = pending
     ? "En cours de vérification"
-    : (property.badges?.[0] ?? (property.passportGrade ? `Passeport Ogooué ${property.passportGrade}` : undefined));
+    : property.badges?.[0] ??
+      (property.passportGrade
+        ? `Passeport Ogooué ${property.passportGrade}`
+        : property.passportScore !== undefined
+          ? `Ogooué Shield ${property.passportScore}%`
+          : undefined);
+  const images = property.gallery?.length ? property.gallery.map((entry) => entry.image) : [property.image];
+  const favoriteId = toFavoriteId("property", property.slug);
 
   return (
-    <div className="relative bg-surface-container-low rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group">
-      <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
-        <FavoriteButton favoriteId={toFavoriteId("property", property.slug)} />
-        <CompareButton compareId={toFavoriteId("property", property.slug)} />
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-outline-variant/70 bg-surface shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+      <div className="absolute right-3 top-3 z-20 flex flex-col gap-2">
+        <FavoriteButton favoriteId={favoriteId} />
+        <CompareButton compareId={favoriteId} />
       </div>
-      <Link href={`/bien/${property.slug}`} className="flex flex-col flex-1">
-        <div
-          className="relative h-64 bg-cover bg-center"
-          style={{ backgroundImage: `url('${property.image.path}')` }}
-          role="img"
-          aria-label={property.image.alt}
-        >
-          {badgeLabel && (
-            <div
-              className={`absolute top-3 left-3 px-3 py-1 rounded-full text-label-sm flex items-center gap-1 shadow-sm ${
-                isPending ? "bg-surface/90 backdrop-blur-md text-on-surface-variant" : "bg-primary text-on-primary"
-              }`}
-            >
-              <Icon name={isPending ? "hourglass_top" : "verified"} className="text-[14px]" />
-              <span>{badgeLabel}</span>
-            </div>
+      <Link href={`/bien/${property.slug}`} className="flex flex-1 flex-col">
+        <div className="relative h-52 overflow-hidden">
+          <CardImageCarousel images={images} imageClassName="group-hover:scale-105" />
+          {badge && (
+            <span className={pending ? "absolute left-3 top-3 z-20 inline-flex items-center gap-1 rounded-full bg-surface/90 px-2.5 py-1 text-label-sm font-bold text-on-surface-variant shadow-sm backdrop-blur" : "absolute left-3 top-3 z-20 inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-label-sm font-bold text-on-primary shadow-sm"}>
+              <Icon name={pending ? "hourglass_top" : "verified"} className="text-[14px]" />
+              {badge}
+            </span>
           )}
-          {property.hasRealPhoto === false && (
-            <PhotoPendingBadge className="absolute bottom-3 left-3" />
-          )}
-          <div className="absolute bottom-3 right-3 bg-surface/90 backdrop-blur-md px-3 py-1 rounded-full text-label-md font-bold text-primary">
-            {property.priceLabel}
-          </div>
+          {property.hasRealPhoto === false && <PhotoPendingBadge className="absolute bottom-3 left-3 z-20" />}
         </div>
-        <div className="p-space-md flex flex-col gap-2 flex-1 justify-between">
-          <div>
-            <div className="text-label-sm text-on-surface-variant">{property.location}</div>
-            <h3 className="font-headline-sm text-primary group-hover:text-secondary transition-colors">
-              {property.title}
-            </h3>
-            <p className="text-body-sm text-on-surface-variant mt-1 line-clamp-2">
-              {property.description}
-            </p>
+        <div className="flex flex-1 flex-col p-4">
+          <p className="text-headline-sm font-extrabold tracking-[-0.03em] text-primary">{property.priceLabel}</p>
+          <p className="mt-2 flex items-center gap-1 text-body-sm text-on-surface-variant"><Icon name="location_on" className="text-[17px] text-secondary" />{property.location}</p>
+          <h3 className="mt-1 font-headline-sm font-bold text-on-surface group-hover:text-primary">{property.title}</h3>
+          {property.description && <p className="mt-2 line-clamp-2 text-body-sm text-on-surface-variant">{property.description}</p>}
+          <div className="mt-3 flex flex-wrap gap-x-3 gap-y-2 border-t border-outline-variant/60 pt-3">
+            {property.specs.map((spec) => <span key={spec.label} className="flex items-center gap-1 text-label-sm text-on-surface-variant"><Icon name={spec.icon} className="text-[17px] text-secondary" />{spec.label}</span>)}
           </div>
-          <div className="flex items-center justify-between pt-4 border-t border-outline-variant/20 text-body-sm text-on-surface-variant">
-            {property.specs.map((spec) => (
-              <span key={spec.label} className="flex items-center gap-1">
-                <Icon name={spec.icon} className="text-[18px]" /> {spec.label}
-              </span>
-            ))}
+          <div className="mt-auto flex items-center justify-between gap-3 pt-4">
+            <span className="truncate text-label-sm text-on-surface-variant">{property.agencyName ?? "Annonce immobilière"}</span>
+            <span className="inline-flex shrink-0 items-center gap-1 text-label-md font-bold text-primary">Détails <Icon name="arrow_forward" className="text-[17px]" /></span>
           </div>
         </div>
       </Link>
-    </div>
+    </article>
   );
 }
