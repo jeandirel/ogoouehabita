@@ -67,3 +67,35 @@ Ce fichier liste uniquement les interventions externes à effectuer hors dévelo
 - Choisir emplacement externe sécurisé pour sauvegardes chiffrées.
 - Renseigner: `BACKUP_TARGET`, `BACKUP_ENCRYPTION_KEY`, fréquence cron souhaitée.
 - Vérifier: restauration testée sur environnement séparé.
+
+
+## Base PostgreSQL et Docker — VPS Hostinger
+
+Accès manquant dans l’environnement de développement: aucun accès SSH au VPS Hostinger, aucun Docker daemon utilisable sans privilège root, et aucune URL `DATABASE_URL` de base PostgreSQL réelle. Les migrations ne sont donc **pas appliquées ni vérifiées sur une base réelle**.
+
+Sur le VPS, après avoir cloné le dépôt et créé un fichier `.env` non commité:
+
+```bash
+cd /chemin/vers/ogoouehabita
+cp .env.example .env
+# renseigner des mots de passe longs, DATABASE_URL et SESSION_SECRET (>= 32 caractères)
+docker compose build
+docker compose up -d postgres
+docker compose run --rm migrate
+docker compose run --rm app npm run db:seed  # démonstration uniquement, jamais avec données réelles
+docker compose up -d app
+docker compose ps
+```
+
+Vérifier la migration réelle:
+
+```bash
+docker compose exec postgres psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c 'SELECT migration_name, finished_at FROM "_prisma_migrations";'
+```
+
+Avant toute migration ultérieure de production:
+
+```bash
+docker compose exec -T postgres pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" --format=custom > pre-migration-$(date -u +%Y%m%dT%H%M%SZ).dump
+docker compose run --rm migrate
+```

@@ -49,3 +49,13 @@ Mettre en place le socle de base de données persistante et les migrations, puis
 ## Prochaine action après socle DB
 
 Brancher les parcours auth/annonces existants aux API serveur et appliquer les permissions côté serveur.
+
+
+## Authentification serveur — implémenté, à tester avec PostgreSQL réel
+
+- Routes API ajoutées: inscription, connexion, session HttpOnly, profil courant, vérification email, demande/réinitialisation de mot de passe, déconnexion du terminal courant ou de tous les appareils, suppression de compte avec confirmation.
+- Mot de passe: `scrypt` salé; sessions opaques hachées en base avec expiration de 30 jours.
+- Les vérifications et réinitialisations sont des jetons opaques hachés, à durée d’une heure et usage unique.
+- Permissions serveur disponibles via `requireUser` et `requireRole`; elles doivent être employées dans chaque prochaine route métier.
+- Les écrans connexion et inscription existants utilisent maintenant les API réelles, sans changement de design.
+- Blocage: les emails ne peuvent pas être délivrés tant que le fournisseur n’est pas configuré; aucun jeton n’est exposé en production.
