@@ -85,3 +85,16 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 - Les documents privés ne sont servis qu’au propriétaire, aux membres actifs de l’agence ou aux modérateurs/administrateurs; cache privé désactivé.
 - Les médias publics disposent d’une URL applicative; les accès sont validés par la base.
 - Limite: l’upload/lecture n’est pas testé contre PostgreSQL réel ni volume Docker effectif faute d’accès local à ces services.
+
+
+## Favoris, demandes et recherche — API PostgreSQL ajoutées
+
+- Favoris persistants par utilisateur via clé composite base de données.
+- Demandes de contact persistantes, accessibles uniquement au demandeur, au propriétaire ou à l’équipe d’agence concernée.
+- Recherche publique paginée uniquement sur les annonces `PUBLISHED`, avec critères vérifiables: transaction, ville, catégorie, fourchette de prix et texte libre. Elle ne génère aucune caractéristique inventée.
+- Les écrans existants utilisent encore leurs stores navigateur: l’API est prête mais ne peut pas être validée sans migration PostgreSQL réelle.
+
+## Vérification PostgreSQL locale
+
+- Recherche effectuée: binaires `postgres`, `initdb`, `pg_ctl` et `psql` absents de l’environnement; aucun service local accessible n’a été trouvé.
+- Docker CLI est présent mais son daemon exige des privilèges non disponibles. Aucune migration ni parcours API n’est déclaré vérifié avec une base réelle.
