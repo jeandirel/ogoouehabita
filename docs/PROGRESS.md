@@ -106,3 +106,10 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 - Indicateurs connectés: comptes, agences, annonces à modérer, signalements ouverts.
 - APIs d’administration protégées: synthèse et file des annonces à modérer, sans exposer de secret.
 - Les actions de modération passent déjà par l’API d’annonces avec journal d’audit. La gestion exhaustive des comptes, paiements, offres et contenus administrables reste à compléter.
+
+## Écrans métier connectés — implémenté, non vérifié en conditions réelles
+
+- `/publier` charge catégories/villes/quartiers depuis `/api/reference`, crée une annonce persistante, téléverse la photo locale puis soumet l’annonce à modération. États chargement, erreur et confirmation ajoutés sans refonte graphique.
+- `/mes-annonces` et `/favoris` utilisent des listes API avec états chargement, vide, erreur et accès non authentifié; les stores navigateur ne sont plus utilisés par ces écrans.
+- La route média propriétaire ajoute suppression, ordre et choix de couverture avec contrôle serveur et journalisation.
+- `docs/COVERAGE_MATRIX.md` distingue explicitement implémentation et validation en conditions réelles.

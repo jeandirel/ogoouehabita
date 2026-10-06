@@ -18,12 +18,12 @@ export async function POST(request: Request) {
   try {
     const user = await requireUser();
     if (!user.roles.some((role) => ([UserRole.PROPRIETAIRE, UserRole.AGENT, UserRole.RESPONSABLE_AGENCE, UserRole.ADMIN] as UserRole[]).includes(role))) throw new AuthError(403, "Un rôle propriétaire ou professionnel est requis.");
-    const body = await readJson(request); const title = text(body.title, "Titre", 8, 150); const description = text(body.description, "Description", 30, 5000); const categoryCode = text(body.categoryCode, "Catégorie", 2, 50); const cityId = text(body.cityId, "Ville", 1, 50); const priceCfa = Number(body.priceCfa);
+    const body = await readJson(request); const title = text(body.title, "Titre", 8, 150); const description = text(body.description, "Description", 30, 5000); const categoryCode = text(body.categoryCode, "Catégorie", 2, 50); const cityId = text(body.cityId, "Ville", 1, 50); const districtId = typeof body.districtId === "string" && body.districtId ? body.districtId : undefined; const priceCfa = Number(body.priceCfa);
     if (!Number.isSafeInteger(priceCfa) || priceCfa <= 0) throw new AuthError(400, "Prix invalide.");
     const category = await prisma.propertyCategory.findUnique({ where: { code: categoryCode } }); if (!category) throw new AuthError(400, "Catégorie invalide.");
-    const city = await prisma.city.findUnique({ where: { id: cityId } }); if (!city) throw new AuthError(400, "Ville invalide.");
+    const city = await prisma.city.findUnique({ where: { id: cityId } }); if (!city) throw new AuthError(400, "Ville invalide."); if (districtId && !(await prisma.district.findFirst({ where: { id: districtId, cityId } }))) throw new AuthError(400, "Quartier invalide.");
     const transaction = body.transaction === "location" ? ListingTransaction.RENT : ListingTransaction.SALE;
-    const listing = await prisma.listing.create({ data: { ownerId: user.id, categoryId: category.id, cityId: city.id, slug: slugify(title), title, description, transaction, status: ListingStatus.DRAFT, priceCfa: BigInt(priceCfa), surfaceM2: typeof body.surfaceM2 === "number" ? body.surfaceM2 : null, bedrooms: typeof body.bedrooms === "number" ? body.bedrooms : null } });
+    const listing = await prisma.listing.create({ data: { ownerId: user.id, categoryId: category.id, cityId: city.id, districtId, slug: slugify(title), title, description, transaction, status: ListingStatus.DRAFT, priceCfa: BigInt(priceCfa), surfaceM2: typeof body.surfaceM2 === "number" ? body.surfaceM2 : null, bedrooms: typeof body.bedrooms === "number" ? body.bedrooms : null } });
     await prisma.auditLog.create({ data: { actorId: user.id, action: "LISTING_CREATE", entity: "Listing", entityId: listing.id } });
     return NextResponse.json({ listing: { id: listing.id, slug: listing.slug, status: listing.status } }, { status: 201 });
   } catch (error) { return jsonError(error); }
