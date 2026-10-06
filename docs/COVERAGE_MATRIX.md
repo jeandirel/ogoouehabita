@@ -6,8 +6,8 @@
 | Publication | Brouillon, photo, soumission | Modération API | Propriétaire/agence/modérateur | Oui, écran connecté | Non : PostgreSQL indisponible |
 | Mes annonces | Chargement, vide, erreur, accès refusé | N/A | Propriétaire/membre agence | Oui, écran connecté | Non : PostgreSQL indisponible |
 | Favoris | Chargement, vide, erreur, accès refusé | N/A | Par compte, contrainte composite | Oui, écran connecté | Non : PostgreSQL indisponible |
-| Demandes | API persistante | Prospect propriétaire/agence | Accès relationnel | API seulement | Non : PostgreSQL indisponible |
-| Recherche | Recherche filtrée paginée | N/A | Annonces publiées uniquement | API seulement | Non : PostgreSQL indisponible |
+| Demandes | Liste connectée, chargement/vide/erreur | Prospect propriétaire/agence | Accès relationnel | Oui, écran connecté | Non : PostgreSQL indisponible |
+| Recherche | Liste connectée, filtres, chargement/vide/erreur | N/A | Annonces publiées uniquement | Oui, écran connecté | Non : PostgreSQL indisponible |
 | Médias | Image/document local | Contrôle propriétaire/agence | Volume, accès privé, audit | API upload/ordre/couverture/suppression | Non : volume + PostgreSQL indisponibles |
 | Agences | Création, invitation | Validation à compléter | Membre/invitation expirante | Partiel | Non : PostgreSQL indisponible |
 | Modération | Soumission | File/publication/refus | Modérateur/admin séparés | Partiel | Non : PostgreSQL indisponible |

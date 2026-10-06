@@ -113,3 +113,11 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 - `/mes-annonces` et `/favoris` utilisent des listes API avec états chargement, vide, erreur et accès non authentifié; les stores navigateur ne sont plus utilisés par ces écrans.
 - La route média propriétaire ajoute suppression, ordre et choix de couverture avec contrôle serveur et journalisation.
 - `docs/COVERAGE_MATRIX.md` distingue explicitement implémentation et validation en conditions réelles.
+
+## Recherche et demandes connectées — implémenté, compilation vérifiée
+
+- `/recherche` n’importe plus le catalogue simulé ni le store navigateur. Les critères URL sont traduits vers `/api/search`; chargement, vide et erreur sont rendus dans le design existant.
+- `/mes-demandes` n’utilise plus `leads-store`; les demandes authentifiées sont chargées depuis `/api/leads`, avec chargement, vide, erreur et accès refusé.
+- La carte n’affiche aucun marqueur inventé tant que les coordonnées PostgreSQL ne sont pas exploitées.
+- Premier `npm run lint` échoué sur `react-hooks/set-state-in-effect` dans `recherche-results.tsx`; correction appliquée, lint suivant réussi sans erreur.
+- `npm run build` réussi. Validation réelle toujours bloquée par l’absence de PostgreSQL accessible.

@@ -7,8 +7,6 @@ import { RechercheActionButtons } from "@/components/recherche/recherche-action-
 import { AdvancedFiltersDrawer } from "@/components/search/advanced-filters-drawer";
 import { InteractiveMap } from "@/components/recherche/interactive-map";
 import { SortSelect } from "@/components/search/sort-select";
-import { properties } from "@/data/properties";
-import { matchesRechercheFilters, sortProperties, type PropertySort } from "@/lib/property-filters";
 import type { AdvancedFilters } from "@/components/search/advanced-filters-drawer";
 import type { TransactionType } from "@/lib/types";
 
@@ -17,12 +15,6 @@ export const metadata: Metadata = {
   description:
     "Filtrez villas, appartements et terrains par budget, chambres, surface et certification Ogooué Shield, avec carte interactive.",
 };
-
-const RECHERCHE_SLUGS = [
-  "villa-akande-executive",
-  "duplex-panorama-ocean",
-  "terrain-residentiel-angondje",
-];
 
 const CHIPS = [
   { key: "villa", icon: undefined, label: "Villa & Maison" },
@@ -34,11 +26,6 @@ const CHIPS = [
   { key: "vue", icon: "water", label: "Vue Panoramique" },
 ] as const;
 
-const MAP_PINS = [
-  { slug: "villa-akande-executive", priceShort: "185M FCFA", top: "35%", left: "42%", active: true },
-  { slug: "duplex-panorama-ocean", priceShort: "95M FCFA", top: "55%", left: "60%", active: false },
-  { slug: "terrain-residentiel-angondje", priceShort: "45M FCFA", top: "20%", left: "70%", active: false },
-] as const;
 
 export default async function RecherchePage({
   searchParams,
@@ -56,7 +43,6 @@ export default async function RecherchePage({
 
   const transactionType: TransactionType = get("type") === "location" ? "location" : "vente";
   const q = get("q")?.toLowerCase().trim();
-  const province = get("province");
   const vue = get("vue") ?? "carte"; // "liste" | "carte"
   const urlFiltres = get("filtres") === "1";
   const sort = get("sort") ?? "pertinence";
@@ -102,23 +88,8 @@ export default async function RecherchePage({
   const amenities = getUrlList("amenity");
   if (amenities.length) activeFilters.amenity = amenities;
 
-  const filters = { transactionType, province, q, chips: activeChips };
-  const pool = properties.filter((property) => RECHERCHE_SLUGS.includes(property.slug));
-  const filtered = pool.filter((property) => matchesRechercheFilters(property, filters));
-  const results = sortProperties(filtered, sort as PropertySort);
-
   const showMap = vue === "carte";
-
-  // Pin positions are hand-placed against the one static illustrative map
-  // image (no real property coordinates exist to fabricate), so the map
-  // can only ever show these 3 — but it can at least stay honest about
-  // *which* of them still match the current filters/search/sort, instead
-  // of always showing all 3 regardless of what the list is showing.
-  const resultSlugs = new Set(results.map((property) => property.slug));
-  const visiblePins = MAP_PINS.filter((pin) => resultSlugs.has(pin.slug)).map((pin) => ({
-    ...pin,
-    active: pin.slug === results[0]?.slug,
-  }));
+  const visiblePins: never[] = [];
 
   const advancedFilters: AdvancedFilters = {
     ville: get("ville"),
@@ -262,16 +233,7 @@ export default async function RecherchePage({
               currentSort={sort}
               showMap={showMap}
             />
-            <RechercheResults
-              curated={results}
-              filters={filters}
-              sort={sort}
-              activeFilters={activeFilters}
-              hasActiveFilters={Object.keys(activeFilters).length > 0}
-              showMap={showMap}
-              sortSelect={<SortSelect />}
-              transactionType={transactionType}
-            />
+            <RechercheResults showMap={showMap} sortSelect={<SortSelect />} />
           </div>
 
           {/* Right Column: Interactive Map with Price Pins */}
