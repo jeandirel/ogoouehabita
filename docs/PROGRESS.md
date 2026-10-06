@@ -68,3 +68,11 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 - Chaque action est inscrite dans `AuditLog`.
 - Les écrans publication et mes annonces conservent encore leur stockage navigateur: leur bascule nécessitera la disponibilité de la migration appliquée, des identifiants de géographie persistants et du stockage média.
 - Médias: le modèle persistant existe mais aucun upload n’est activé tant que le stockage public/privé n’est pas configuré.
+
+
+## Agences — API serveur ajoutée
+
+- Création d’agence avec statut `PENDING_REVIEW`, équipe propriétaire initiale et journalisation.
+- Liste limitée aux agences auxquelles appartient l’utilisateur connecté.
+- Invitations réservées aux responsables/propriétaires d’agence et expirant après sept jours.
+- Acceptation d’invitation, validation des justificatifs et interface de gestion d’agence restent à développer et à relier après migration réelle.
