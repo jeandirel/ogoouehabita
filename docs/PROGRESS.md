@@ -76,3 +76,12 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 - Liste limitée aux agences auxquelles appartient l’utilisateur connecté.
 - Invitations réservées aux responsables/propriétaires d’agence et expirant après sept jours.
 - Acceptation d’invitation, validation des justificatifs et interface de gestion d’agence restent à développer et à relier après migration réelle.
+
+
+## Médias persistants locaux — API ajoutée
+
+- Stockage local persistant prévu dans le volume Docker `media_data`, sans fournisseur cloud obligatoire.
+- Upload limité: images publiques JPEG/PNG/WebP (10 Mo) et PDF privé (15 Mo).
+- Les documents privés ne sont servis qu’au propriétaire, aux membres actifs de l’agence ou aux modérateurs/administrateurs; cache privé désactivé.
+- Les médias publics disposent d’une URL applicative; les accès sont validés par la base.
+- Limite: l’upload/lecture n’est pas testé contre PostgreSQL réel ni volume Docker effectif faute d’accès local à ces services.
