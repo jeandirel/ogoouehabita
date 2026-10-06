@@ -98,3 +98,11 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 
 - Recherche effectuée: binaires `postgres`, `initdb`, `pg_ctl` et `psql` absents de l’environnement; aucun service local accessible n’a été trouvé.
 - Docker CLI est présent mais son daemon exige des privilèges non disponibles. Aucune migration ni parcours API n’est déclaré vérifié avec une base réelle.
+
+
+## Administration — premier tableau connecté ajouté
+
+- Page `/admin` protégée côté serveur, refusant tout utilisateur non modérateur/admin.
+- Indicateurs connectés: comptes, agences, annonces à modérer, signalements ouverts.
+- APIs d’administration protégées: synthèse et file des annonces à modérer, sans exposer de secret.
+- Les actions de modération passent déjà par l’API d’annonces avec journal d’audit. La gestion exhaustive des comptes, paiements, offres et contenus administrables reste à compléter.
