@@ -59,3 +59,12 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 - Permissions serveur disponibles via `requireUser` et `requireRole`; elles doivent être employées dans chaque prochaine route métier.
 - Les écrans connexion et inscription existants utilisent maintenant les API réelles, sans changement de design.
 - Blocage: les emails ne peuvent pas être délivrés tant que le fournisseur n’est pas configuré; aucun jeton n’est exposé en production.
+
+
+## Annonces persistantes — API serveur ajoutée, à intégrer complètement après migration réelle
+
+- API annonces ajoutée: création de brouillon, liste des annonces accessibles, édition, soumission à modération, publication/rejet par modérateur, archivage, vendu/loué et suppression.
+- Chaque opération contrôle côté serveur le propriétaire, l’appartenance active à l’agence, ou le rôle modérateur/admin.
+- Chaque action est inscrite dans `AuditLog`.
+- Les écrans publication et mes annonces conservent encore leur stockage navigateur: leur bascule nécessitera la disponibilité de la migration appliquée, des identifiants de géographie persistants et du stockage média.
+- Médias: le modèle persistant existe mais aucun upload n’est activé tant que le stockage public/privé n’est pas configuré.
