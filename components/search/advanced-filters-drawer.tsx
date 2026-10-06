@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Dialog, DialogOverlay, DialogContent } from "@radix-ui/react-dialog";
 import { Icon } from "@/components/ui/icon";
@@ -64,6 +64,49 @@ const PROPERTY_TYPE_LABELS: { value: string; label: string; icon: string }[] = [
   { value: "Studio", label: "Studio", icon: "king_bed" },
 ];
 
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <h3 className="text-label-md font-bold text-on-surface">{title}</h3>
+      {children}
+    </div>
+  );
+}
+
+function CheckboxGroup({
+  items,
+  selected,
+  onSelect,
+}: {
+  items: { value: string; label: string; icon?: string }[];
+  selected: string[];
+  onSelect: (value: string) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {items.map((item) => (
+        <button
+          key={item.value}
+          type="button"
+          onClick={() => onSelect(item.value)}
+          className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-all ${
+            selected.includes(item.value)
+              ? "border-primary bg-primary-fixed text-primary"
+              : "border-outline-variant bg-surface text-on-surface hover:border-secondary"
+          }`}
+          aria-pressed={selected.includes(item.value)}
+        >
+          {item.icon && (
+            <Icon name={item.icon} className={selected.includes(item.value) ? "text-primary" : "text-secondary"} />
+          )}
+          <span className="flex-1 text-left">{item.label}</span>
+          {selected.includes(item.value) && <Icon name="check" className="text-primary" />}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function toInt(value: string): number | undefined {
   const n = Number(value);
   return Number.isNaN(n) ? undefined : n;
@@ -80,10 +123,6 @@ export function AdvancedFiltersDrawer({ open, onClose, initialFilters, transacti
   const router = useRouter();
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<AdvancedFilters>(initialFilters);
-
-  useEffect(() => {
-    setFilters(initialFilters);
-  }, [initialFilters]);
 
   const villeOptions = useMemo(
     () =>
@@ -151,71 +190,6 @@ export function AdvancedFiltersDrawer({ open, onClose, initialFilters, transacti
     (filters.shield ? 1 : 0) +
     (filters.particulier ? 1 : 0);
 
-  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className="space-y-2">
-      <h3 className="text-label-md font-bold text-on-surface">{title}</h3>
-      {children}
-    </div>
-  );
-
-  const CheckboxGroup = ({
-    items,
-    selected,
-    onSelect,
-  }: {
-    items: { value: string; label: string; icon?: string }[];
-    selected: string[];
-    onSelect: (value: string) => void;
-  }) => (
-    <div className="grid grid-cols-2 gap-2">
-      {items.map((item) => (
-        <button
-          key={item.value}
-          type="button"
-          onClick={() => onSelect(item.value)}
-          className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-all ${
-            selected.includes(item.value)
-              ? "border-primary bg-primary-fixed text-primary"
-              : "border-outline-variant bg-surface text-on-surface hover:border-secondary"
-          }`}
-          aria-pressed={selected.includes(item.value)}
-        >
-          {item.icon && (
-            <Icon name={item.icon} className={selected.includes(item.value) ? "text-primary" : "text-secondary"} />
-          )}
-          <span className="flex-1 text-left">{item.label}</span>
-          {selected.includes(item.value) && <Icon name="check" className="text-primary" />}
-        </button>
-      ))}
-    </div>
-  );
-
-  const NumberInput = ({
-    label,
-    value,
-    onChange,
-    placeholder,
-    suffix,
-  }: {
-    label: string;
-    value?: number;
-    onChange: (v: number | undefined) => void;
-    placeholder?: string;
-    suffix?: string;
-  }) => (
-    <div className="flex items-center gap-2">
-      <label className="text-label-sm text-on-surface-variant">{label}</label>
-      <input
-        type="number"
-        min="0"
-        placeholder={placeholder}
-        value={value ?? ""}
-        onChange={(e) => onChange(toInt(e.target.value))}
-        className="w-full rounded-lg border border-outline-variant bg-surface px-3 py-2 text-label-md text-on-surface outline-none focus:border-primary"
-      />
-      {suffix && <span className="text-label-sm text-on-surface-variant">{suffix}</span>}
-    </div>
-  );
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogOverlay className="fixed inset-0 z-50 bg-anthracite/60 backdrop-blur-sm" />

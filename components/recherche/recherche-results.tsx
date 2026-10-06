@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/icon";
 import { SearchResultCard } from "@/components/search/search-result-card";
 import { usePublishedListings } from "@/data/local/published-listings-store";
-import { matchesRechercheFilters, sortProperties, type RechercheFilters } from "@/lib/property-filters";
+import { matchesRechercheFilters, sortProperties, type RechercheFilters, type PropertySort } from "@/lib/property-filters";
 import { formatCompactFcfa } from "@/lib/format";
 import type { Property } from "@/lib/types";
 
@@ -103,7 +103,7 @@ export function RechercheResults({
   const router = useRouter();
   const searchParams = useSearchParams();
   const local = usePublishedListings().filter((listing) => matchesRechercheFilters(listing, filters));
-  const merged = sortProperties([...local, ...curated], sort as any);
+  const merged = sortProperties([...local, ...curated], sort as PropertySort);
 
   const chipsToRender = Object.entries(activeFilters)
     .filter(([k, v]) => {

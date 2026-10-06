@@ -8,7 +8,7 @@ import { AdvancedFiltersDrawer } from "@/components/search/advanced-filters-draw
 import { InteractiveMap } from "@/components/recherche/interactive-map";
 import { SortSelect } from "@/components/search/sort-select";
 import { properties } from "@/data/properties";
-import { matchesRechercheFilters, sortProperties, type RechercheFilters } from "@/lib/property-filters";
+import { matchesRechercheFilters, sortProperties, type PropertySort } from "@/lib/property-filters";
 import type { AdvancedFilters } from "@/components/search/advanced-filters-drawer";
 import type { TransactionType } from "@/lib/types";
 
@@ -105,7 +105,7 @@ export default async function RecherchePage({
   const filters = { transactionType, province, q, chips: activeChips };
   const pool = properties.filter((property) => RECHERCHE_SLUGS.includes(property.slug));
   const filtered = pool.filter((property) => matchesRechercheFilters(property, filters));
-  const results = sortProperties(filtered, sort as any);
+  const results = sortProperties(filtered, sort as PropertySort);
 
   const showMap = vue === "carte";
 
