@@ -121,3 +121,11 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 - La carte n’affiche aucun marqueur inventé tant que les coordonnées PostgreSQL ne sont pas exploitées.
 - Premier `npm run lint` échoué sur `react-hooks/set-state-in-effect` dans `recherche-results.tsx`; correction appliquée, lint suivant réussi sans erreur.
 - `npm run build` réussi. Validation réelle toujours bloquée par l’absence de PostgreSQL accessible.
+
+## Séparation administrateur / modérateur — implémentée, non testée sur base réelle
+
+- Gestion des rôles, suspension/réactivation et vérification email réservée à `ADMIN` avec `adminMfaEnabled=true`; la suspension révoque les sessions.
+- Validation, rejet et suspension d’agence réservés à l’administrateur renforcé.
+- Les modérateurs conservent la modération de contenu sans pouvoir gérer comptes ou agences.
+- Chaque action produit une entrée `AuditLog`.
+- Build réussi; comportement runtime non vérifié faute de PostgreSQL accessible.
