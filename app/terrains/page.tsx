@@ -7,6 +7,7 @@ import { TrustLevelCard } from "@/components/land/trust-level-card";
 import { TerrainsSearchForm } from "@/components/terrains/search-form";
 import { lands, TRUST_LEVELS } from "@/data/land";
 import { parseBudgetLabel } from "@/lib/format";
+import { RechercheActionButtons } from "@/components/recherche/recherche-action-buttons";
 import { stitchImage } from "@/data/image-manifest";
 
 export const metadata: Metadata = {
@@ -41,6 +42,13 @@ export default async function TerrainsPage({
     if (trustMin && !Number.isNaN(trustMin) && land.trustLevel < trustMin) return false;
     return true;
   });
+
+  const activeFilters: Record<string, string | string[]> = {};
+  if (province) activeFilters.province = province;
+  if (ville) activeFilters.ville = ville;
+  if (trustMin) activeFilters.trustMin = trustMin.toString();
+  if (minArea) activeFilters.minArea = minArea.toString();
+  if (maxBudget) activeFilters.budgetMax = maxBudget.toString();
 
   return (
     <SiteShell>
@@ -95,6 +103,13 @@ export default async function TerrainsPage({
             </div>
             <Link href="/terrains" className="rounded-xl border border-outline-variant bg-surface-container-lowest px-3 py-2 text-label-sm font-bold text-primary hover:bg-primary-fixed">Réinitialiser la recherche</Link>
           </div>
+          <RechercheActionButtons
+            transactionType="vente"
+            activeFilters={activeFilters}
+            clearUrl="/terrains"
+            currentSort="pertinence"
+            showMap={false}
+          />
           <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5">
             <div className="portal-panel p-5 flex flex-col gap-4">
               <div className="flex items-center justify-between">

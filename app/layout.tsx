@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "Ogooué Habitat : achat, location, terrains et biens neufs au Gabon. Passeport Ogooué, Ogooué Shield et Ogooué AI pour une transaction immobilière vérifiée et sécurisée.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className="h-full antialiased">
       <head>

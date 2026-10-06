@@ -10,6 +10,7 @@ import { GABON_GEOGRAPHY, formatVilleLabel } from "@/data/gabon-geography";
 import { ACHETER_TYPE_OPTIONS } from "@/data/property-types";
 import { parseBudgetLabel } from "@/lib/format";
 import { matchesAcheterFilters } from "@/lib/property-filters";
+import { RechercheActionButtons } from "@/components/recherche/recherche-action-buttons";
 import { stitchImage } from "@/data/image-manifest";
 
 export const metadata: Metadata = {
@@ -86,6 +87,15 @@ export default async function AcheterPage({
   const listings = properties.filter((property) => ACHETER_SLUGS.includes(property.slug));
   const filtered = listings.filter((property) => matchesAcheterFilters(property, filters));
   const isFiltered = Boolean(ville || province || type || budget || q);
+
+  // Filtres actifs au format attendu par RechercheActionButtons (titre +
+  // enregistrement de la recherche sauvegardée).
+  const activeFilters: Record<string, string | string[]> = {};
+  if (ville) activeFilters.ville = ville;
+  if (province) activeFilters.province = province;
+  if (type) activeFilters.type = type;
+  if (budget) activeFilters.budgetMax = budget.toString();
+  if (q) activeFilters.q = q;
 
   return (
     <SiteShell>
@@ -220,6 +230,14 @@ export default async function AcheterPage({
               <Icon name="arrow_forward" className="text-[16px]" />
             </Link>
           </div>
+          <RechercheActionButtons
+            transactionType="vente"
+            activeFilters={activeFilters}
+            clearUrl="/acheter"
+            currentSort="pertinence"
+            showMap={false}
+          />
+          <AcheterResults curated={filtered} filters={filters} isFiltered={isFiltered} />
           <AcheterResults curated={filtered} filters={filters} isFiltered={isFiltered} />
         </section>
 

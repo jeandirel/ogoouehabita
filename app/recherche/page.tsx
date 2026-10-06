@@ -3,10 +3,13 @@ import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Icon } from "@/components/ui/icon";
 import { RechercheResults } from "@/components/recherche/recherche-results";
+import { RechercheActionButtons } from "@/components/recherche/recherche-action-buttons";
+import { AdvancedFiltersDrawer } from "@/components/search/advanced-filters-drawer";
 import { InteractiveMap } from "@/components/recherche/interactive-map";
 import { SortSelect } from "@/components/search/sort-select";
 import { properties } from "@/data/properties";
-import { matchesRechercheFilters, sortByPrice } from "@/lib/property-filters";
+import { matchesRechercheFilters, sortProperties, type RechercheFilters } from "@/lib/property-filters";
+import type { AdvancedFilters } from "@/components/search/advanced-filters-drawer";
 import type { TransactionType } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -44,10 +47,18 @@ export default async function RecherchePage({
 }) {
   const params = await searchParams;
   const get = (key: string) => (typeof params[key] === "string" ? (params[key] as string) : undefined);
+  const getUrlList = (key: string) => {
+    const v = params[key];
+    if (typeof v === "string") return [v];
+    if (Array.isArray(v)) return v.filter((x): x is string => typeof x === "string");
+    return [];
+  };
 
   const transactionType: TransactionType = get("type") === "location" ? "location" : "vente";
   const q = get("q")?.toLowerCase().trim();
   const province = get("province");
+  const vue = get("vue") ?? "carte"; // "liste" | "carte"
+  const urlFiltres = get("filtres") === "1";
   const sort = get("sort") ?? "pertinence";
 
   const activeChips = {
@@ -61,10 +72,42 @@ export default async function RecherchePage({
   };
   const activeChipCount = Object.values(activeChips).filter(Boolean).length;
 
+  const getNum = (key: string): number | undefined => {
+    const v = get(key);
+    return v ? Number(v) : undefined;
+  };
+  const activeFilters: Record<string, string | string[]> = {};
+  [
+    "ville",
+    "province",
+    "quartier",
+    "budgetMin",
+    "budgetMax",
+    "surfaceMin",
+    "surfaceMax",
+    "chambresMin",
+    "sallesDeBainMin",
+    "piecesMin",
+    "neuf",
+    "meuble",
+    "shield",
+    "titreFoncier",
+    "particulier",
+  ].forEach((k) => {
+    const v = get(k);
+    if (v !== undefined && v !== "") activeFilters[k] = v;
+  });
+  const types = getUrlList("type");
+  if (types.length) activeFilters.type = types;
+  const amenities = getUrlList("amenity");
+  if (amenities.length) activeFilters.amenity = amenities;
+
   const filters = { transactionType, province, q, chips: activeChips };
   const pool = properties.filter((property) => RECHERCHE_SLUGS.includes(property.slug));
   const filtered = pool.filter((property) => matchesRechercheFilters(property, filters));
-  const results = sortByPrice(filtered, sort);
+  const results = sortProperties(filtered, sort as any);
+
+  const showMap = vue === "carte";
 
   // Pin positions are hand-placed against the one static illustrative map
   // image (no real property coordinates exist to fabricate), so the map
@@ -76,6 +119,28 @@ export default async function RecherchePage({
     ...pin,
     active: pin.slug === results[0]?.slug,
   }));
+
+  const advancedFilters: AdvancedFilters = {
+    ville: get("ville"),
+    province: get("province"),
+    quartier: get("quartier"),
+    types,
+    budgetMin: getNum("budgetMin"),
+    budgetMax: getNum("budgetMax"),
+    surfaceMin: getNum("surfaceMin"),
+    surfaceMax: getNum("surfaceMax"),
+    chambresMin: getNum("chambresMin"),
+    sallesDeBainMin: getNum("sallesDeBainMin"),
+    piecesMin: getNum("piecesMin"),
+    neuf: get("neuf") === "1",
+    meuble: get("meuble") === "1",
+    amenities,
+    titreFoncier: get("titreFoncier") === "1",
+    shield: get("shield") === "1",
+    particulier: get("particulier") === "1",
+    transactionType,
+    q,
+  };
 
   const buildHref = (overrides: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
@@ -190,17 +255,35 @@ export default async function RecherchePage({
         <div id="carte" className="w-full flex flex-col lg:flex-row lg:h-[calc(100vh-160px)] scroll-mt-20">
           {/* Left Column: Listings */}
           <div className="w-full lg:w-[42%] lg:h-full lg:overflow-y-auto px-6 py-space-md flex flex-col gap-space-md">
+            <RechercheActionButtons
+              transactionType={transactionType}
+              activeFilters={activeFilters}
+              clearUrl={`/recherche${transactionType === "location" ? "?type=location" : ""}`}
+              currentSort={sort}
+              showMap={showMap}
+            />
             <RechercheResults
               curated={results}
               filters={filters}
               sort={sort}
+              activeFilters={activeFilters}
+              hasActiveFilters={Object.keys(activeFilters).length > 0}
+              showMap={showMap}
               sortSelect={<SortSelect />}
+              transactionType={transactionType}
             />
           </div>
 
           {/* Right Column: Interactive Map with Price Pins */}
-          <InteractiveMap pins={visiblePins} />
+          {showMap && <InteractiveMap pins={visiblePins} />}
         </div>
+
+        <AdvancedFiltersDrawer
+          open={urlFiltres}
+          onClose={() => {}}
+          initialFilters={advancedFilters}
+          transactionType={transactionType}
+        />
       </div>
     </SiteShell>
   );

@@ -13,6 +13,7 @@ import { LOUER_TYPE_OPTIONS } from "@/data/property-types";
 import { GABON_GEOGRAPHY } from "@/data/gabon-geography";
 import { parseBudgetLabel } from "@/lib/format";
 import { matchesLouerFilters } from "@/lib/property-filters";
+import { RechercheActionButtons } from "@/components/recherche/recherche-action-buttons";
 import { stitchImage } from "@/data/image-manifest";
 
 export const metadata: Metadata = {
@@ -78,6 +79,15 @@ export default async function LouerPage({
   const filters = { type, locationIncludes, province, budget };
   const listings = properties.filter((property) => LOUER_SLUGS.includes(property.slug));
   const filtered = listings.filter((property) => matchesLouerFilters(property, filters));
+
+  // Filtres actifs au format attendu par RechercheActionButtons (titre +
+  // enregistrement de la recherche sauvegardée).
+  const activeFilters: Record<string, string | string[]> = {};
+  if (quartier) activeFilters.quartier = quartier;
+  if (locationIncludes) activeFilters.ville = locationIncludes;
+  if (province) activeFilters.province = province;
+  if (budget) activeFilters.budgetMax = budget.toString();
+  if (type) activeFilters.type = type;
 
   // Real criteria as currently set on this page (not the illustrative demo
   // card further down) so the AI alert form persists what was actually
@@ -224,6 +234,14 @@ export default async function LouerPage({
               Voir toutes les locations <Icon name="arrow_forward" className="text-[18px]" />
             </Link>
           </div>
+          <RechercheActionButtons
+            transactionType="location"
+            activeFilters={activeFilters}
+            clearUrl="/louer"
+            currentSort="pertinence"
+            showMap={false}
+          />
+          <LouerResults curated={filtered} filters={filters} />
           <LouerResults curated={filtered} filters={filters} />
         </section>
 
