@@ -1,0 +1,470 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PARTICULIER
+  PROPRIETAIRE
+  AGENT
+  RESPONSABLE_AGENCE
+  MODERATEUR
+  ADMIN
+}
+enum UserStatus {
+  PENDING_EMAIL
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+enum AgencyStatus {
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+enum AgencyMemberRole {
+  AGENT
+  MANAGER
+  OWNER
+}
+enum ListingTransaction {
+  SALE
+  RENT
+}
+enum ListingStatus {
+  DRAFT
+  PENDING_REVIEW
+  REJECTED
+  PUBLISHED
+  EXPIRED
+  ARCHIVED
+  SOLD
+  RENTED
+}
+enum MediaKind {
+  PHOTO
+  VIDEO
+  VIRTUAL_TOUR
+  DOCUMENT
+}
+enum MediaVisibility {
+  PUBLIC
+  PRIVATE
+}
+enum LeadStatus {
+  NEW
+  ASSIGNED
+  IN_PROGRESS
+  VISIT_SCHEDULED
+  WON
+  LOST
+  CLOSED
+}
+enum PaymentStatus {
+  PENDING
+  REQUIRES_ACTION
+  SUCCEEDED
+  FAILED
+  CANCELED
+  REFUNDED
+}
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+enum ReportStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  REJECTED
+}
+enum NotificationChannel {
+  EMAIL
+  SMS
+  IN_APP
+}
+
+model User {
+  id                 String              @id @default(uuid()) @db.Uuid
+  email              String?             @unique @db.Citext
+  phone              String?             @unique
+  passwordHash       String?
+  fullName           String
+  status             UserStatus          @default(PENDING_EMAIL)
+  emailVerifiedAt    DateTime?
+  phoneVerifiedAt    DateTime?
+  roles              UserRole[]          @default([PARTICULIER])
+  adminMfaEnabled    Boolean             @default(false)
+  deletedAt          DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  sessions           Session[]
+  identities         AuthIdentity[]
+  verificationTokens VerificationToken[]
+  agencyMemberships  AgencyMember[]
+  listings           Listing[]           @relation("ListingOwner")
+  leads              Lead[]              @relation("LeadRequester")
+  favorites          Favorite[]
+  savedSearches      SavedSearch[]
+  auditLogs          AuditLog[]          @relation("AuditActor")
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model AuthIdentity {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  provider       String
+  providerUserId String
+  email          String?  @db.Citext
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @db.Uuid
+  tokenHash    String   @unique
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  createdAt    DateTime @default(now())
+  lastSeenAt   DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
+}
+
+model VerificationToken {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String?   @db.Uuid
+  channel     NotificationChannel
+  target      String
+  purpose     String
+  tokenHash   String    @unique
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(5)
+  expiresAt   DateTime
+  consumedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([target, purpose, expiresAt])
+}
+
+model Country {
+  id        String     @id @default(uuid()) @db.Uuid
+  code      String     @unique
+  name      String
+  locales   String[]   @default(["fr-GA"])
+  provinces Province[]
+  createdAt DateTime   @default(now())
+}
+
+model Province {
+  id        String   @id @default(uuid()) @db.Uuid
+  countryId String  @db.Uuid
+  name      String
+  slug      String
+  cities    City[]
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Restrict)
+
+  @@unique([countryId, slug])
+  @@index([name])
+}
+
+model City {
+  id         String        @id @default(uuid()) @db.Uuid
+  provinceId String       @db.Uuid
+  name       String
+  slug       String
+  districts  District[]
+  listings   Listing[]
+  province   Province     @relation(fields: [provinceId], references: [id], onDelete: Restrict)
+
+  @@unique([provinceId, slug])
+  @@index([name])
+}
+
+model District {
+  id       String    @id @default(uuid()) @db.Uuid
+  cityId   String    @db.Uuid
+  name     String
+  slug     String
+  listings Listing[]
+  city     City      @relation(fields: [cityId], references: [id], onDelete: Restrict)
+
+  @@unique([cityId, slug])
+  @@index([name])
+}
+
+model Agency {
+  id             String          @id @default(uuid()) @db.Uuid
+  name           String
+  slug           String          @unique
+  description    String?
+  phone          String?
+  email          String?         @db.Citext
+  rccmNumber     String?
+  status         AgencyStatus    @default(PENDING_REVIEW)
+  verifiedAt     DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  members        AgencyMember[]
+  invitations    AgencyInvitation[]
+  listings       Listing[]
+  subscriptions  Subscription[]
+  leads          Lead[]
+
+  @@index([status])
+}
+
+model AgencyMember {
+  id        String           @id @default(uuid()) @db.Uuid
+  agencyId  String           @db.Uuid
+  userId    String           @db.Uuid
+  role      AgencyMemberRole @default(AGENT)
+  active    Boolean          @default(true)
+  createdAt DateTime         @default(now())
+  agency    Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([agencyId, userId])
+  @@index([userId, active])
+}
+
+model AgencyInvitation {
+  id          String           @id @default(uuid()) @db.Uuid
+  agencyId    String           @db.Uuid
+  email       String           @db.Citext
+  role        AgencyMemberRole @default(AGENT)
+  tokenHash   String           @unique
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime         @default(now())
+  agency      Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  @@index([agencyId, email])
+}
+
+model PropertyCategory {
+  id       String    @id @default(uuid()) @db.Uuid
+  code     String    @unique
+  label    String
+  listings Listing[]
+}
+
+model FeatureDefinition {
+  id        String   @id @default(uuid()) @db.Uuid
+  code      String   @unique
+  label     String
+  valueType String   @default("boolean")
+}
+
+model Listing {
+  id              String             @id @default(uuid()) @db.Uuid
+  ownerId         String             @db.Uuid
+  agencyId        String?            @db.Uuid
+  assignedAgentId String?            @db.Uuid
+  categoryId      String             @db.Uuid
+  cityId          String?            @db.Uuid
+  districtId      String?            @db.Uuid
+  slug            String             @unique
+  title           String
+  description     String
+  transaction     ListingTransaction
+  status          ListingStatus      @default(DRAFT)
+  priceCfa        BigInt
+  surfaceM2       Int?
+  landSurfaceM2   Int?
+  bedrooms        Int?
+  bathrooms       Int?
+  rooms           Int?
+  addressLine     String?
+  latitude        Decimal?           @db.Decimal(9, 6)
+  longitude       Decimal?           @db.Decimal(9, 6)
+  availableFrom   DateTime?
+  publishedAt     DateTime?
+  expiresAt       DateTime?
+  archivedAt      DateTime?
+  soldOrRentedAt   DateTime?
+  rejectionReason String?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  owner           User               @relation("ListingOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  agency          Agency?            @relation(fields: [agencyId], references: [id], onDelete: SetNull)
+  category        PropertyCategory   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  city            City?              @relation(fields: [cityId], references: [id], onDelete: SetNull)
+  district        District?          @relation(fields: [districtId], references: [id], onDelete: SetNull)
+  media           ListingMedia[]
+  features        ListingFeature[]
+  leads           Lead[]
+  reports         Report[]
+  favorites       Favorite[]
+
+  @@index([status, transaction, publishedAt])
+  @@index([agencyId, status])
+  @@index([ownerId, status])
+  @@index([cityId, districtId])
+  @@index([priceCfa])
+}
+
+model ListingFeature {
+  id        String   @id @default(uuid()) @db.Uuid
+  listingId String   @db.Uuid
+  code      String
+  value     String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, code])
+  @@index([code, value])
+}
+
+model ListingMedia {
+  id          String          @id @default(uuid()) @db.Uuid
+  listingId   String          @db.Uuid
+  kind        MediaKind
+  visibility  MediaVisibility @default(PUBLIC)
+  storageKey  String
+  publicUrl   String?
+  mimeType    String?
+  sizeBytes   Int?
+  width       Int?
+  height      Int?
+  sortOrder   Int             @default(0)
+  isCover     Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  deletedAt   DateTime?
+  listing     Listing         @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, visibility, deletedAt])
+}
+
+model Lead {
+  id          String     @id @default(uuid()) @db.Uuid
+  listingId   String?    @db.Uuid
+  agencyId    String?    @db.Uuid
+  requesterId String?    @db.Uuid
+  status      LeadStatus @default(NEW)
+  name        String
+  email       String?    @db.Citext
+  phone       String?
+  message     String?
+  assignedTo  String?    @db.Uuid
+  visitAt     DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  listing     Listing?   @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  agency      Agency?    @relation(fields: [agencyId], references: [id], onDelete: SetNull)
+  requester   User?      @relation("LeadRequester", fields: [requesterId], references: [id], onDelete: SetNull)
+
+  @@index([agencyId, status, createdAt])
+  @@index([listingId, status])
+}
+
+model Favorite {
+  userId    String   @db.Uuid
+  listingId String   @db.Uuid
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@id([userId, listingId])
+}
+
+model SavedSearch {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  name      String
+  filters   Json
+  alerts    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, alerts])
+}
+
+model CommercialOffer {
+  id              String         @id @default(uuid()) @db.Uuid
+  code            String         @unique
+  name            String
+  priceCfa        BigInt
+  durationDays    Int
+  listingQuota    Int            @default(0)
+  featuredQuota   Int            @default(0)
+  active          Boolean        @default(true)
+  subscriptions   Subscription[]
+}
+
+model Subscription {
+  id        String             @id @default(uuid()) @db.Uuid
+  agencyId  String             @db.Uuid
+  offerId   String             @db.Uuid
+  status    SubscriptionStatus @default(TRIALING)
+  startsAt  DateTime
+  endsAt    DateTime
+  agency    Agency             @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  offer     CommercialOffer    @relation(fields: [offerId], references: [id], onDelete: Restrict)
+  payments  Payment[]
+
+  @@index([agencyId, status, endsAt])
+}
+
+model Payment {
+  id                    String        @id @default(uuid()) @db.Uuid
+  subscriptionId         String?       @db.Uuid
+  provider              String
+  providerTransactionId String?
+  idempotencyKey        String        @unique
+  status                PaymentStatus @default(PENDING)
+  amountCfa             BigInt
+  currency              String        @default("XAF")
+  rawPayload            Json?
+  paidAt                DateTime?
+  createdAt             DateTime      @default(now())
+  subscription          Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, providerTransactionId])
+  @@index([status, createdAt])
+}
+
+model Report {
+  id        String       @id @default(uuid()) @db.Uuid
+  listingId String       @db.Uuid
+  reason    String
+  details   String?
+  status    ReportStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+  listing   Listing      @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  actorId   String?  @db.Uuid
+  action    String
+  entity    String
+  entityId  String?
+  metadata  Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
+  actor     User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+  @@index([actorId, createdAt])
+}

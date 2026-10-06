@@ -32,3 +32,20 @@
 ## Prochaine action
 
 Mettre en place le socle de base de données persistante et les migrations, puis commencer l’authentification serveur.
+
+
+## Ajout socle persistance
+
+- Schéma Prisma PostgreSQL ajouté: utilisateurs, sessions, vérification, rôles, agences, équipes, invitations, géographie, annonces, médias, leads, favoris, recherches sauvegardées, offres, abonnements, paiements, signalements et audit log.
+- Migration SQL initiale générée avec extension `citext`.
+- Seed démonstration séparé ajouté dans `prisma/seed.ts`.
+- Dockerfile, docker-compose, `.env.example`, client Prisma et scripts sauvegarde/restauration ajoutés.
+- Commande sécurisée de bootstrap premier administrateur ajoutée: `npm run admin:create`.
+
+## Limite de vérification
+
+- Docker CLI est installé mais le daemon ne peut pas démarrer sans privilèges root dans cet environnement; l’application effective de la migration et du seed PostgreSQL est donc à vérifier sur une machine Docker/Ubuntu autorisée. Le schéma et la migration ont été validés statiquement avec Prisma.
+
+## Prochaine action après socle DB
+
+Brancher les parcours auth/annonces existants aux API serveur et appliquer les permissions côté serveur.

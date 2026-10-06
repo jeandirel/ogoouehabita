@@ -35,3 +35,40 @@
 - Déploiement reproductible sur Ubuntu avec Docker.
 - Volumes persistants documentés.
 - Sauvegarde et restauration testées en développement.
+
+
+## Commandes de migration et exploitation
+
+Développement:
+
+```bash
+cp .env.example .env
+docker compose up -d postgres
+npm run db:generate
+npm run db:migrate
+npm run db:seed
+```
+
+Production Ubuntu avec Docker:
+
+```bash
+cp .env.example .env
+# éditer toutes les valeurs sensibles avant démarrage
+docker compose build
+docker compose up -d postgres
+docker compose run --rm migrate
+docker compose up -d app
+```
+
+Premier administrateur:
+
+```bash
+npm run admin:create -- --email=admin@votre-domaine --password='mot-de-passe-long-unique'
+```
+
+Sauvegarde/restauration:
+
+```bash
+DATABASE_URL='postgresql://...' npm run backup:postgres
+DATABASE_URL='postgresql://...' npm run restore:postgres -- backups/fichier.dump
+```

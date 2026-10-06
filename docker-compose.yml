@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ogooue_habitat}
+      POSTGRES_USER: ${POSTGRES_USER:-ogooue}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ogooue_dev_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ogooue} -d ${POSTGRES_DB:-ogooue_habitat}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    build:
+      context: .
+      target: builder
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-ogooue}:${POSTGRES_PASSWORD:-ogooue_dev_password}@postgres:5432/${POSTGRES_DB:-ogooue_habitat}
+    command: ["npx", "prisma", "migrate", "deploy"]
+    restart: "no"
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-ogooue}:${POSTGRES_PASSWORD:-ogooue_dev_password}@postgres:5432/${POSTGRES_DB:-ogooue_habitat}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - media_data:/app/storage/media
+
+volumes:
+  postgres_data:
+  media_data:
