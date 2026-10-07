@@ -101,9 +101,11 @@ model User {
   status             UserStatus          @default(PENDING_EMAIL)
   emailVerifiedAt    DateTime?
   phoneVerifiedAt    DateTime?
-  roles              UserRole[]          @default([PARTICULIER])
-  adminMfaEnabled    Boolean             @default(false)
-  deletedAt          DateTime?
+  roles                      UserRole[]          @default([PARTICULIER])
+  adminMfaEnabled            Boolean             @default(false)
+  adminMfaSecretEncrypted    String?
+  adminMfaPendingEncrypted   String?
+  deletedAt                  DateTime?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
   sessions           Session[]
@@ -139,10 +141,11 @@ model Session {
   tokenHash    String   @unique
   userAgent    String?
   ipAddress    String?
-  expiresAt    DateTime
-  revokedAt    DateTime?
-  createdAt    DateTime @default(now())
-  lastSeenAt   DateTime @default(now())
+  expiresAt         DateTime
+  revokedAt         DateTime?
+  adminMfaVerifiedAt DateTime?
+  createdAt         DateTime @default(now())
+  lastSeenAt        DateTime @default(now())
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, revokedAt])

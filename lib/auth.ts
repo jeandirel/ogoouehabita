@@ -40,13 +40,17 @@ export function applySessionCookie(response: NextResponse, session: { token: str
   response.cookies.set(SESSION_COOKIE, session.token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", expires: session.expiresAt });
 }
 
-export async function currentUser() {
+export async function currentSession() {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   const session = await prisma.session.findUnique({ where: { tokenHash: tokenHash(token) }, include: { user: true } });
   if (!session || session.revokedAt || session.expiresAt <= new Date() || session.user.status !== UserStatus.ACTIVE) return null;
   void prisma.session.update({ where: { id: session.id }, data: { lastSeenAt: new Date() } });
-  return session.user;
+  return session;
+}
+
+export async function currentUser() {
+  return (await currentSession())?.user ?? null;
 }
 
 export async function requireUser() {
@@ -59,6 +63,14 @@ export async function requireRole(...roles: UserRole[]) {
   const user = await requireUser();
   if (!roles.some((role) => user.roles.includes(role))) throw new AuthError(403, "Permission insuffisante.");
   return user;
+}
+
+export async function requireAdminMfa() {
+  const session = await currentSession();
+  if (!session || !session.user.roles.includes(UserRole.ADMIN)) throw new AuthError(403, "Permission insuffisante.");
+  if (!session.user.adminMfaEnabled) throw new AuthError(403, "Configurez le second facteur administrateur.");
+  if (!session.adminMfaVerifiedAt) throw new AuthError(403, "Validez le second facteur pour cette session.");
+  return { user: session.user, session };
 }
 
 export class AuthError extends Error { constructor(public status: number, message: string) { super(message); } }

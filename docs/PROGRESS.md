@@ -129,3 +129,13 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 - Les modérateurs conservent la modération de contenu sans pouvoir gérer comptes ou agences.
 - Chaque action produit une entrée `AuditLog`.
 - Build réussi; comportement runtime non vérifié faute de PostgreSQL accessible.
+
+## Base locale, comptes de validation et MFA administrateur — vérifiés sur PostgreSQL
+
+- PostgreSQL 17 local installé et démarré; migrations initiale et MFA appliquées sur `ogooue_habitat`.
+- Cinq comptes temporaires de développement créés directement dans la base, sans identifiants dans Git: particulier, propriétaire, responsable d’agence, modérateur et administrateur.
+- Une agence et trois annonces portant le préfixe `[DÉMO DEV]` créées uniquement dans la base locale.
+- Cinq connexions vérifiées via l’API. Refus et capacités propres aux rôles vérifiés: publication interdite au particulier, annonces accessibles au propriétaire, invitations accessibles au responsable, file de modération accessible au modérateur, gestion des comptes interdite au modérateur.
+- Parcours `/connexion` puis `/admin` vérifié avec le compte administrateur.
+- Enrôlement TOTP ajouté sous `/admin/securite`: secret en attente chiffré AES-GCM, activation seulement après validation d’un vrai code, puis validation requise par session pour les actions sensibles.
+- Code TOTP invalide refusé; aucune activation MFA forcée et compte laissé en attente de configuration par son utilisateur.
