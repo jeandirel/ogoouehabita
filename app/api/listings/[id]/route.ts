@@ -19,8 +19,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const data: { title?: string; description?: string; status?: ListingStatus; rejectionReason?: string; publishedAt?: Date; expiresAt?: Date } = {};
     if (body.title !== undefined) data.title = text(body.title, "Titre", 8, 150);
     if (body.description !== undefined) data.description = text(body.description, "Description", 30, 5000);
-    if (body.action === "submit") { if (listing.status !== ListingStatus.DRAFT && listing.status !== ListingStatus.REJECTED) throw new AuthError(409, "Cette annonce ne peut pas être soumise."); data.status = ListingStatus.PENDING_REVIEW; data.rejectionReason = undefined; }
-    if (canModerate && body.action === "publish") { data.status = ListingStatus.PUBLISHED; data.publishedAt = new Date(); data.expiresAt = new Date(Date.now() + 90 * 86400_000); }
+    if (body.action === "submit") { if (listing.status !== ListingStatus.DRAFT && listing.status !== ListingStatus.REJECTED) throw new AuthError(409, "Cette annonce ne peut pas être soumise."); const photoCount = await prisma.listingMedia.count({ where: { listingId: id, kind: "PHOTO", visibility: "PUBLIC", deletedAt: null } }); if (photoCount === 0) throw new AuthError(409, "Ajoutez au moins une photo publique avant la soumission."); data.status = ListingStatus.PENDING_REVIEW; data.rejectionReason = undefined; }
+    if (canModerate && body.action === "publish") { if (listing.status !== ListingStatus.PENDING_REVIEW) throw new AuthError(409, "Seule une annonce soumise peut être publiée."); data.status = ListingStatus.PUBLISHED; data.publishedAt = new Date(); data.expiresAt = new Date(Date.now() + 90 * 86400_000); }
     if (canModerate && body.action === "reject") { data.status = ListingStatus.REJECTED; data.rejectionReason = text(body.rejectionReason, "Motif de refus", 5, 1000); }
     if (body.action === "archive") data.status = ListingStatus.ARCHIVED;
     if (body.action === "sold" && listing.transaction === "SALE") data.status = ListingStatus.SOLD;

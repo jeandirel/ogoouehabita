@@ -56,6 +56,8 @@ export interface Property {
   neighborhoodBlurb?: string;
   cautionLabel?: string;
   contactPhone?: string;
+  videoUrl?: string;
+  virtualTourUrl?: string;
   source?: "local";
   status?: "en_attente_verification";
   hasRealPhoto?: boolean;

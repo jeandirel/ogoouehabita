@@ -139,3 +139,15 @@ Brancher les parcours auth/annonces existants aux API serveur et appliquer les p
 - Parcours `/connexion` puis `/admin` vérifié avec le compte administrateur.
 - Enrôlement TOTP ajouté sous `/admin/securite`: secret en attente chiffré AES-GCM, activation seulement après validation d’un vrai code, puis validation requise par session pour les actions sensibles.
 - Code TOTP invalide refusé; aucune activation MFA forcée et compte laissé en attente de configuration par son utilisateur.
+
+## Parcours annonce multimédia propriétaire — vérifié de bout en bout
+
+- Formulaire `/publier` complété sans refonte: jusqu’à 20 photos, aperçu, suppression avant envoi, ordre, couverture, vidéo HTTPS, visite virtuelle HTTPS et caractéristiques dépendant de la catégorie.
+- Catégories couvertes: appartement, villa, terrain et local commercial.
+- API médias: lecture, upload JPEG/PNG/WebP, quotas, couverture photo uniquement, ordre, suppression logique et physique, remplacement automatique d’une couverture supprimée, un lien vidéo et une visite virtuelle.
+- Soumission interdite sans photo publique; publication limitée aux annonces en attente de modération.
+- Fiche `/bien/[slug]` connectée aux annonces publiées PostgreSQL, aux médias ordonnés, caractéristiques, vidéo et visite virtuelle.
+- Bug corrigé dans `/api/search`: l’absence de bornes de prix était interprétée comme un maximum de zéro.
+- Test réel avec le propriétaire: création d’une villa DÉMO, envoi de trois PNG, deuxième photo choisie comme couverture, réordonnancement, suppression de la troisième, ajout vidéo et visite virtuelle, soumission en modération.
+- Test réel avec l’administrateur: publication de l’annonce soumise.
+- Vérifié après redémarrage du serveur: annonce retrouvée dans la recherche, fiche HTTP 200, deux photos HTTP 200 depuis le stockage disque, vidéo/visite/caractéristiques présentes, statut PostgreSQL `PUBLISHED`.

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/layout/site-shell";
 import { PropertyDetailView } from "@/components/property/property-detail-view";
-import { LocalPropertyDetailGate } from "@/components/property/local-property-detail-gate";
 import { properties } from "@/data/properties";
+import { prisma } from "@/lib/db";
+import { publicListingInclude, toPublicProperty } from "@/lib/public-listing";
 
 export function generateStaticParams() {
   return properties.map((property) => ({ slug: property.slug }));
@@ -14,18 +16,11 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const property = properties.find((p) => p.slug === slug);
-
-  if (!property) {
-    return { title: "Annonce" };
-  }
-
-  return {
-    title: property.title,
-    description:
-      property.description ??
-      `${property.title} — ${property.location}. ${property.priceLabel}, à voir sur Ogooué Habitat.`,
-  };
+  const seeded = properties.find((property) => property.slug === slug);
+  const stored = seeded ? null : await prisma.listing.findFirst({ where: { slug, status: "PUBLISHED" }, select: { title: true, description: true } });
+  const property = seeded ?? stored;
+  if (!property) return { title: "Annonce introuvable" };
+  return { title: property.title, description: property.description ?? `${property.title}, à voir sur Ogooué Habitat.` };
 }
 
 export default async function PropertyDetailPage({
@@ -34,15 +29,9 @@ export default async function PropertyDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const property = properties.find((p) => p.slug === slug);
-
-  if (!property) {
-    return <LocalPropertyDetailGate slug={slug} />;
-  }
-
-  return (
-    <SiteShell>
-      <PropertyDetailView property={property} />
-    </SiteShell>
-  );
+  const seeded = properties.find((property) => property.slug === slug);
+  const stored = seeded ? null : await prisma.listing.findFirst({ where: { slug, status: "PUBLISHED" }, include: publicListingInclude });
+  const property = seeded ?? (stored ? toPublicProperty(stored) : null);
+  if (!property) notFound();
+  return <SiteShell><PropertyDetailView property={property} /></SiteShell>;
 }

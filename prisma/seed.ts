@@ -35,6 +35,7 @@ async function main() {
 
   await prisma.propertyCategory.upsert({ where: { code: "terrain" }, update: {}, create: { code: "terrain", label: "Terrain" } });
   await prisma.propertyCategory.upsert({ where: { code: "appartement" }, update: {}, create: { code: "appartement", label: "Appartement" } });
+  await prisma.propertyCategory.upsert({ where: { code: "local_commercial" }, update: {}, create: { code: "local_commercial", label: "Local commercial" } });
   await prisma.featureDefinition.upsert({ where: { code: "piscine" }, update: {}, create: { code: "piscine", label: "Piscine" } });
   await prisma.featureDefinition.upsert({ where: { code: "titre_foncier" }, update: {}, create: { code: "titre_foncier", label: "Titre foncier vérifié" } });
 

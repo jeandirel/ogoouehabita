@@ -53,6 +53,7 @@ export function PropertyDetailView({ property }: { property: Property }) {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-space-lg w-full">
         <PropertyGallery images={galleryImages} hasRealPhoto={property.hasRealPhoto} />
+        {(property.videoUrl || property.virtualTourUrl) && <div className="mt-space-md flex flex-wrap gap-space-sm">{property.videoUrl && <a href={property.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-outline-variant/60 bg-surface px-4 py-2.5 font-label-md font-bold text-primary hover:bg-surface-container-low"><Icon name="play_circle" />Voir la vidéo</a>}{property.virtualTourUrl && <a href={property.virtualTourUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-outline-variant/60 bg-surface px-4 py-2.5 font-label-md font-bold text-primary hover:bg-surface-container-low"><Icon name="360" />Visite virtuelle</a>}</div>}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl mt-space-xl">
           <div className="lg:col-span-8 flex flex-col gap-space-xl">

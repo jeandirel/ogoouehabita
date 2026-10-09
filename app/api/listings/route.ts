@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { AuthError, requireUser } from "@/lib/auth";
 import { jsonError, readJson, text } from "@/lib/auth/http";
 import { prisma } from "@/lib/db";
+import { fieldsForCategory } from "@/lib/listing-fields";
 
 function slugify(value: string) { return `${value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${crypto.randomUUID().slice(0, 8)}`; }
 
@@ -23,7 +24,19 @@ export async function POST(request: Request) {
     const category = await prisma.propertyCategory.findUnique({ where: { code: categoryCode } }); if (!category) throw new AuthError(400, "Catégorie invalide.");
     const city = await prisma.city.findUnique({ where: { id: cityId } }); if (!city) throw new AuthError(400, "Ville invalide."); if (districtId && !(await prisma.district.findFirst({ where: { id: districtId, cityId } }))) throw new AuthError(400, "Quartier invalide.");
     const transaction = body.transaction === "location" ? ListingTransaction.RENT : ListingTransaction.SALE;
-    const listing = await prisma.listing.create({ data: { ownerId: user.id, categoryId: category.id, cityId: city.id, districtId, slug: slugify(title), title, description, transaction, status: ListingStatus.DRAFT, priceCfa: BigInt(priceCfa), surfaceM2: typeof body.surfaceM2 === "number" ? body.surfaceM2 : null, bedrooms: typeof body.bedrooms === "number" ? body.bedrooms : null } });
+    const suppliedFeatures = body.features && typeof body.features === "object" && !Array.isArray(body.features) ? body.features as Record<string, unknown> : {};
+    const definitions = fieldsForCategory(categoryCode);
+    const features = definitions.flatMap((definition) => {
+      const raw = suppliedFeatures[definition.code];
+      if (definition.required && (raw === undefined || raw === null || raw === "")) throw new AuthError(400, `${definition.label} est requis.`);
+      if (raw === undefined || raw === null || raw === "") return [];
+      if (definition.type === "number" && (!Number.isSafeInteger(Number(raw)) || Number(raw) < 0)) throw new AuthError(400, `${definition.label} est invalide.`);
+      if (definition.type === "boolean" && typeof raw !== "boolean") throw new AuthError(400, `${definition.label} est invalide.`);
+      const value = definition.type === "boolean" ? String(raw) : definition.type === "number" ? String(Number(raw)) : text(raw, definition.label, 1, 200);
+      return [{ code: definition.code, value }];
+    });
+    const featureValue = (code: string) => features.find((feature) => feature.code === code)?.value;
+    const listing = await prisma.listing.create({ data: { ownerId: user.id, categoryId: category.id, cityId: city.id, districtId, slug: slugify(title), title, description, transaction, status: ListingStatus.DRAFT, priceCfa: BigInt(priceCfa), surfaceM2: typeof body.surfaceM2 === "number" ? body.surfaceM2 : null, landSurfaceM2: featureValue("land_surface_m2") ? Number(featureValue("land_surface_m2")) : null, bedrooms: featureValue("bedrooms") ? Number(featureValue("bedrooms")) : null, bathrooms: featureValue("bathrooms") ? Number(featureValue("bathrooms")) : null, rooms: featureValue("rooms") ? Number(featureValue("rooms")) : null, features: { create: features.filter((feature) => !["land_surface_m2", "bedrooms", "bathrooms", "rooms"].includes(feature.code)) } } });
     await prisma.auditLog.create({ data: { actorId: user.id, action: "LISTING_CREATE", entity: "Listing", entityId: listing.id } });
     return NextResponse.json({ listing: { id: listing.id, slug: listing.slug, status: listing.status } }, { status: 201 });
   } catch (error) { return jsonError(error); }
